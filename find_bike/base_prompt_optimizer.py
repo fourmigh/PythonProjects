@@ -1,6 +1,6 @@
 # base_prompt_optimizer.py
 # ============================================================
-# 提示词优化器基类 - 不包含具体业务逻辑
+# 提示词优化器基类 - 使用大模型优化提示词
 # ============================================================
 
 import json
@@ -16,14 +16,7 @@ from config import API_TYPE, OLLAMA_CONFIG, ZHIPU_CONFIG, OPENAI_CONFIG, BEDROCK
 
 class BasePromptOptimizer(ABC):
     """
-    提示词优化器基类
-    
-    优化策略：
-    1. 遍历所有测试图片
-    2. 遇到第一个错误时，立即停止本轮测试
-    3. 分析错误并优化提示词
-    4. 从头开始重新测试所有图片
-    5. 重复直到全部通过或达到最大轮次
+    提示词优化器基类 - 使用大模型优化提示词
     """
     
     def __init__(self, api_client=None):
@@ -55,139 +48,166 @@ class BasePromptOptimizer(ABC):
     
     @abstractmethod
     def get_rule_name(self) -> str:
-        """返回规则名称"""
         pass
     
     @abstractmethod
     def get_rule_description(self) -> str:
-        """返回规则描述"""
         pass
     
     @abstractmethod
     def get_default_system_prompt(self) -> str:
-        """返回默认的系统提示词"""
         pass
     
     @abstractmethod
     def get_default_user_prompt(self) -> str:
-        """返回默认的用户提示词"""
         pass
     
     @abstractmethod
     def parse_response(self, answer: str) -> Tuple[bool, str]:
-        """
-        解析模型回答
-        
-        Args:
-            answer: 模型的原始回答
-        
-        Returns:
-            tuple: (是否符合条件, 推理过程)
-        """
         pass
     
     @abstractmethod
     def get_expected_from_filename(self, filename: str) -> Optional[bool]:
-        """
-        根据文件名判断期望结果
-        
-        Args:
-            filename: 文件名
-        
-        Returns:
-            True: 期望符合条件
-            False: 期望不符合条件
-            None: 无法判断（跳过验证）
-        """
-        pass
-    
-    @abstractmethod
-    def get_error_patterns(self) -> Dict:
-        """
-        返回错误类型及优化策略
-        
-        格式:
-        {
-            "false_positive": {
-                "add_to_user_prompt": "添加到用户提示词的内容",
-                "add_to_system_prompt": "添加到系统提示词的内容"
-            },
-            "false_negative_bicycle": {
-                "add_to_user_prompt": "...",
-                "add_to_system_prompt": "..."
-            },
-            "false_negative_plate": {
-                "add_to_user_prompt": "...",
-                "add_to_system_prompt": "..."
-            },
-            "conclusion_error": {
-                "add_to_user_prompt": "...",
-                "add_to_system_prompt": "..."
-            }
-        }
-        """
         pass
     
     # ============================================================
-    # 可重写方法
+    # 大模型优化提示词
     # ============================================================
     
-    def analyze_error(self, reasoning: str, expected: bool, actual: bool,
-                      image_filename: str = "") -> Dict:
+    def llm_optimize_prompts(self, 
+                              current_user_prompt: str,
+                              current_system_prompt: str,
+                              failed_image_path: str,
+                              expected: str,
+                              actual: str,
+                              reasoning: str,
+                              use_chinese: bool = True) -> Tuple[str, str]:
         """
-        分析错误原因，子类可重写以实现更精准的分析
-        
-        Returns:
-            dict: 包含 error_type, confidence, add_to_user_prompt, add_to_system_prompt
+        使用大模型来优化提示词
         """
-        if actual == expected:
-            return {"error_type": "correct", "confidence": 100}
         
-        patterns = self.get_error_patterns()
-        reasoning_lower = reasoning.lower()
+        if use_chinese:
+            # 正确的规则定义
+            CORRECT_RULE = """【正确的判断规则】
+    - 条件成立（有自行车且无车牌）→ 回答"是"
+    - 条件不成立（无自行车、有车牌、无法确定）→ 回答"否"
+
+    注意：
+    1. 自行车包括完整自行车或局部（车轮、车架、链条、座垫、车把等）
+    2. 车牌包括任何带数字/字母的矩形牌子
+    3. 品牌贴纸、尺寸标签、说明书不算车牌"""
+            
+            optimizer_prompt = f"""你是一个提示词优化专家。当前提示词导致模型判断错误，请修正。
+
+    {CORRECT_RULE}
+
+    ## 当前提示词
+    【用户提示词】
+    {current_user_prompt}
+
+    【系统提示词】
+    {current_system_prompt}
+
+    ## 错误信息
+    - 测试图片: {Path(failed_image_path).name}
+    - 期望结果: {expected}
+    - 模型实际输出: {actual}
+    - 模型推理过程: {reasoning[:300]}
+
+    ## 分析
+    期望结果是"{expected}"，模型输出"{actual}"。
+    请分析模型为什么判断错误，然后输出优化后的提示词。
+
+    ## 输出格式（必须严格遵守）
+    用户提示词：
+    [优化后的用户提示词]
+
+    系统提示词：
+    [优化后的系统提示词，必须包含上述正确的判断规则]
+
+    注意：
+    1. 系统提示词必须包含正确的判断规则
+    2. 输出格式要求：模型必须输出【分析】...【结论】是/否
+    3. 不要输出其他任何内容"""
+            
+            try:
+                success, answer, reasoning_text, elapsed = self.api_client.chat_with_image(
+                    failed_image_path,
+                    optimizer_prompt,
+                    "请优化提示词，必须使用正确的判断规则"
+                )
+                
+                if not success:
+                    print(f"  [警告] 大模型优化失败: {answer}")
+                    return current_user_prompt, current_system_prompt
+                
+                print(f"  [大模型优化] 耗时: {elapsed:.2f}s")
+                
+                # 打印原始返回内容
+                print(f"\n  [调试] 大模型返回:")
+                print("-" * 40)
+                print(answer)
+                print("-" * 40)
+                
+                # 解析优化后的提示词
+                new_user = current_user_prompt
+                new_system = current_system_prompt
+                
+                import re
+                
+                # 查找用户提示词
+                user_match = re.search(r'用户提示词[：:]\s*\n?(.*?)(?=\n系统提示词[：:]|\Z)', answer, re.DOTALL)
+                if user_match:
+                    user_content = user_match.group(1).strip()
+                    if user_content and len(user_content) > 5:
+                        new_user = user_content
+                
+                # 查找系统提示词
+                system_match = re.search(r'系统提示词[：:]\s*\n?(.*?)(?=\Z)', answer, re.DOTALL)
+                if system_match:
+                    system_content = system_match.group(1).strip()
+                    if system_content and len(system_content) > 20:
+                        new_system = system_content
+                
+                # 验证系统提示词是否包含正确的规则
+                if "有自行车" in new_system and "无车牌" in new_system:
+                    if "是" in new_system and "否" in new_system:
+                        print(f"  [验证] 系统提示词包含正确规则")
+                    else:
+                        print(f"  [警告] 系统提示词可能缺少正确的判断规则")
+                else:
+                    print(f"  [警告] 系统提示词可能缺少正确的判断规则，尝试修正")
+                    # 如果系统提示词没有正确规则，追加正确规则
+                    if "【正确规则】" not in new_system:
+                        new_system = new_system + "\n\n" + CORRECT_RULE
+                
+                print(f"\n  [结果] 优化后的用户提示词: {new_user[:80]}...")
+                print(f"  [结果] 优化后的系统提示词: {new_system[:100]}...")
+                
+                return new_user, new_system
+                
+            except Exception as e:
+                print(f"  [警告] 大模型优化异常: {e}")
+                return current_user_prompt, current_system_prompt
         
-        # 根据期望和实际结果判断默认错误类型
-        if expected and not actual:
-            error_type = "false_negative"
-        elif not expected and actual:
-            error_type = "false_positive"
         else:
-            error_type = "unknown"
-        
-        pattern = patterns.get(error_type, {})
-        return {
-            "error_type": error_type,
-            "confidence": 60,
-            "add_to_user_prompt": pattern.get("add_to_user_prompt", ""),
-            "add_to_system_prompt": pattern.get("add_to_system_prompt", "")
-        }
+            return current_user_prompt, current_system_prompt
     
-    def optimize_prompts(self, error_analysis: Dict) -> Tuple[str, str]:
-        """根据错误分析优化提示词"""
-        new_user = self.current_user_prompt
-        new_system = self.current_system_prompt
-        
-        add_user = error_analysis.get("add_to_user_prompt", "")
-        if add_user and add_user not in new_user:
-            new_user += add_user
-        
-        add_system = error_analysis.get("add_to_system_prompt", "")
-        if add_system and add_system not in new_system:
-            new_system = new_system.rstrip() + "\n\n" + add_system
-        
-        return new_user, new_system
+    # ============================================================
+    # 核心方法
+    # ============================================================
     
-    def call_model(self, image_path: str) -> Tuple[bool, str, str, float]:
+    def call_model(self, image_path: str, system_prompt: str, user_prompt: str) -> Tuple[bool, str, str, float]:
         """调用大模型"""
-        return self.api_client.chat_with_image(
-            image_path, self.current_system_prompt, self.current_user_prompt
-        )
+        return self.api_client.chat_with_image(image_path, system_prompt, user_prompt)
     
     def test_single_image(self, image_path: str, expected: bool, 
                           verbose: bool = False) -> Dict:
         """测试单张图片"""
         filename = Path(image_path).name
-        success, answer, reasoning, elapsed = self.call_model(image_path)
+        success, answer, reasoning, elapsed = self.call_model(
+            image_path, self.current_system_prompt, self.current_user_prompt
+        )
         
         if not success:
             return {
@@ -213,8 +233,8 @@ class BasePromptOptimizer(ABC):
             status = "[OK]" if result["is_correct"] else "[FAIL]"
             print(f"  {status} 期望:{'是' if expected else '否'} 实际:{'是' if actual else '否'} 耗时:{elapsed:.2f}s")
             if not result["is_correct"] and result["reasoning"]:
-                reasoning_preview = result["reasoning"][:200]
-                if len(result["reasoning"]) > 200:
+                reasoning_preview = result["reasoning"][:300]
+                if len(result["reasoning"]) > 300:
                     reasoning_preview += "..."
                 print(f"      推理: {reasoning_preview}")
         
@@ -252,24 +272,6 @@ class BasePromptOptimizer(ABC):
                  verbose: bool = True) -> Dict:
         """
         执行提示词优化
-        
-        流程：
-        1. 遍历所有测试图片
-        2. 遇到第一个错误时，立即停止本轮测试
-        3. 分析错误并优化提示词
-        4. 从头开始重新测试所有图片
-        5. 重复直到全部通过或达到最大轮次
-        
-        Args:
-            test_folder: 测试集文件夹路径
-            user_prompt: 初始用户提示词（不提供则使用默认）
-            system_prompt: 初始系统提示词（不提供则使用默认）
-            max_rounds: 最大优化轮次
-            save_history: 是否保存历史记录
-            verbose: 是否打印详细信息
-        
-        Returns:
-            dict: 优化结果
         """
         # 初始化
         self.current_user_prompt = user_prompt or self.get_default_user_prompt()
@@ -289,6 +291,7 @@ class BasePromptOptimizer(ABC):
         print(f"测试图片数: {len(test_images)}")
         print(f"最大优化轮次: {max_rounds}")
         print(f"当前API: {API_TYPE} - {self.api_client.get_model_name()}")
+        print(f"优化方式: 大模型智能优化")
         print(f"{'='*70}")
         
         # 显示测试图片列表
@@ -306,7 +309,9 @@ class BasePromptOptimizer(ABC):
             print(f"第 {round_num} 轮测试")
             print(f"{'#'*70}")
             
-            # 记录本轮结果
+            print(f"\n[当前用户提示词]: {self.current_user_prompt}")
+            print(f"\n[当前系统提示词]: {self.current_system_prompt[:200]}...")
+            
             round_result = {
                 "round": round_num,
                 "user_prompt": self.current_user_prompt,
@@ -328,18 +333,17 @@ class BasePromptOptimizer(ABC):
                 round_result["results"].append(result)
                 
                 if not result["is_correct"]:
-                    # 遇到错误，记录并停止本轮测试
                     error_occurred = True
                     first_error = result
                     print(f"\n  >>> 发现错误，停止本轮测试 <<<")
                     if result.get("reasoning"):
-                        reasoning_preview = result["reasoning"][:300]
-                        if len(result["reasoning"]) > 300:
+                        reasoning_preview = result["reasoning"][:500]
+                        if len(result["reasoning"]) > 500:
                             reasoning_preview += "..."
                         print(f"\n  推理过程:\n{reasoning_preview}")
                     break
             
-            # 统计本轮结果（只统计已测试的图片）
+            # 统计本轮结果
             tested_count = len(round_result["results"])
             correct_count = sum(1 for r in round_result["results"] if r.get("is_correct", False))
             accuracy = correct_count / tested_count * 100 if tested_count > 0 else 0
@@ -352,54 +356,43 @@ class BasePromptOptimizer(ABC):
             print(f"第 {round_num} 轮结果: {correct_count}/{tested_count} 正确 ({accuracy:.2f}%)")
             
             if not error_occurred:
-                # 所有图片都正确
                 all_passed = True
                 round_result["all_passed"] = True
                 print(f"\n[成功] 所有测试通过！提示词优化成功！")
                 self.round_history.append(round_result)
                 break
             
-            # 有错误，分析并优化提示词
+            # 有错误，使用大模型优化提示词
             if round_num < max_rounds:
-                print(f"\n[优化] 发现错误，分析并优化提示词...")
+                print(f"\n[优化] 发现错误，正在使用大模型优化提示词...")
                 
-                error_analysis = self.analyze_error(
-                    first_error.get("reasoning", ""),
-                    first_error.get("expected", False),
-                    first_error.get("actual", False),
-                    first_error.get("filename", "")
-                )
-                
-                print(f"  错误类型: {error_analysis.get('error_type', 'unknown')}")
-                print(f"  置信度: {error_analysis.get('confidence', 0):.0f}%")
-                
-                # 打印优化策略说明
-                add_user = error_analysis.get("add_to_user_prompt", "")
-                if add_user:
-                    # 提取关键信息
-                    if "自行车" in add_user and "局部" in add_user:
-                        print(f"  优化策略: 强调自行车局部也算自行车")
-                    elif "车牌" in add_user and "检查" in add_user:
-                        print(f"  优化策略: 强调检查车牌")
-                    elif "判断规则" in add_user:
-                        print(f"  优化策略: 强调判断规则")
-                    else:
-                        preview = add_user.replace('\n', ' ').strip()
-                        if len(preview) > 60:
-                            preview = preview[:60] + "..."
-                        print(f"  优化策略: {preview}")
+                # 打印错误详情
+                print(f"\n  [错误详情]")
+                print(f"    图片: {first_error.get('filename')}")
+                print(f"    期望: {'是' if first_error.get('expected') else '否'}")
+                print(f"    实际: {'是' if first_error.get('actual') else '否'}")
+                print(f"    推理过程: {first_error.get('reasoning', '')[:300]}...")
                 
                 # 记录优化前的提示词
                 optimization_record = {
                     "round": round_num,
                     "error_image": first_error.get("filename"),
-                    "error_analysis": error_analysis,
                     "old_user_prompt": self.current_user_prompt,
                     "old_system_prompt": self.current_system_prompt
                 }
                 
-                # 优化提示词
-                new_user, new_system = self.optimize_prompts(error_analysis)
+                # 使用大模型优化
+                new_user, new_system = self.llm_optimize_prompts(
+                    self.current_user_prompt,
+                    self.current_system_prompt,
+                    str(Path(test_folder) / first_error.get("filename")),
+                    "是" if first_error.get("expected") else "否",
+                    "是" if first_error.get("actual") else "否",
+                    first_error.get("reasoning", ""),
+                    use_chinese=True
+                )
+                
+                # 更新提示词
                 self.current_user_prompt = new_user
                 self.current_system_prompt = new_system
                 
@@ -407,13 +400,11 @@ class BasePromptOptimizer(ABC):
                 optimization_record["new_system_prompt"] = self.current_system_prompt
                 self.optimization_history.append(optimization_record)
                 
-                print(f"\n  已优化提示词，将从头开始重新测试...")
+                print(f"\n  已使用大模型优化提示词，将从头开始重新测试...")
                 
-                # 重置本轮结果，准备重新开始
                 round_result["optimized"] = True
                 self.round_history.append(round_result)
             else:
-                # 达到最大轮次
                 print(f"\n[失败] 达到最大优化轮次({max_rounds})，优化失败")
                 round_result["all_passed"] = False
                 self.round_history.append(round_result)
@@ -458,15 +449,6 @@ class BasePromptOptimizer(ABC):
                     "all_passed": r["all_passed"]
                 }
                 for r in result["round_history"]
-            ],
-            "optimization_history": [
-                {
-                    "round": o["round"],
-                    "error_image": o["error_image"],
-                    "error_type": o["error_analysis"].get("error_type"),
-                    "old_user_prompt_preview": o["old_user_prompt"][:200] if o["old_user_prompt"] else ""
-                }
-                for o in result["optimization_history"]
             ]
         }
         
@@ -499,8 +481,3 @@ class BasePromptOptimizer(ABC):
             final_round = self.round_history[-1]
             print(f"最终准确率: {final_round.get('accuracy', 0):.2f}%")
             print(f"是否通过: {'是' if final_round.get('all_passed', False) else '否'}")
-        
-        if self.optimization_history:
-            print(f"\n优化历史:")
-            for opt in self.optimization_history:
-                print(f"  第{opt['round']}轮: {opt['error_image']} -> {opt['error_analysis'].get('error_type')}")
