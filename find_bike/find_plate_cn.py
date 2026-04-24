@@ -7,7 +7,6 @@
 import time
 import sys
 from pathlib import Path
-from typing import Dict
 
 try:
     import pyperclip
@@ -23,6 +22,9 @@ from config import (
 )
 from api_client import create_api_client
 from prompt_optimizer import PromptValidator
+
+# 导入 bicycle_rule 中的解析函数
+from bicycle_rule import parse_bicycle_response, get_bicycle_expected_from_filename
 
 
 # 验证配置
@@ -47,9 +49,7 @@ API_CLIENT = get_api_client()
 USE_CHINESE = True
 SYSTEM_PROMPT = ""
 USER_QUESTION = ""
-EXPECTED_YES = CHINESE_CONFIG["EXPECTED_YES"]
-EXPECTED_NO = CHINESE_CONFIG["EXPECTED_NO"]
-
+DEBUG_API_RESPONSE = True  # 设为 False 可关闭调试输出
 
 def copy_to_clipboard(text: str, max_length: int = 10000):
     if not text or not HAS_PYPERCLIP:
@@ -64,14 +64,8 @@ def copy_to_clipboard(text: str, max_length: int = 10000):
 
 
 def get_expected_from_filename(filename: str) -> bool:
-    if not filename:
-        return None
-    first = filename[0]
-    if first in YES_CHARS:
-        return True
-    if first in NO_CHARS:
-        return False
-    return None
+    """复用 bicycle_rule 的函数"""
+    return get_bicycle_expected_from_filename(filename)
 
 
 def get_supported_images_from_folder(folder_path: str) -> list:
@@ -116,30 +110,40 @@ def has_bicycle_registration_plate(image_path: str, verbose: bool = False) -> tu
     success, answer, reasoning, elapsed = API_CLIENT.chat_with_image(
         image_path, SYSTEM_PROMPT, USER_QUESTION
     )
+    
+    # 调试：打印原始返回数据
+    if DEBUG_API_RESPONSE:
+        print(f"\n  [API原始返回]")
+        print(f"    success: {success}")
+        print(f"    answer: {repr(answer)}")
+        print(f"    reasoning: {repr(reasoning) if reasoning else 'None'}")
+        print(f"    elapsed: {elapsed:.2f}s")
+    
     if not success:
         return False, False, elapsed, answer, reasoning
     
-    if USE_CHINESE:
-        if "【结论】是" in answer:
-            is_allowed = True
-        elif "【结论】否" in answer:
-            is_allowed = False
-        else:
-            is_allowed = (answer == EXPECTED_YES)
-    else:
-        if "【Answer】YES" in answer.upper():
-            is_allowed = True
-        elif "【Answer】NO" in answer.upper():
-            is_allowed = False
-        else:
-            is_allowed = (answer.upper() == EXPECTED_YES)
+    # 使用 bicycle_rule 中的解析函数
+    is_allowed, reasoning_from_answer = parse_bicycle_response(answer)
+    
+    if not reasoning_from_answer and reasoning:
+        reasoning_from_answer = reasoning
     
     if verbose:
-        print(f"  模型回答: {answer[:200]}...")
-    return True, is_allowed, elapsed, answer, reasoning
+        print(f"\n  [模型完整回答]")
+        print("-" * 40)
+        print(answer)
+        print("-" * 40)
+        if reasoning_from_answer:
+            print(f"\n  [推理过程]")
+            print("-" * 40)
+            print(reasoning_from_answer)
+            print("-" * 40)
+    
+    return True, is_allowed, elapsed, answer, reasoning_from_answer
 
 
 def process_single_image(image_path: str, verbose: bool = True):
+    """处理单张图片"""
     if not Path(image_path).exists():
         print(f"[错误] 图片不存在")
         return None
@@ -157,15 +161,15 @@ def process_single_image(image_path: str, verbose: bool = True):
     if success:
         status = "[允许]" if is_allowed else "[不允许]"
         print(f"   {status} | 耗时: {elapsed:.2f}秒")
+        
         if expected is not None:
             if is_allowed == expected:
                 print(f"   [验证] 正确 ✓")
             else:
                 print(f"   [验证] 错误 ✗")
-                if reasoning:
-                    print(f"\n   [推理过程]\n{reasoning}")
-                    if input("   复制到剪贴板？(y/n): ").lower() in ['y', 'yes', '是']:
-                        copy_to_clipboard(reasoning)
+                # 错误时询问是否复制到剪贴板
+                if reasoning and input("   复制推理过程到剪贴板？(y/n): ").lower() in ['y', 'yes', '是']:
+                    copy_to_clipboard(reasoning)
     else:
         print(f"   [检测失败] {answer}")
     
@@ -324,12 +328,8 @@ def validate_and_save_mode():
             print(f"  失败: {answer}")
             continue
         
-        if "【结论】是" in answer:
-            actual = True
-        elif "【结论】否" in answer:
-            actual = False
-        else:
-            actual = False
+        # 使用统一的解析函数
+        actual, _ = parse_bicycle_response(answer)
         
         act_str = "是" if actual else "否"
         if actual == expected:

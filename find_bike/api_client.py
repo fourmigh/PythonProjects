@@ -106,6 +106,7 @@ class ZhipuClient(BaseAPIClient):
         self.api_key = api_key
         self.model_name = model_name
         self.timeout = timeout
+        self.debug = True  # 添加调试开关
     
     def get_model_name(self) -> str:
         return self.model_name
@@ -135,6 +136,12 @@ class ZhipuClient(BaseAPIClient):
                 }
             ]
             
+            if self.debug:
+                print(f"\n  [智谱API] 请求信息:")
+                print(f"    模型: {self.model_name}")
+                print(f"    用户问题长度: {len(user_question)}")
+                print(f"    系统提示词长度: {len(system_prompt)}")
+            
             # 调用 API
             response = client.chat.completions.create(
                 model=self.model_name,
@@ -143,8 +150,14 @@ class ZhipuClient(BaseAPIClient):
             
             elapsed = time.time() - start_time
             answer = response.choices[0].message.content.strip()
-            reasoning = ""
             
+            if self.debug:
+                print(f"  [智谱API] 响应信息:")
+                print(f"    耗时: {elapsed:.2f}s")
+                print(f"    回答长度: {len(answer)}")
+                print(f"    回答内容: {repr(answer)}")
+            
+            reasoning = ""
             return True, answer, reasoning, elapsed
             
         except ImportError:
@@ -155,6 +168,7 @@ class ZhipuClient(BaseAPIClient):
             error_msg = str(e)
             if "1210" in error_msg:
                 error_msg = "API参数错误。请检查：\n1. temperature 必须在 (0,1) 之间\n2. top_p 必须在 (0,1) 之间\n3. 模型名称是否正确"
+            print(f"  [智谱API] 错误: {error_msg}")
             return False, "", f"智谱API调用失败: {error_msg}", elapsed
 
 

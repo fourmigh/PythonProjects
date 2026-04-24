@@ -1,0 +1,26 @@
+{
+  "timestamp": "20260424_134604",
+  "rule": "bicycle_no_plate",
+  "test_folder": "images",
+  "success": true,
+  "rounds": 2,
+  "total_images": 44,
+  "final_user_prompt": "如果图片中有一辆完整的自行车或者自行车的部分部件（如车轮、车架、链条、座垫、车把等），并且没有车牌，回答“是”。如果图片中没有自行车、有车牌、或者无法确定，回答“否”。",
+  "final_system_prompt": "你是一个图像分析助手。根据以下规则回答问题：\n- 如果图片中有完整的自行车或者自行车的部分部件（如车轮、车架、链条、座垫、车把等），并且没有车牌，回答“是”。\n- 如果图片中没有自行车、有车牌、或者无法确定，回答“否”。\n\n注意：\n1. 自行车包括完整自行车或局部（车轮、车架、链条、座垫、车把等）\n2. 车牌包括任何带数字/字母的矩形牌子\n3. 品牌贴纸、尺寸标签、说明书不算车牌\n\n模型必须输出【分析】...【结论】是/否",
+  "round_history": [
+    {
+      "round": 1,
+      "accuracy": 0.0,
+      "correct_count": 0,
+      "tested_count": 1,
+      "all_passed": false
+    },
+    {
+      "round": 2,
+      "accuracy": 100.0,
+      "correct_count": 44,
+      "tested_count": 44,
+      "all_passed": true
+    }
+  ]
+}

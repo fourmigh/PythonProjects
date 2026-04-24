@@ -1,0 +1,7 @@
+{
+    "registry": {
+        "mirrors": {
+            "registry.ollama.ai": "https://registry.ollama.ai"
+        }
+    }
+}
