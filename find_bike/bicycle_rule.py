@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Dict, Tuple, Optional
 
 from config import (
-    CHINESE_CONFIG, SUPPORTED_EXTENSIONS,
+    CURRENT_CONFIG, SUPPORTED_EXTENSIONS,
     DEFAULT_CSV_FILENAME, API_TYPE
 )
 from api_client import create_api_client
@@ -51,15 +51,26 @@ def get_expected_from_filename(filename: str) -> Optional[bool]:
 
 
 def get_supported_images_from_folder(folder_path: str) -> list:
-    """获取文件夹中所有支持的图片"""
+    """获取文件夹中所有支持的图片（已去重）"""
     folder = Path(folder_path)
     if not folder.exists():
         return []
+    
     images = []
     for ext in SUPPORTED_EXTENSIONS:
         images.extend(folder.glob(f"*{ext}"))
         images.extend(folder.glob(f"*{ext.upper()}"))
-    return sorted(images)
+    
+    # 去重：按文件名（小写）去重
+    seen = set()
+    unique = []
+    for img in images:
+        key = img.name.lower()
+        if key not in seen:
+            seen.add(key)
+            unique.append(img)
+    
+    return sorted(unique)
 
 
 def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
@@ -71,26 +82,35 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
         parts = answer.split("【结论】")
         reasoning = parts[0].replace("【分析】", "").strip()
     
-    # 提取结论
+    # 提取结论（中文）
     if "【结论】是" in answer:
         return True, reasoning
     elif "【结论】否" in answer:
         return False, reasoning
+    
+    # 提取结论（英文）
+    if "【Conclusion】YES" in answer.upper():
+        return True, reasoning
+    elif "【Conclusion】NO" in answer.upper():
+        return False, reasoning
+    
+    # 清理标点符号
+    answer_clean = answer.strip()
+    while answer_clean and answer_clean[-1] in '。！？,.!?；;':
+        answer_clean = answer_clean[:-1]
+    answer_clean = answer_clean.strip()
+    
+    # 直接判断
+    if answer_clean == "是" or answer_clean.upper() == "YES":
+        return True, reasoning
+    elif answer_clean == "否" or answer_clean.upper() == "NO":
+        return False, reasoning
+    elif "是" in answer_clean and "否" not in answer_clean:
+        return True, reasoning
+    elif "YES" in answer_clean.upper() and "NO" not in answer_clean.upper():
+        return True, reasoning
     else:
-        # 清理标点符号
-        answer_clean = answer.strip()
-        while answer_clean and answer_clean[-1] in '。！？,.!?；;':
-            answer_clean = answer_clean[:-1]
-        answer_clean = answer_clean.strip()
-        
-        if answer_clean == "是":
-            return True, reasoning
-        elif answer_clean == "否":
-            return False, reasoning
-        elif "是" in answer_clean and "否" not in answer_clean:
-            return True, reasoning
-        else:
-            return False, reasoning
+        return False, reasoning
 
 
 def call_model(image_path: str, system_prompt: str, user_prompt: str) -> tuple:
@@ -106,8 +126,8 @@ def has_bicycle_registration_plate(image_path: str, system_prompt: str, user_pro
     if debug:
         print(f"\n  [API原始返回]")
         print(f"    success: {success}")
-        print(f"    answer: {repr(answer)}")
-        print(f"    reasoning: {repr(reasoning) if reasoning else 'None'}")
+        print(f"    answer: {answer}")
+        print(f"    reasoning: {reasoning if reasoning else 'None'}")
         print(f"    elapsed: {elapsed:.2f}s")
     
     if not success:
@@ -148,7 +168,8 @@ def process_single_image(image_path: str, system_prompt: str, user_prompt: str,
     print(f"\n文件: {filename}")
     print(f"  模型: {API_CLIENT.get_model_name()}")
     if expected is not None:
-        print(f"  期望: {'允许' if expected else '不允许'}")
+        expected_str = "允许" if expected else "不允许"
+        print(f"  期望: {expected_str}")
     
     success, is_allowed, elapsed, answer, reasoning = has_bicycle_registration_plate(
         image_path, system_prompt, user_prompt, verbose, debug
@@ -232,7 +253,8 @@ def batch_detection_mode(folder_path: str, system_prompt: str, user_prompt: str,
         print(f"\n[{idx}/{len(image_files)}] {img.name}")
         expected = get_expected_from_filename(img.name)
         if expected is not None:
-            print(f"  期望: {'允许' if expected else '不允许'}")
+            expected_str = "允许" if expected else "不允许"
+            print(f"  期望: {expected_str}")
         
         success, is_allowed, elapsed, answer, reasoning = has_bicycle_registration_plate(
             str(img), system_prompt, user_prompt, verbose=False, debug=debug
@@ -247,6 +269,12 @@ def batch_detection_mode(folder_path: str, system_prompt: str, user_prompt: str,
         
         status = "[允许]" if is_allowed else "[不允许]"
         print(f"   {status} | 耗时: {elapsed:.2f}秒")
+        
+        # 打印完整的模型回答和推理过程（不截断）
+        if answer:
+            print(f"   [模型回答]: {answer}")
+        if reasoning:
+            print(f"   [推理过程]: {reasoning}")
         
         if expected is not None:
             if is_allowed == expected:
@@ -309,17 +337,17 @@ def validate_and_save_prompts(system_prompt: str = None, user_prompt: str = None
         print("\n请输入系统提示词 (回车使用默认):")
         system = input().strip()
         if not system:
-            system = CHINESE_CONFIG["SYSTEM_PROMPT"]
+            system = CURRENT_CONFIG["SYSTEM_PROMPT"]
         print("\n请输入用户提示词 (回车使用默认):")
         user = input().strip()
         if not user:
-            user = CHINESE_CONFIG["USER_QUESTION"]
+            user = CURRENT_CONFIG["USER_QUESTION"]
     else:
         system = system_prompt
         user = user_prompt
         print(f"\n使用当前提示词:")
-        print(f"  用户提示词: {user[:80]}...")
-        print(f"  系统提示词: {system[:80]}...")
+        print(f"  用户提示词:\n{user}")
+        print(f"  系统提示词:\n{system}")
     
     print("\n开始验证...")
     correct = 0
@@ -333,6 +361,10 @@ def validate_and_save_prompts(system_prompt: str = None, user_prompt: str = None
         if not success:
             print(f"  失败: {answer}")
             continue
+        
+        print(f"  模型回答:\n{answer}")
+        if reasoning:
+            print(f"  推理过程:\n{reasoning}")
         
         actual, _ = parse_bicycle_response(answer)
         
@@ -349,7 +381,7 @@ def validate_and_save_prompts(system_prompt: str = None, user_prompt: str = None
     
     if errors:
         print(f"\n错误: {len(errors)}个")
-        for e in errors[:5]:
+        for e in errors:
             print(f"  - {e['file']}: 期望{e['expected']}, 实际{e['actual']}")
     
     if acc >= 95:
@@ -428,33 +460,56 @@ class BicycleNoPlateOptimizer(BasePromptOptimizer):
         return "bicycle_no_plate"
     
     def get_rule_description(self) -> str:
-        return "判断图片中是否有自行车，且自行车上没有车牌"
+        return "Determine if there is a bicycle without a license plate in the image"
     
     def get_default_system_prompt(self) -> str:
-        return """你是一个图像分析助手。请严格按照以下步骤分析图片：
+        """默认系统提示词（英文）"""
+        return """You are an image analysis assistant. Follow these rules:
 
-第一步：判断图片中是否有自行车
-注意：自行车包括完整自行车或局部（如车轮、车架、链条、座垫、车把等），只要能看到自行车的一部分就算有自行车。
+First: Check if there is a bicycle in the image (including bicycle parts such as wheels, frame, chain, seat, handlebars, etc.)
 
-第二步：判断自行车上是否有车牌（包括任何带数字/字母的矩形牌子）
+Second: Check if the bicycle has a license plate (any rectangular plate with numbers/letters)
 
-第三步：根据以下规则输出结论：
-- 如果【有自行车】且【无车牌】→ 输出【结论】是
-- 其他所有情况（无自行车、有车牌、无法确定）→ 输出【结论】否
+Third: Output the conclusion according to these rules:
+- If [has bicycle] AND [no license plate] → answer "YES"
+- If [no bicycle] OR [has license plate] OR [uncertain] → answer "NO"
 
-【特别注意】即使你看到了车牌，也要输出"否"！不要输出"是"。
+Important: Even if you see a license plate, answer "NO"!
 
-输出格式：【分析】...【结论】是/否
-"""
+Output format: 【Analysis】...【Conclusion】YES/NO
+
+Examples:
+【Analysis】There is a blue bicycle in the image. No license plate found on the bicycle.
+【Conclusion】YES
+
+【Analysis】There is a black bicycle with a white license plate "ABC123" on the frame.
+【Conclusion】NO
+
+【Analysis】This is a car, not a bicycle.
+【Conclusion】NO"""
     
     def get_default_user_prompt(self) -> str:
-        return "请分析这张图片：是否有自行车（包括自行车局部），且自行车上没有车牌？"
+        """默认用户提示词（英文）"""
+        return "Please analyze this image: Is there a bicycle (including bicycle parts) with NO license plate?"
     
     def parse_response(self, answer: str) -> Tuple[bool, str]:
+        """解析模型回答"""
         return parse_bicycle_response(answer)
     
     def get_expected_from_filename(self, filename: str) -> Optional[bool]:
+        """根据文件名获取期望结果"""
         return get_expected_from_filename(filename)
     
-    def call_model_api(self, image_path: str, system_prompt: str, user_prompt: str) -> tuple:
-        return call_model(image_path, system_prompt, user_prompt)
+    def get_supported_images(self, folder_path: str) -> list:
+        """获取支持的图片列表"""
+        from bicycle_rule import get_supported_images_from_folder
+        
+        image_files = get_supported_images_from_folder(folder_path)
+        
+        result = []
+        for img_path in image_files:
+            expected = self.get_expected_from_filename(img_path.name)
+            if expected is not None:
+                result.append((img_path, expected))
+        
+        return sorted(result, key=lambda x: x[0].name)

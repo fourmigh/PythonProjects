@@ -6,6 +6,11 @@
 import os
 
 # ============================================================
+# 语言选择（新增）
+# ============================================================
+LANGUAGE = os.getenv('LANGUAGE', 'english')  # english 或 chinese
+
+# ============================================================
 # API 类型选择
 # ============================================================
 API_TYPE = os.getenv('API_TYPE', 'ollama')  # ollama, zhipu, openai, bedrock
@@ -44,20 +49,12 @@ OPENAI_CONFIG = {
 # Bedrock 配置 (API_TYPE='bedrock' 时使用)
 # ============================================================
 BEDROCK_CONFIG = {
-    # 模型ID
     "model_id": os.getenv('BEDROCK_MODEL_ID', 'anthropic.claude-3-haiku-20240307-v1:0'),
-    
-    # AWS 区域
     "region_name": os.getenv('AWS_REGION', 'us-east-1'),
-    
-    # API Key 方式（推荐用于快速开发）
     "bearer_token": os.getenv('AWS_BEARER_TOKEN_BEDROCK'),
-    
-    # IAM 方式（传统，二选一）
     "access_key_id": os.getenv('AWS_ACCESS_KEY_ID'),
     "secret_access_key": os.getenv('AWS_SECRET_ACCESS_KEY'),
     "session_token": os.getenv('AWS_SESSION_TOKEN'),
-    
     "timeout": int(os.getenv('BEDROCK_TIMEOUT', '120'))
 }
 
@@ -143,13 +140,22 @@ Examples:
 }
 
 # ============================================================
+# 当前激活的语言配置（根据 LANGUAGE 变量选择）
+# ============================================================
+if LANGUAGE == 'chinese':
+    CURRENT_CONFIG = CHINESE_CONFIG
+else:
+    CURRENT_CONFIG = ENGLISH_CONFIG
+
+# ============================================================
 # 文件名验证规则
 # ============================================================
 
-# 期望允许的字符（有自行车且无车牌）-> 应该回答"是"
+# 期望允许的字符（有自行车且无车牌）-> 应该回答"是"（中文）或"Yes"（英文）
+# 注意：文件名仍使用中文标识
 YES_CHARS = {'是'}
 
-# 期望不允许的字符（其他情况）-> 应该回答"否"
+# 期望不允许的字符（其他情况）-> 应该回答"否"（中文）或"No"（英文）
 NO_CHARS = {'否'}
 
 # ============================================================

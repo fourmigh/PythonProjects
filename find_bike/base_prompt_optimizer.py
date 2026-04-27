@@ -5,6 +5,7 @@
 
 import json
 import time
+import re
 from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
@@ -71,6 +72,39 @@ class BasePromptOptimizer(ABC):
         pass
     
     # ============================================================
+    # 获取支持的图片（子类可重写）
+    # ============================================================
+    
+    def get_supported_images(self, folder_path: str) -> List[Tuple[Path, bool]]:
+        """获取文件夹中所有支持的图片及期望结果（子类可重写）"""
+        from config import SUPPORTED_EXTENSIONS
+        folder = Path(folder_path)
+        if not folder.exists():
+            return []
+        
+        images = []
+        for ext in SUPPORTED_EXTENSIONS:
+            images.extend(folder.glob(f"*{ext}"))
+            images.extend(folder.glob(f"*{ext.upper()}"))
+        
+        # 去重：按文件名（小写）去重
+        seen = set()
+        unique_images = []
+        for img_path in images:
+            key = img_path.name.lower()
+            if key not in seen:
+                seen.add(key)
+                unique_images.append(img_path)
+        
+        result = []
+        for img_path in unique_images:
+            expected = self.get_expected_from_filename(img_path.name)
+            if expected is not None:
+                result.append((img_path, expected))
+        
+        return sorted(result, key=lambda x: x[0].name)
+    
+    # ============================================================
     # 大模型优化提示词
     # ============================================================
     
@@ -87,155 +121,100 @@ class BasePromptOptimizer(ABC):
         """
         
         if use_chinese:
+            # 正确的规则定义
             CORRECT_RULE = """【正确的判断规则】
-    - 条件成立（有自行车且无车牌）→ 回答"是"
-    - 条件不成立（无自行车、有车牌、无法确定）→ 回答"否"
+- 条件成立（有自行车且无车牌）→ 回答"是"
+- 条件不成立（无自行车、有车牌、无法确定）→ 回答"否"
 
-    注意：
-    1. 自行车包括完整自行车或局部（车轮、车架、链条、座垫、车把等）
-    2. 车牌包括任何带数字/字母的矩形牌子
-    3. 品牌贴纸、尺寸标签、说明书不算车牌"""
+注意：
+1. 自行车包括完整自行车或局部（车轮、车架、链条、座垫、车把等）
+2. 车牌包括任何带数字/字母的矩形牌子
+3. 品牌贴纸、尺寸标签、说明书不算车牌"""
             
             optimizer_prompt = f"""你是一个提示词优化专家。当前提示词导致模型判断错误，请修正。
 
-    {CORRECT_RULE}
+{CORRECT_RULE}
 
-    ## 当前提示词
-    【用户提示词】
-    {current_user_prompt}
+## 当前提示词
+【用户提示词】
+{current_user_prompt}
 
-    【系统提示词】
-    {current_system_prompt}
+【系统提示词】
+{current_system_prompt}
 
-    ## 错误信息
-    - 测试图片: {Path(failed_image_path).name}
-    - 期望结果: {expected}
-    - 模型实际输出: {actual}
-    - 模型推理过程: {reasoning[:300] if reasoning else '无推理过程'}
+## 错误信息
+- 测试图片: {Path(failed_image_path).name}
+- 期望结果: {expected}
+- 模型实际输出: {actual}
+- 模型推理过程: {reasoning[:300] if reasoning else '无推理过程'}
 
-    ## 分析
-    期望结果是"{expected}"，模型输出"{actual}"。
-    请分析模型为什么判断错误，然后输出优化后的提示词。
+## 分析
+期望结果是"{expected}"，模型输出"{actual}"。
+请分析模型为什么判断错误，然后输出优化后的提示词。
 
-    ## 输出格式（必须严格遵守）
-    用户提示词：
-    [优化后的用户提示词]
+## 输出格式（必须严格遵守）
+用户提示词：
+[优化后的用户提示词]
 
-    系统提示词：
-    [优化后的系统提示词，必须包含上述正确的判断规则]
+系统提示词：
+[优化后的系统提示词，必须包含上述正确的判断规则]
 
-    注意：
-    1. 系统提示词必须包含正确的判断规则
-    2. 输出格式要求：模型必须输出【分析】...【结论】是/否
-    3. 不要输出其他任何内容"""
+注意：
+1. 系统提示词必须包含正确的判断规则
+2. 输出格式要求：模型必须输出【分析】...【结论】是/否
+3. 不要输出其他任何内容"""
             
             try:
-                # 打印请求内容（调试）
-                print(f"\n  [调试] 发送给大模型的优化请求:")
-                print("-" * 40)
-                print(f"图片: {failed_image_path}")
-                print(f"提示词长度: {len(optimizer_prompt)} 字符")
-                print(f"优化器提示词预览: {optimizer_prompt[:200]}...")
-                print("-" * 40)
-                
-                # 调用大模型优化提示词
                 success, answer, reasoning_text, elapsed = self.api_client.chat_with_image(
                     failed_image_path,
                     optimizer_prompt,
                     "请优化提示词，必须使用正确的判断规则"
                 )
                 
-                print(f"  [大模型优化] 耗时: {elapsed:.2f}s")
-                print(f"  [大模型优化] success: {success}")
-                print(f"  [大模型优化] answer长度: {len(answer) if answer else 0}")
-                
                 if not success:
                     print(f"  [警告] 大模型优化失败: {answer}")
                     return current_user_prompt, current_system_prompt
                 
-                # 检查 answer 是否为空
+                print(f"  [大模型优化] 耗时: {elapsed:.2f}s")
+                
                 if not answer or len(answer.strip()) == 0:
-                    print(f"  [警告] 大模型返回空内容！")
-                    print(f"  [调试] 原始answer: {repr(answer)}")
+                    print(f"  [警告] 大模型返回空内容")
                     return current_user_prompt, current_system_prompt
                 
-                # 打印原始返回内容（使用 repr 可以看到特殊字符）
-                print(f"\n  [调试] 大模型返回的原始内容:")
+                # 打印原始返回内容
+                print(f"\n  [调试] 大模型返回:")
                 print("-" * 40)
-                print(f"repr(answer): {repr(answer)}")
-                print("-" * 40)
-                print(f"原始内容:")
                 print(answer)
                 print("-" * 40)
                 
-                # 解析优化后的提示词（增加更多解析方式）
+                # 解析优化后的提示词
                 new_user = current_user_prompt
                 new_system = current_system_prompt
                 
-                import re
-                
-                # 方式1：标准格式解析
+                # 查找用户提示词
                 user_match = re.search(r'用户提示词[：:]\s*\n?(.*?)(?=\n系统提示词[：:]|\Z)', answer, re.DOTALL)
                 if user_match:
                     user_content = user_match.group(1).strip()
                     if user_content and len(user_content) > 5:
                         new_user = user_content
-                        print(f"  [解析] 方式1成功 - 提取到用户提示词")
+                        print(f"  [解析] 提取到用户提示词")
                 
+                # 查找系统提示词
                 system_match = re.search(r'系统提示词[：:]\s*\n?(.*?)(?=\Z)', answer, re.DOTALL)
                 if system_match:
                     system_content = system_match.group(1).strip()
                     if system_content and len(system_content) > 20:
                         new_system = system_content
-                        print(f"  [解析] 方式1成功 - 提取到系统提示词")
+                        print(f"  [解析] 提取到系统提示词")
                 
-                # 方式2：如果标准格式失败，尝试按行解析
-                if new_user == current_user_prompt or new_system == current_system_prompt:
-                    print(f"  [解析] 方式1失败，尝试方式2（按行解析）")
-                    lines = answer.strip().split('\n')
-                    in_user = False
-                    in_system = False
-                    user_lines = []
-                    system_lines = []
-                    
-                    for line in lines:
-                        if '用户提示词' in line:
-                            in_user = True
-                            in_system = False
-                            content = line.split('：')[-1].split(':')[-1].strip()
-                            if content:
-                                user_lines.append(content)
-                            continue
-                        if '系统提示词' in line:
-                            in_user = False
-                            in_system = True
-                            content = line.split('：')[-1].split(':')[-1].strip()
-                            if content:
-                                system_lines.append(content)
-                            continue
-                        
-                        if in_user and line.strip():
-                            user_lines.append(line.strip())
-                        if in_system and line.strip():
-                            system_lines.append(line.strip())
-                    
-                    if user_lines:
-                        new_user = '\n'.join(user_lines)
-                        print(f"  [解析] 方式2成功 - 提取到用户提示词 ({len(user_lines)}行)")
-                    if system_lines:
-                        new_system = '\n'.join(system_lines)
-                        print(f"  [解析] 方式2成功 - 提取到系统提示词 ({len(system_lines)}行)")
-                
-                # 方式3：如果仍然失败，尝试直接使用整个回答
+                # 如果解析失败，尝试直接使用整个回答
                 if new_user == current_user_prompt and new_system == current_system_prompt:
                     if len(answer) > 20 and len(answer) < 2000:
                         new_user = answer
-                        print(f"  [解析] 方式3 - 使用完整回答作为用户提示词")
+                        print(f"  [警告] 解析失败，使用完整回答作为用户提示词")
                 
-                print(f"\n  [结果] 优化后的用户提示词:")
-                print(f"  {new_user[:200]}...")
-                print(f"\n  [结果] 优化后的系统提示词:")
-                print(f"  {new_system[:200]}...")
+                print(f"\n  [结果] 优化后的用户提示词:\n{new_user}")
+                print(f"\n  [结果] 优化后的系统提示词:\n{new_system}")
                 
                 return new_user, new_system
                 
@@ -288,30 +267,9 @@ class BasePromptOptimizer(ABC):
             status = "[OK]" if result["is_correct"] else "[FAIL]"
             print(f"  {status} 期望:{'是' if expected else '否'} 实际:{'是' if actual else '否'} 耗时:{elapsed:.2f}s")
             if not result["is_correct"] and result["reasoning"]:
-                reasoning_preview = result["reasoning"]
-                print(f"      推理: {reasoning_preview}")
+                print(f"      推理: {result['reasoning']}")
         
         return result
-    
-    def get_supported_images(self, folder_path: str) -> List[Tuple[Path, bool]]:
-        """获取文件夹中所有支持的图片及期望结果"""
-        from config import SUPPORTED_EXTENSIONS
-        folder = Path(folder_path)
-        if not folder.exists():
-            return []
-        
-        images = []
-        for ext in SUPPORTED_EXTENSIONS:
-            for img_path in folder.glob(f"*{ext}"):
-                expected = self.get_expected_from_filename(img_path.name)
-                if expected is not None:
-                    images.append((img_path, expected))
-            for img_path in folder.glob(f"*{ext.upper()}"):
-                expected = self.get_expected_from_filename(img_path.name)
-                if expected is not None:
-                    images.append((img_path, expected))
-        
-        return sorted(images, key=lambda x: x[0].name)
     
     # ============================================================
     # 核心优化逻辑
@@ -330,7 +288,7 @@ class BasePromptOptimizer(ABC):
         self.current_user_prompt = user_prompt or self.get_default_user_prompt()
         self.current_system_prompt = system_prompt or self.get_default_system_prompt()
         
-        # 获取测试图片
+        # 获取测试图片（使用子类重写的方法）
         test_images = self.get_supported_images(test_folder)
         if not test_images:
             return {
@@ -362,8 +320,8 @@ class BasePromptOptimizer(ABC):
             print(f"第 {round_num} 轮测试")
             print(f"{'#'*70}")
             
-            print(f"\n[当前用户提示词]: {self.current_user_prompt}")
-            print(f"\n[当前系统提示词]: {self.current_system_prompt}")
+            print(f"\n[当前用户提示词]:\n{self.current_user_prompt}")
+            print(f"\n[当前系统提示词]:\n{self.current_system_prompt}")
             
             round_result = {
                 "round": round_num,
@@ -390,8 +348,7 @@ class BasePromptOptimizer(ABC):
                     first_error = result
                     print(f"\n  >>> 发现错误，停止本轮测试 <<<")
                     if result.get("reasoning"):
-                        reasoning_preview = result["reasoning"]
-                        print(f"\n  推理过程:\n{reasoning_preview}")
+                        print(f"\n  推理过程:\n{result['reasoning']}")
                     break
             
             # 统计本轮结果
@@ -442,6 +399,13 @@ class BasePromptOptimizer(ABC):
                     first_error.get("reasoning", ""),
                     use_chinese=True
                 )
+                
+                # 检查提示词是否有变化
+                if new_user == self.current_user_prompt and new_system == self.current_system_prompt:
+                    print(f"\n  [警告] 提示词未变化，停止优化")
+                    round_result["all_passed"] = False
+                    self.round_history.append(round_result)
+                    break
                 
                 # 更新提示词
                 self.current_user_prompt = new_user

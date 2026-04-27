@@ -6,7 +6,7 @@
 import sys
 from pathlib import Path
 
-from config import API_TYPE, validate_config
+from config import API_TYPE, validate_config, CURRENT_CONFIG
 from prompt_optimizer import PromptValidator
 from bicycle_rule import (
     BicycleNoPlateOptimizer,
@@ -18,24 +18,15 @@ from bicycle_rule import (
 )
 
 
-# ============================================================
-# 全局变量：存储当前加载的提示词
-# ============================================================
 CURRENT_SYSTEM_PROMPT = ""
 CURRENT_USER_PROMPT = ""
 
 
-# ============================================================
-# 配置验证
-# ============================================================
 if not validate_config():
     print("\n[错误] 配置验证失败，程序退出")
     sys.exit(1)
 
 
-# ============================================================
-# UI辅助函数
-# ============================================================
 def print_separator(char: str = "=", length: int = 70):
     print(char * length)
 
@@ -85,11 +76,7 @@ def get_user_choice():
         print("  输入无效")
 
 
-# ============================================================
-# 加载有效提示词
-# ============================================================
 def load_valid_prompt():
-    """加载有效提示词到内存"""
     global CURRENT_SYSTEM_PROMPT, CURRENT_USER_PROMPT
     
     prompts = PromptValidator.list_valid_prompts()
@@ -97,7 +84,6 @@ def load_valid_prompt():
     if not prompts:
         print("\n[提示] 没有找到有效提示词，请先创建")
         if input("立即进入验证模式？(y/n): ").lower() in ['y', 'yes', '是']:
-            from bicycle_rule import validate_and_save_prompts
             validate_and_save_prompts()
             prompts = PromptValidator.list_valid_prompts()
     
@@ -106,7 +92,8 @@ def load_valid_prompt():
         if data:
             CURRENT_SYSTEM_PROMPT = data.get("system_prompt", "")
             CURRENT_USER_PROMPT = data.get("user_prompt", "")
-            print(f"\n[配置] 语言: {'中文' if '是' in CURRENT_USER_PROMPT else '英文'}")
+            lang = "中文" if "是" in CURRENT_USER_PROMPT else "英文"
+            print(f"\n[配置] 语言: {lang}")
             print(f"[配置] API: {API_TYPE.upper()} - {API_CLIENT.get_model_name()}")
             print(f"[配置] 准确率: {data.get('accuracy', 0):.2f}%")
             return True
@@ -117,11 +104,7 @@ def load_valid_prompt():
     return True
 
 
-# ============================================================
-# 批量检测交互
-# ============================================================
 def batch_detection_interactive(system_prompt: str, user_prompt: str, debug: bool = False):
-    """批量检测交互"""
     print("\n[模式] 批量检测")
     folder = get_folder_path()
     export = get_export_choice()
@@ -135,11 +118,7 @@ def batch_detection_interactive(system_prompt: str, user_prompt: str, debug: boo
         print(f"\n[提示] 在第{idx}张停止: {reason}")
 
 
-# ============================================================
-# 提示词优化器交互
-# ============================================================
 def prompt_optimizer_interactive():
-    """提示词优化器交互"""
     global CURRENT_SYSTEM_PROMPT, CURRENT_USER_PROMPT
     
     print("\n[模式] 提示词优化器")
@@ -147,7 +126,6 @@ def prompt_optimizer_interactive():
     
     optimizer = BicycleNoPlateOptimizer()
     
-    # 输入测试集路径
     test_folder = input("\n请输入测试集文件夹路径 (直接回车使用默认: images): ").strip()
     if not test_folder:
         test_folder = "images"
@@ -157,9 +135,8 @@ def prompt_optimizer_interactive():
         print(f"错误: 文件夹不存在 - {test_folder}")
         return
     
-    # 选择提示词来源
     print("\n提示词来源选项:")
-    print(f"  1 - 使用当前已加载的提示词 (准确率: {PromptValidator.list_valid_prompts()[-1]['accuracy'] if PromptValidator.list_valid_prompts() else '未知'}%)")
+    print(f"  1 - 使用当前已加载的提示词")
     print("  2 - 使用代码中的默认提示词")
     print("  3 - 手动输入提示词")
     
@@ -175,7 +152,6 @@ def prompt_optimizer_interactive():
         print("\n请输入系统提示词:")
         system_prompt = input().strip()
     else:
-        # 默认使用当前加载的提示词（选项1）
         user_prompt = CURRENT_USER_PROMPT
         system_prompt = CURRENT_SYSTEM_PROMPT
         if user_prompt and system_prompt:
@@ -185,13 +161,11 @@ def prompt_optimizer_interactive():
             user_prompt = optimizer.get_default_user_prompt()
             system_prompt = optimizer.get_default_system_prompt()
     
-    # 确保提示词不为空
     if not user_prompt or not system_prompt:
         print("[警告] 提示词为空，使用代码中的默认提示词")
         user_prompt = optimizer.get_default_user_prompt()
         system_prompt = optimizer.get_default_system_prompt()
     
-    # 打印提示词并确认
     print("\n" + "=" * 70)
     print("使用的提示词")
     print("=" * 70)
@@ -206,7 +180,6 @@ def prompt_optimizer_interactive():
     if confirm == 'q':
         return
     
-    # 优化参数
     max_rounds = input("\n最大优化轮次 (默认: 10): ").strip()
     max_rounds = int(max_rounds) if max_rounds else 10
     
@@ -254,39 +227,28 @@ def prompt_optimizer_interactive():
         print(f"   测试图片数: {result['total_images']}")
 
 
-# ============================================================
-# 验证模式交互
-# ============================================================
 def validate_mode_interactive():
-    """验证模式交互"""
     global CURRENT_SYSTEM_PROMPT, CURRENT_USER_PROMPT
     
     print("\n[模式] 验证并保存提示词")
     
-    # 询问是否使用当前加载的提示词
     if CURRENT_USER_PROMPT and CURRENT_SYSTEM_PROMPT:
         print(f"\n当前已加载的提示词准确率: 100%")
         use_current = input("是否使用当前已加载的提示词进行验证？(y/n, 默认y): ").strip().lower()
         if use_current in ['y', 'yes', '是', '']:
             success = validate_and_save_prompts(CURRENT_SYSTEM_PROMPT, CURRENT_USER_PROMPT)
             if success:
-                # 验证完成后重新加载提示词
                 load_valid_prompt()
             return
     
-    # 否则使用默认方式（手动输入）
     validate_and_save_prompts()
 
 
-# ============================================================
-# 主程序
-# ============================================================
 def main():
     print_separator()
     print("自行车检测工具 & 提示词优化器")
     print_separator()
     
-    # 加载有效提示词
     if not load_valid_prompt():
         print("\n[错误] 无法加载有效提示词")
         sys.exit(1)

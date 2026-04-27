@@ -42,7 +42,6 @@ class PromptOptimizer:
             self.optimization_dir.mkdir(exist_ok=True)
     
     def analyze_error(self, reasoning: str, expected: str, actual: str) -> Dict:
-        """分析错误原因"""
         reasoning_lower = reasoning.lower()
         best_match = None
         best_score = 0
@@ -82,10 +81,8 @@ class PromptOptimizer:
     def generate_optimized_prompts(self, user_prompt: str, system_prompt: str,
                                     reasoning: str, expected: str, actual: str,
                                     image_path: str = None) -> Tuple[str, str, Dict]:
-        """生成优化后的提示词"""
         error = self.analyze_error(reasoning, expected, actual)
         
-        # 添加优化内容
         new_user = user_prompt
         new_system = system_prompt
         
@@ -95,7 +92,6 @@ class PromptOptimizer:
         if error.get("modify_system") and error["modify_system"] not in new_system:
             new_system = new_system.rstrip() + "\n\n" + error["modify_system"]
         
-        # 记录优化历史
         optimization_record = {
             "timestamp": datetime.now().isoformat(),
             "image_path": image_path,
@@ -109,14 +105,12 @@ class PromptOptimizer:
         }
         self.optimization_history.append(optimization_record)
         
-        # 保存优化记录
         if self.save_optimizations:
             self._save_optimization_record(optimization_record)
         
         return new_user, new_system, error
     
     def _save_optimization_record(self, record: Dict):
-        """保存优化记录到文件"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = self.optimization_dir / f"optimization_{timestamp}.json"
         with open(filename, "w", encoding="utf-8") as f:
@@ -126,7 +120,6 @@ class PromptOptimizer:
     def save_final_prompts(self, user_prompt: str, system_prompt: str, 
                            accuracy: float = None, test_info: dict = None,
                            api_type: str = None, model_name: str = None) -> Path:
-        """保存最终优化完成的提示词到 valid_prompts 目录"""
         from prompt_optimizer import PromptValidator
         return PromptValidator.save_valid_prompt(
             user_prompt=user_prompt,
@@ -138,7 +131,6 @@ class PromptOptimizer:
         )
     
     def print_optimization_summary(self):
-        """打印优化摘要"""
         print("\n" + "=" * 60)
         print("优化摘要")
         print(f"总优化次数: {len(self.optimization_history)}")
@@ -165,7 +157,6 @@ class PromptValidator:
         prompts_dir = cls.get_valid_prompts_dir()
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
-        # 保存 JSON 格式
         json_file = prompts_dir / f"prompt_{timestamp}.json"
         data = {
             "timestamp": timestamp,
@@ -180,7 +171,6 @@ class PromptValidator:
         with open(json_file, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         
-        # 保存 TXT 格式
         txt_file = prompts_dir / f"prompt_{timestamp}.txt"
         with open(txt_file, "w", encoding="utf-8") as f:
             f.write(f"# 有效提示词\n")
@@ -285,7 +275,6 @@ class AutoOptimizer:
     def optimize_with_feedback(self, user_prompt: str, system_prompt: str,
                                reasoning: str, expected: str, actual: str,
                                image_path: str = None) -> Tuple[str, str, Dict]:
-        """根据反馈优化提示词"""
         self.retry_count += 1
         new_user, new_system, error = self.optimizer.generate_optimized_prompts(
             user_prompt, system_prompt, reasoning, expected, actual, image_path
@@ -296,7 +285,6 @@ class AutoOptimizer:
     
     def save_final_prompt(self, accuracy: float, test_info: dict = None,
                           api_type: str = None, model_name: str = None) -> Path:
-        """保存最终优化完成的提示词"""
         if self.best_user_prompt and self.best_system_prompt:
             return self.optimizer.save_final_prompts(
                 self.best_user_prompt,
