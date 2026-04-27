@@ -76,41 +76,165 @@ def get_supported_images_from_folder(folder_path: str) -> list:
 def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
     """解析模型回答，返回 (是否符合条件, 推理过程)"""
     reasoning = ""
+    answer_original = answer
+    answer_upper = answer_original.upper()
+    answer_lower = answer_original.lower()
     
-    # 提取推理过程
-    if "【分析】" in answer and "【结论】" in answer:
-        parts = answer.split("【结论】")
-        reasoning = parts[0].replace("【分析】", "").strip()
+    print(f"\n  [解析调试] 原始回答: {repr(answer_original[:200])}...")
     
-    # 提取结论（中文）
-    if "【结论】是" in answer:
-        return True, reasoning
-    elif "【结论】否" in answer:
-        return False, reasoning
+    # ============================================================
+    # 定义解析规则数组
+    # 每个规则包含: 分隔符, 索引位置, 是否需要去除标记, 推理提取方式
+    # ============================================================
+    parse_rules = [
+        # 格式1: REASONING: ... CONCLUSION: YES/NO
+        {
+            "split_marker": "CONCLUSION:",
+            "reasoning_marker": "REASONING:",
+            "reasoning_index": 0,
+            "conclusion_index": 1,
+            "need_strip_marker": True,
+            "name": "REASONING/CONCLUSION"
+        },
+        # 格式2: 【Reasoning】...【Answer】YES/NO
+        {
+            "split_marker": "【Answer】",
+            "reasoning_marker": "【Reasoning】",
+            "reasoning_index": 0,
+            "conclusion_index": 1,
+            "need_strip_marker": True,
+            "name": "【Reasoning】/【Answer】"
+        },
+        # 格式3: 【分析】...【结论】是/否
+        {
+            "split_marker": "【结论】",
+            "reasoning_marker": "【分析】",
+            "reasoning_index": 0,
+            "conclusion_index": 1,
+            "need_strip_marker": True,
+            "name": "【分析】/【结论】"
+        },
+        # 格式4: [Reasoning]...[Answer] YES/NO
+        {
+            "split_marker": "[Answer]",
+            "reasoning_marker": "[Reasoning]",
+            "reasoning_index": 0,
+            "conclusion_index": 1,
+            "need_strip_marker": True,
+            "name": "[Reasoning]/[Answer]"
+        },
+        # 格式5: **Answer:** YES/NO
+        {
+            "split_marker": "**Answer:**",
+            "reasoning_marker": None,
+            "reasoning_index": 0,
+            "conclusion_index": 1,
+            "need_strip_marker": False,
+            "name": "**Answer:**"
+        },
+        # 格式6: Therefore, the answer is: YES/NO
+        {
+            "split_marker": "therefore, the answer is:",
+            "reasoning_marker": None,
+            "reasoning_index": 0,
+            "conclusion_index": 1,
+            "need_strip_marker": False,
+            "name": "Therefore"
+        },
+        # 格式7: answer: YES/NO
+        {
+            "split_marker": "answer:",
+            "reasoning_marker": None,
+            "reasoning_index": 0,
+            "conclusion_index": 1,
+            "need_strip_marker": False,
+            "name": "answer:"
+        }
+    ]
     
-    # 提取结论（英文）
-    if "【Conclusion】YES" in answer.upper():
-        return True, reasoning
-    elif "【Conclusion】NO" in answer.upper():
-        return False, reasoning
+    # ============================================================
+    # 遍历规则，匹配并解析
+    # ============================================================
+    for rule in parse_rules:
+        split_marker = rule["split_marker"]
+        # 对于大小写敏感的标记，使用原始字符串；否则使用小写
+        if split_marker in ["therefore, the answer is:", "answer:"]:
+            search_str = answer_lower
+            marker_lower = split_marker.lower()
+            if marker_lower in search_str:
+                parts = search_str.split(marker_lower)
+                if len(parts) >= 2:
+                    # 提取推理过程
+                    if rule["reasoning_marker"] and rule["need_strip_marker"]:
+                        reasoning_part = parts[rule["reasoning_index"]]
+                        reasoning_marker = rule["reasoning_marker"].lower()
+                        reasoning = reasoning_part.replace(reasoning_marker, "").strip()
+                    else:
+                        reasoning = parts[rule["reasoning_index"]].strip()
+                    
+                    # 提取结论
+                    conclusion_part = parts[rule["conclusion_index"]].strip().upper()
+                    print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论: {conclusion_part[:20]}")
+                    
+                    if "YES" in conclusion_part:
+                        return True, reasoning
+                    else:
+                        return False, reasoning
+        else:
+            # 大小写敏感的标记
+            if split_marker in answer_original:
+                parts = answer_original.split(split_marker)
+                if len(parts) >= 2:
+                    # 提取推理过程
+                    if rule["reasoning_marker"] and rule["need_strip_marker"]:
+                        reasoning_part = parts[rule["reasoning_index"]]
+                        reasoning_marker = rule["reasoning_marker"]
+                        reasoning = reasoning_part.replace(reasoning_marker, "").strip()
+                    else:
+                        reasoning = parts[rule["reasoning_index"]].strip()
+                    
+                    # 提取结论
+                    conclusion_part = parts[rule["conclusion_index"]].strip().upper()
+                    print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论: {conclusion_part[:20]}")
+                    
+                    if "YES" in conclusion_part:
+                        return True, reasoning
+                    else:
+                        return False, reasoning
     
-    # 清理标点符号
-    answer_clean = answer.strip()
+    # ============================================================
+    # 兜底：清理标点符号后直接判断
+    # ============================================================
+    answer_clean = answer_original.strip()
     while answer_clean and answer_clean[-1] in '。！？,.!?；;':
         answer_clean = answer_clean[:-1]
     answer_clean = answer_clean.strip()
+    answer_clean_upper = answer_clean.upper()
     
-    # 直接判断
-    if answer_clean == "是" or answer_clean.upper() == "YES":
-        return True, reasoning
-    elif answer_clean == "否" or answer_clean.upper() == "NO":
-        return False, reasoning
-    elif "是" in answer_clean and "否" not in answer_clean:
-        return True, reasoning
-    elif "YES" in answer_clean.upper() and "NO" not in answer_clean.upper():
-        return True, reasoning
-    else:
-        return False, reasoning
+    print(f"  [解析调试] 清理后回答: {answer_clean[:100]}")
+    
+    # 直接匹配 YES/NO
+    if answer_clean_upper == "YES":
+        return True, ""
+    if answer_clean_upper == "NO":
+        return False, ""
+    
+    # 包含匹配
+    if "YES" in answer_clean_upper and "NO" not in answer_clean_upper:
+        return True, ""
+    if "NO" in answer_clean_upper:
+        return False, ""
+    
+    # 中文匹配
+    if answer_clean == "是":
+        return True, ""
+    if answer_clean == "否":
+        return False, ""
+    if "是" in answer_clean and "否" not in answer_clean:
+        return True, ""
+    
+    print(f"  [解析调试] 未匹配任何规则 -> False")
+    return False, ""
 
 
 def call_model(image_path: str, system_prompt: str, user_prompt: str) -> tuple:
@@ -133,7 +257,15 @@ def has_bicycle_registration_plate(image_path: str, system_prompt: str, user_pro
     if not success:
         return False, False, elapsed, answer, reasoning
     
+    # 添加调试：调用解析函数前
+    if debug:
+        print(f"  [调试] 调用 parse_bicycle_response 前")
+    
     is_allowed, reasoning_from_answer = parse_bicycle_response(answer)
+    
+    # 添加调试：解析结果
+    if debug:
+        print(f"  [调试] parse_bicycle_response 返回: is_allowed={is_allowed}, reasoning_from_answer={reasoning_from_answer[:100] if reasoning_from_answer else 'None'}")
     
     if not reasoning_from_answer and reasoning:
         reasoning_from_answer = reasoning
