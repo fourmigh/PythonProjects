@@ -4,6 +4,7 @@
 # ============================================================
 
 import time
+import re
 from pathlib import Path
 from typing import Dict, Tuple, Optional
 
@@ -74,17 +75,51 @@ def get_supported_images_from_folder(folder_path: str) -> list:
 
 
 def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
-    """解析模型回答，返回 (是否符合条件, 推理过程)"""
+    """解析模型回答，返回 (是否符合条件, 推理过程)
+    
+    业务逻辑：
+    - 模型说"是" → 没有牌照 → 允许 → 返回 True
+    - 模型说"否" → 有牌照或无自行车 → 不允许 → 返回 False
+    """
     reasoning = ""
     answer_original = answer
     answer_upper = answer_original.upper()
     answer_lower = answer_original.lower()
     
-    print(f"\n  [解析调试] 原始回答: {repr(answer_original[:200])}...")
+    print(f"\n  [解析调试] 原始回答: {repr(answer_original)}")
+    
+    # ============================================================
+    # 优先：快速解析中文【结论】格式
+    # ============================================================
+    # 匹配 【结论】是 或 【结论】否
+    match_cn = re.search(r'【结论】\s*([是否])', answer_original)
+    if match_cn:
+        result_char = match_cn.group(1)
+        print(f"  [解析调试] 快速解析 -> 结论: {result_char}")
+        if result_char == '是':
+            return True, ""
+        else:
+            return False, ""
+    
+    # 匹配 **Conclusion:** YES/NO 格式
+    match_en = re.search(r'【Conclusion】\s*(YES|NO)', answer_upper, re.IGNORECASE)
+    if match_en:
+        result_word = match_en.group(1).upper()
+        print(f"  [解析调试] 快速解析 -> 结论: {result_word}")
+        return result_word == "YES", ""
+    
+    # 匹配 **结论：** 格式（无括号）
+    match_cn2 = re.search(r'结论[：:]\s*([是否])', answer_original)
+    if match_cn2:
+        result_char = match_cn2.group(1)
+        print(f"  [解析调试] 快速解析 -> 结论: {result_char}")
+        if result_char == '是':
+            return True, ""
+        else:
+            return False, ""
     
     # ============================================================
     # 定义解析规则数组
-    # 每个规则包含: 分隔符, 索引位置, 是否需要去除标记, 推理提取方式
     # ============================================================
     parse_rules = [
         # 格式1: REASONING: ... CONCLUSION: YES/NO
@@ -174,7 +209,7 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
                     
                     # 提取结论
                     conclusion_part = parts[rule["conclusion_index"]].strip().upper()
-                    print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论: {conclusion_part[:20]}")
+                    print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论: {conclusion_part}")
                     
                     if "YES" in conclusion_part:
                         return True, reasoning
@@ -193,13 +228,24 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
                     else:
                         reasoning = parts[rule["reasoning_index"]].strip()
                     
-                    # 提取结论
-                    conclusion_part = parts[rule["conclusion_index"]].strip().upper()
-                    print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论: {conclusion_part[:20]}")
+                    # 提取结论 - 只取第一行或第一个字符
+                    conclusion_part = parts[rule["conclusion_index"]].strip()
+                    if '\n' in conclusion_part:
+                        conclusion_part = conclusion_part.split('\n')[0].strip()
                     
-                    if "YES" in conclusion_part:
+                    conclusion_upper = conclusion_part.upper()
+                    print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论部分: {conclusion_part}")
+                    
+                    # 中文判断
+                    if conclusion_part == '是' or conclusion_part.startswith('是'):
                         return True, reasoning
-                    else:
+                    if conclusion_part == '否' or conclusion_part.startswith('否'):
+                        return False, reasoning
+                    
+                    # 英文判断
+                    if "YES" in conclusion_upper:
+                        return True, reasoning
+                    if "NO" in conclusion_upper:
                         return False, reasoning
     
     # ============================================================
@@ -211,7 +257,7 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
     answer_clean = answer_clean.strip()
     answer_clean_upper = answer_clean.upper()
     
-    print(f"  [解析调试] 清理后回答: {answer_clean[:100]}")
+    print(f"  [解析调试] 清理后回答: {answer_clean}")
     
     # 直接匹配 YES/NO
     if answer_clean_upper == "YES":
@@ -233,7 +279,7 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
     if "是" in answer_clean and "否" not in answer_clean:
         return True, ""
     
-    print(f"  [解析调试] 未匹配任何规则 -> False")
+    print(f"  [解析调试] 未匹配任何规则，默认返回 False")
     return False, ""
 
 
@@ -257,15 +303,11 @@ def has_bicycle_registration_plate(image_path: str, system_prompt: str, user_pro
     if not success:
         return False, False, elapsed, answer, reasoning
     
-    # 添加调试：调用解析函数前
-    if debug:
-        print(f"  [调试] 调用 parse_bicycle_response 前")
-    
+    # 解析模型回答
     is_allowed, reasoning_from_answer = parse_bicycle_response(answer)
     
-    # 添加调试：解析结果
     if debug:
-        print(f"  [调试] parse_bicycle_response 返回: is_allowed={is_allowed}, reasoning_from_answer={reasoning_from_answer[:100] if reasoning_from_answer else 'None'}")
+        print(f"  [调试] parse_bicycle_response 返回: is_allowed={is_allowed}, reasoning_from_answer={reasoning_from_answer if reasoning_from_answer else 'None'}")
     
     if not reasoning_from_answer and reasoning:
         reasoning_from_answer = reasoning
@@ -378,8 +420,10 @@ def batch_detection_mode(folder_path: str, system_prompt: str, user_prompt: str,
     print(f"[时间] 开始: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 70)
     
-    results, correct, valid = [], 0, 0
-    stopped, stop_reason, stop_index = False, "", -1
+    results = []
+    stopped = False
+    stop_reason = ""
+    stop_index = -1
     
     for idx, img in enumerate(image_files, 1):
         print(f"\n[{idx}/{len(image_files)}] {img.name}")
@@ -402,15 +446,21 @@ def batch_detection_mode(folder_path: str, system_prompt: str, user_prompt: str,
         status = "[允许]" if is_allowed else "[不允许]"
         print(f"   {status} | 耗时: {elapsed:.2f}秒")
         
-        # 打印完整的模型回答和推理过程（不截断）
         if answer:
             print(f"   [模型回答]: {answer}")
         if reasoning:
             print(f"   [推理过程]: {reasoning}")
         
+        # 记录结果时包含期望值
+        results.append({
+            "filename": img.name, 
+            "is_allowed": is_allowed, 
+            "expected": expected,  # 添加期望值
+            "success": True
+        })
+        
         if expected is not None:
             if is_allowed == expected:
-                correct += 1
                 print(f"   [验证] 正确 ✓")
             else:
                 print(f"   [验证] 错误 ✗")
@@ -419,16 +469,9 @@ def batch_detection_mode(folder_path: str, system_prompt: str, user_prompt: str,
                         copy_to_clipboard(reasoning)
                     stopped, stop_reason, stop_index = True, f"验证错误: {img.name}", idx
                     break
-            valid += 1
-        
-        results.append({"filename": img.name, "is_allowed": is_allowed, "success": True})
     
     print("\n" + "=" * 70)
-    if stopped:
-        print(f"[停止] {stop_reason} (第{stop_index}张)")
-    else:
-        acc = correct / valid * 100 if valid > 0 else 0
-        print(f"[完成] 准确率: {acc:.2f}% ({correct}/{valid})")
+    
     return results, stopped, stop_reason, stop_index
 
 

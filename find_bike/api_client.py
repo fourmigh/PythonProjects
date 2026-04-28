@@ -3,6 +3,7 @@
 # API客户端抽象层 - 支持多种API提供商
 # ============================================================
 
+import os
 import base64
 import time
 import requests
@@ -23,68 +24,189 @@ class BaseAPIClient(ABC):
         pass
 
 
+# api_client.py 中的 OllamaClient 类（完整修复版）
+
 class OllamaClient(BaseAPIClient):
-    """Ollama API 客户端"""
+    """Ollama API 客户端 - 自动使用运行中的模型"""
     
-    def __init__(self, api_url: str, model_name: str, timeout: int = 120, max_tokens: int = 2000, temperature: float = 0):
-        self.api_url = api_url
-        self.model_name = model_name
+    def __init__(self, api_url: str, model_name: str = None, timeout: int = 120, 
+                 max_tokens: int = 2000, temperature: float = 0):
+        # 清理 API URL
+        self.api_url = api_url.rstrip('/')
+        if self.api_url.endswith('/v1/chat/completions'):
+            self.api_url = self.api_url.replace('/v1/chat/completions', '')
+        
+        # 如果 model_name 是空字符串，也视为 None
+        self.config_model_name = model_name if model_name else None
         self.timeout = timeout
         self.max_tokens = max_tokens
         self.temperature = temperature
+        self._actual_model = None  # 实际使用的模型
     
     def get_model_name(self) -> str:
-        return self.model_name
+        """获取当前实际使用的模型名称"""
+        # 如果有缓存，直接返回
+        if self._actual_model:
+            return self._actual_model
+        
+        # 优先使用配置文件中的模型名
+        if self.config_model_name:
+            self._actual_model = self.config_model_name
+            print(f"[INFO] 使用配置的模型: {self._actual_model}")
+            return self._actual_model
+        
+        # 自动检测运行中的模型
+        running = self._get_running_model()
+        if running:
+            self._actual_model = running
+            print(f"[INFO] 自动检测到运行中的模型: {self._actual_model}")
+            return self._actual_model
+        
+        # 降级到已安装的第一个模型
+        installed = self._get_installed_models()
+        if installed:
+            self._actual_model = installed[0]
+            print(f"[WARN] 没有运行中的模型，使用已安装模型: {self._actual_model}")
+            return self._actual_model
+        
+        self._actual_model = "unknown"
+        print(f"[ERROR] 没有找到任何可用模型")
+        return self._actual_model
     
+    def _get_running_model(self) -> str:
+        """获取当前正在运行的模型"""
+        try:
+            response = requests.get(f"{self.api_url}/api/ps", timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                
+                # 根据你的实际输出，数据格式是 {'models': [{'name': 'llava-phi3:latest', ...}]}
+                if 'models' in data and data['models']:
+                    model = data['models'][0]
+                    # 优先使用 name 字段
+                    if 'name' in model:
+                        return model['name']
+                    if 'model' in model:
+                        return model['model']
+        except Exception as e:
+            print(f"[DEBUG] API查询失败: {e}")
+        
+        # 命令行备用
+        try:
+            import subprocess
+            result = subprocess.run(
+                ["ollama", "ps"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if result.returncode == 0 and result.stdout:
+                lines = result.stdout.strip().split('\n')
+                if len(lines) > 1:
+                    for line in lines[1:]:
+                        if line.strip():
+                            parts = line.split()
+                            if parts:
+                                return parts[0]
+        except Exception as e:
+            print(f"[DEBUG] 命令行查询失败: {e}")
+        
+        return None
+    
+    def _get_installed_models(self) -> list:
+        """获取已安装的模型列表"""
+        try:
+            response = requests.get(f"{self.api_url}/api/tags", timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                models = data.get('models', [])
+                return [m.get('name', '') for m in models]
+        except Exception:
+            pass
+        return []
+
     def chat_with_image(self, image_path: str, system_prompt: str, user_question: str) -> Tuple[bool, str, str, float]:
         start_time = time.time()
         
+        # 获取实际使用的模型
+        model_name = self.get_model_name()
+        
+        print(f"[DEBUG] 使用模型: {model_name}")
+        print(f"[DEBUG] 图片路径: {image_path}")
+        print(f"[DEBUG] 图片存在: {os.path.exists(image_path)}")
+        
+        if model_name == "unknown":
+            elapsed = time.time() - start_time
+            return False, "", "没有可用的模型", elapsed
+        
         try:
             with open(image_path, "rb") as f:
-                image_base64 = base64.b64encode(f.read()).decode("utf-8")
+                image_data = f.read()
+            image_base64 = base64.b64encode(image_data).decode()
+            print(f"[DEBUG] 图片大小: {len(image_data)} bytes")
+            print(f"[DEBUG] Base64长度: {len(image_base64)}")
         except Exception as e:
             elapsed = time.time() - start_time
+            print(f"[DEBUG] 读取图片失败: {e}")
             return False, "", f"读取图片失败: {e}", elapsed
         
+        # 使用 Ollama 原生 API
+        url = f"{self.api_url}/api/generate"
         payload = {
-            "model": self.model_name,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": user_question},
-                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}}
-                    ]
-                }
-            ],
+            "model": model_name,
+            "prompt": f"{system_prompt}\n\n{user_question}",
+            "images": [image_base64],
             "stream": False,
-            "max_tokens": self.max_tokens,
-            "temperature": self.temperature
+            "options": {
+                "num_predict": 512,
+                "temperature": 0.3,
+                "repeat_penalty": 1.1,      # 重复惩罚系数（>1 惩罚重复）
+                "repeat_last_n": 64,        # 检查最近多少个token的重复
+                "top_k": 40,                # 限制采样范围
+                "top_p": 0.9,               # 核采样
+                "frequency_penalty": 0.5,   # 频率惩罚
+                "presence_penalty": 0.5     # 存在惩罚
+            }
         }
         
+        print(f"[DEBUG] API URL: {url}")
+        print(f"[DEBUG] 请求大小: {len(str(payload))} bytes")
+        
         try:
-            response = requests.post(self.api_url, json=payload, timeout=self.timeout)
+            print(f"[DEBUG] 发送请求...")
+            response = requests.post(url, json=payload, timeout=self.timeout)
+            print(f"[DEBUG] HTTP状态码: {response.status_code}")
+            
             response.raise_for_status()
             result = response.json()
             
             elapsed = time.time() - start_time
-            answer = result["choices"][0]["message"].get("content", "").strip()
-            reasoning = result["choices"][0]["message"].get("reasoning", "")
+            answer = result.get("response", "").strip()
+            print(f"[DEBUG] 响应长度: {len(answer)}")
             
-            return True, answer, reasoning, elapsed
+            if not answer:
+                print(f"[DEBUG] 响应为空，完整结果: {result}")
+            
+            return True, answer, "", elapsed
             
         except requests.exceptions.Timeout:
             elapsed = time.time() - start_time
+            print(f"[DEBUG] 请求超时")
             return False, "", f"API请求超时({self.timeout}秒)", elapsed
         except requests.exceptions.ConnectionError as e:
             elapsed = time.time() - start_time
+            print(f"[DEBUG] 连接错误: {e}")
             return False, "", f"网络连接失败: {e}", elapsed
         except requests.exceptions.HTTPError as e:
             elapsed = time.time() - start_time
+            print(f"[DEBUG] HTTP错误: {e}")
+            if e.response.status_code == 404:
+                return False, "", f"模型 '{model_name}' 不存在", elapsed
+            print(f"[DEBUG] 响应内容: {e.response.text[:500]}")
             return False, "", f"HTTP错误: {e}", elapsed
         except Exception as e:
             elapsed = time.time() - start_time
+            print(f"[DEBUG] 未知错误: {type(e).__name__}: {e}")
             return False, "", f"未知错误: {e}", elapsed
 
 
@@ -301,8 +423,8 @@ def create_api_client(api_type: str, config: Dict[str, Any]) -> BaseAPIClient:
     
     if api_type == 'ollama':
         return OllamaClient(
-            api_url=config.get('api_url', 'http://localhost:11434/v1/chat/completions'),
-            model_name=config.get('model_name', 'llama3.2-vision'),
+            api_url=config.get('api_url', 'http://localhost:11434'),
+            model_name=config.get('model_name'),  # 可为 None
             timeout=config.get('timeout', 120),
             max_tokens=config.get('max_tokens', 2000),
             temperature=config.get('temperature', 0)

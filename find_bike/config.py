@@ -20,7 +20,7 @@ API_TYPE = os.getenv('API_TYPE', 'ollama')  # ollama, zhipu, openai, bedrock
 # ============================================================
 OLLAMA_CONFIG = {
     "api_url": os.getenv('OLLAMA_API_URL', 'http://localhost:11434/v1/chat/completions'),
-    "model_name": os.getenv('OLLAMA_MODEL_NAME', 'llama3.2-vision'),
+    "model_name": None,
     "timeout": int(os.getenv('OLLAMA_TIMEOUT', '120')),
     "max_tokens": int(os.getenv('OLLAMA_MAX_TOKENS', '2000')),
     "temperature": float(os.getenv('OLLAMA_TEMPERATURE', '0'))

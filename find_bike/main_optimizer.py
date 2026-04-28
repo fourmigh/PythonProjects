@@ -4,7 +4,9 @@
 # ============================================================
 
 import sys
+import time
 from pathlib import Path
+from typing import List, Dict
 
 from config import API_TYPE, validate_config, CURRENT_CONFIG
 from prompt_optimizer import PromptValidator
@@ -14,7 +16,9 @@ from bicycle_rule import (
     batch_detection_mode,
     validate_and_save_prompts,
     export_results_to_csv,
-    API_CLIENT
+    API_CLIENT,
+    get_supported_images_from_folder,
+    get_expected_from_filename
 )
 
 
@@ -95,7 +99,11 @@ def load_valid_prompt():
             lang = "中文" if "是" in CURRENT_USER_PROMPT else "英文"
             print(f"\n[配置] 语言: {lang}")
             print(f"[配置] API: {API_TYPE.upper()} - {API_CLIENT.get_model_name()}")
-            print(f"[配置] 准确率: {data.get('accuracy', 0):.2f}%")
+            acc = data.get('accuracy', 0)
+            if acc:
+                print(f"[配置] 准确率: {acc:.2f}%")
+            else:
+                print(f"[配置] 准确率: 待验证")
             return True
     else:
         print("\n[错误] 没有可用的有效提示词")
@@ -104,18 +112,136 @@ def load_valid_prompt():
     return True
 
 
+def print_batch_statistics(folder_path: str, results: List[Dict], 
+                           start_time: float, stop_reason: str = None,
+                           stop_index: int = -1):
+    """打印批量检测统计报告"""
+    
+    # 获取所有图片
+    image_files = get_supported_images_from_folder(folder_path)
+    total_images = len(image_files)
+    processed = len(results)
+    
+    # 统计期望分布
+    expected_yes = 0
+    expected_no = 0
+    for img in image_files:
+        exp = get_expected_from_filename(img.name)
+        if exp is True:
+            expected_yes += 1
+        elif exp is False:
+            expected_no += 1
+    
+    # 统计验证结果
+    correct = 0
+    correct_yes = 0
+    correct_no = 0
+    false_positive = 0  # 误报：期望不允许，判允许
+    false_negative = 0  # 漏报：期望允许，判不允许
+    
+    for r in results:
+        if 'expected' in r and 'is_allowed' in r:
+            if r['is_allowed'] == r['expected']:
+                correct += 1
+                if r['expected']:
+                    correct_yes += 1
+                else:
+                    correct_no += 1
+            else:
+                if r['expected']:
+                    false_negative += 1
+                else:
+                    false_positive += 1
+    
+    # 计算时间
+    end_time = time.time()
+    total_elapsed = end_time - start_time
+    avg_time = total_elapsed / processed if processed > 0 else 0
+    
+    # 打印报告
+    print("\n" + "=" * 70)
+    print("                        批量检测统计报告")
+    print("=" * 70)
+    
+    print(f"\n  检测时间: {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  文件夹: {folder_path}")
+    print(f"  模型: {API_CLIENT.get_model_name()}")
+    
+    print("\n" + "-" * 70)
+    print("  图片统计")
+    print("-" * 70)
+    print(f"  总图片数: {total_images}")
+    print(f"  已处理: {processed}")
+    print(f"  未处理: {total_images - processed}")
+    
+    if stop_reason:
+        print(f"  停止原因: {stop_reason} (第{stop_index}张)")
+    
+    if expected_yes > 0 or expected_no > 0:
+        print("\n" + "-" * 70)
+        print("  期望分布")
+        print("-" * 70)
+        print(f"  期望允许 (有自行车且无车牌): {expected_yes} 张")
+        print(f"  期望不允许 (其他情况): {expected_no} 张")
+    
+    if correct > 0:
+        print("\n" + "-" * 70)
+        print("  验证结果")
+        print("-" * 70)
+        print(f"  总验证数: {correct + false_positive + false_negative}")
+        print(f"  正确数: {correct}")
+        print(f"  准确率: {correct/(correct + false_positive + false_negative)*100:.2f}%")
+        
+        if correct_yes > 0 or correct_no > 0:
+            print(f"\n  详细统计:")
+            yes_total = correct_yes + (false_negative if expected_yes > 0 else 0)
+            no_total = correct_no + (false_positive if expected_no > 0 else 0)
+            print(f"    期望允许 -> 正确: {correct_yes}/{yes_total} ({correct_yes/yes_total*100 if yes_total > 0 else 0:.2f}%)")
+            print(f"    期望不允许 -> 正确: {correct_no}/{no_total} ({correct_no/no_total*100 if no_total > 0 else 0:.2f}%)")
+        
+        if false_positive > 0 or false_negative > 0:
+            print(f"\n  错误统计:")
+            print(f"    误报 (期望不允许，判允许): {false_positive}")
+            print(f"    漏报 (期望允许，判不允许): {false_negative}")
+    
+    print("\n" + "-" * 70)
+    print("  时间统计")
+    print("-" * 70)
+    print(f"  总耗时: {total_elapsed:.2f} 秒")
+    print(f"  平均每张: {avg_time:.2f} 秒")
+    
+    print("\n" + "=" * 70)
+    
+    if stop_reason:
+        print(f"\n[停止] {stop_reason}")
+    else:
+        if correct > 0:
+            print(f"\n[完成] 准确率: {correct/(correct + false_positive + false_negative)*100:.2f}% ({correct}/{correct + false_positive + false_negative})")
+        else:
+            print(f"\n[完成] 处理完成")
+
+
 def batch_detection_interactive(system_prompt: str, user_prompt: str, debug: bool = False):
+    """批量检测交互"""
     print("\n[模式] 批量检测")
     folder = get_folder_path()
     export = get_export_choice()
     sf, sv = get_stop_strategy()
-    results, stopped, reason, idx = batch_detection_mode(
+    
+    # 记录开始时间
+    start_time = time.time()
+    
+    results, stopped, stop_reason, stop_index = batch_detection_mode(
         folder, system_prompt, user_prompt, sf, sv, debug
     )
+    
+    # 打印统计报告
+    print_batch_statistics(folder, results, start_time, stop_reason if stopped else None, stop_index)
+    
+    # 导出结果
     if export and results:
         export_results_to_csv(results)
-    if stopped:
-        print(f"\n[提示] 在第{idx}张停止: {reason}")
+        print(f"\n[导出] 结果已保存到 detection_results.csv")
 
 
 def prompt_optimizer_interactive():
