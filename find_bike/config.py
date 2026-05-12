@@ -6,7 +6,7 @@
 import os
 
 # ============================================================
-# 语言选择（新增）
+# 语言选择
 # ============================================================
 LANGUAGE = os.getenv('LANGUAGE', 'english')  # english 或 chinese
 
@@ -19,11 +19,11 @@ API_TYPE = os.getenv('API_TYPE', 'ollama')  # ollama, zhipu, openai, bedrock
 # Ollama 配置
 # ============================================================
 OLLAMA_CONFIG = {
-    "api_url": os.getenv('OLLAMA_API_URL', 'http://localhost:11434/v1/chat/completions'),
+    "api_url": os.getenv('OLLAMA_API_URL', 'http://localhost:11434'),
     "model_name": None,
     "timeout": int(os.getenv('OLLAMA_TIMEOUT', '120')),
-    "max_tokens": int(os.getenv('OLLAMA_MAX_TOKENS', '2000')),
-    "temperature": float(os.getenv('OLLAMA_TEMPERATURE', '0'))
+    "max_tokens": int(os.getenv('OLLAMA_MAX_TOKENS', '512')),
+    "temperature": float(os.getenv('OLLAMA_TEMPERATURE', '0.1'))
 }
 
 # ============================================================
@@ -31,7 +31,7 @@ OLLAMA_CONFIG = {
 # ============================================================
 ZHIPU_CONFIG = {
     "api_key": os.getenv('ZHIPU_API_KEY', ''),
-    "model_name": os.getenv('ZHIPU_MODEL_NAME', 'glm-4v-flash'),
+    "model_name": os.getenv('ZHIPU_MODEL_NAME', 'glm-4v-plus'),
     "timeout": int(os.getenv('ZHIPU_TIMEOUT', '120'))
 }
 
@@ -46,7 +46,7 @@ OPENAI_CONFIG = {
 }
 
 # ============================================================
-# Bedrock 配置 (API_TYPE='bedrock' 时使用)
+# Bedrock 配置
 # ============================================================
 BEDROCK_CONFIG = {
     "model_id": os.getenv('BEDROCK_MODEL_ID', 'anthropic.claude-3-haiku-20240307-v1:0'),
@@ -73,101 +73,199 @@ def validate_config():
         return False
     return True
 
-# ============================================================
-# 语言配置
-# ============================================================
-
-# 中文配置
-CHINESE_CONFIG = {
-    "SYSTEM_PROMPT": """你是一个图像分析助手。请按以下步骤分析：
-
-第一步：仔细观察图片，判断：
-1. 图片中是否有自行车？
-2. 如果有自行车，自行车上是否有牌照（长方形牌子）或带有数字/字母的牌子？
-
-第二步：输出你的分析过程。
-
-第三步：输出最终结论，格式为：【结论】是 或 【结论】否
-
-判断规则：
-- 只有当【图片中有自行车】且【自行车上没有牌照/数字字母牌子】时，结论为"是"
-- 其他所有情况（没有自行车、有自行车但有牌照、无法确定等），结论都为"否"
-
-示例1：
-【分析】图片中有一辆蓝色自行车，车身上没有发现任何牌照或数字字母牌子。
-【结论】是
-
-示例2：
-【分析】图片中有一辆黑色自行车，车架上有白色数字牌照"京A12345"。
-【结论】否
-
-示例3：
-【分析】图片中是一辆汽车，没有自行车。
-【结论】否""",
-    "USER_QUESTION": "请分析这张图片：是否有自行车，且自行车上没有牌照或数字字母牌子？",
-    "EXPECTED_YES": "是",
-    "EXPECTED_NO": "否"
-}
-
-# 英文配置
-ENGLISH_CONFIG = {
-    "SYSTEM_PROMPT": """You are an image analysis assistant. Follow these steps:
-
-Step 1: Analyze the image:
-1. Is there a bicycle in the image?
-2. If there is a bicycle, does it have any license plate (rectangular plate) or plate with numbers/letters?
-
-Step 2: Output your reasoning process.
-
-Step 3: Output the final answer in format: 【Answer】YES or 【Answer】NO
-
-Rules:
-- Answer YES only if: [there is a bicycle] AND [the bicycle has NO license plate/plate with numbers/letters]
-- Answer NO for all other cases (no bicycle, bicycle with plate, uncertain, etc.)
-
-Examples:
-【Reasoning】There is a blue bicycle in the image. No license plate or plate with numbers/letters is found on the bicycle.
-【Answer】YES
-
-【Reasoning】There is a black bicycle with a white license plate "京A12345" on the frame.
-【Answer】NO
-
-【Reasoning】This is a car, not a bicycle.
-【Answer】NO""",
-    "USER_QUESTION": "Analyze this image: Is there a bicycle with NO license plate or plate with numbers/letters?",
-    "EXPECTED_YES": "YES",
-    "EXPECTED_NO": "NO"
-}
 
 # ============================================================
-# 当前激活的语言配置（根据 LANGUAGE 变量选择）
+# 按模型分开的提示词配置
 # ============================================================
-if LANGUAGE == 'chinese':
-    CURRENT_CONFIG = CHINESE_CONFIG
-else:
-    CURRENT_CONFIG = ENGLISH_CONFIG
+
+# 提示词配置基类
+class PromptConfig:
+    def __init__(self, system_prompt: str, user_question: str, expected_yes: str, expected_no: str):
+        self.system_prompt = system_prompt
+        self.user_question = user_question
+        self.expected_yes = expected_yes
+        self.expected_no = expected_no
+
+
+# ============================================================
+# 智谱 GLM-4V-Plus 配置（中文，简洁版）
+# ============================================================
+PROMPT_ZHIPU_GLM4V_PLUS = PromptConfig(
+    system_prompt="判断图片中的自行车是否有牌照。只回答'有牌照'或'没有牌照'，不要输出其他内容。",
+    user_question="这张图片中的自行车有牌照吗？",
+    expected_yes="是",
+    expected_no="否"
+)
+
+# ============================================================
+# 智谱 GLM-4V-Flash 配置（中文）
+# ============================================================
+PROMPT_ZHIPU_GLM4V_FLASH = PromptConfig(
+    system_prompt="判断图片中的自行车是否有牌照。只回答'有牌照'或'没有牌照'。",
+    user_question="自行车有牌照吗？",
+    expected_yes="是",
+    expected_no="否"
+)
+
+# ============================================================
+# Ollama 模型配置（英文，因为很多模型中文支持不好）
+# ============================================================
+PROMPT_OLLAMA_LLAMA32_VISION = PromptConfig(
+    system_prompt="Determine if the bicycle has a license plate. Answer only 'YES' or 'NO'.",
+    user_question="Does this bicycle have a license plate?",
+    expected_yes="YES",
+    expected_no="NO"
+)
+
+PROMPT_OLLAMA_LLAVA = PromptConfig(
+    system_prompt="Does the bicycle have a license plate? Answer only YES or NO.",
+    user_question="License plate on this bicycle?",
+    expected_yes="YES",
+    expected_no="NO"
+)
+
+PROMPT_OLLAMA_LLAVA_PHI3 = PromptConfig(
+    system_prompt="Bicycle license plate? Answer YES or NO only.",
+    user_question="License plate?",
+    expected_yes="YES",
+    expected_no="NO"
+)
+
+PROMPT_OLLAMA_MOONDREAM = PromptConfig(
+    system_prompt="Answer YES if bicycle has NO license plate. Answer NO otherwise.",
+    user_question="No license plate on bicycle?",
+    expected_yes="YES",
+    expected_no="NO"
+)
+
+# ============================================================
+# OpenAI GPT-4V 配置（英文）
+# ============================================================
+PROMPT_OPENAI_GPT4V = PromptConfig(
+    system_prompt="Determine if the bicycle has a license plate. Answer only 'YES' or 'NO'.",
+    user_question="Does this bicycle have a license plate? Answer YES or NO.",
+    expected_yes="YES",
+    expected_no="NO"
+)
+
+# ============================================================
+# Bedrock Claude 配置（英文）
+# ============================================================
+PROMPT_BEDROCK_CLAUDE = PromptConfig(
+    system_prompt="Determine if the bicycle has a license plate. Answer only YES or NO.",
+    user_question="Does this bicycle have a license plate?",
+    expected_yes="YES",
+    expected_no="NO"
+)
+
+# ============================================================
+# 默认提示词（兜底）
+# ============================================================
+PROMPT_DEFAULT = PromptConfig(
+    system_prompt="Determine if the bicycle has a license plate. Answer YES or NO only.",
+    user_question="License plate on bicycle?",
+    expected_yes="YES",
+    expected_no="NO"
+)
+
+
+# ============================================================
+# 根据 API 类型和模型名称获取提示词配置
+# ============================================================
+def get_prompt_config(api_type: str = None, model_name: str = None) -> PromptConfig:
+    """根据 API 类型和模型名称返回对应的提示词配置"""
+    
+    if api_type is None:
+        api_type = API_TYPE
+    
+    if model_name is None:
+        # 尝试从全局 API_CLIENT 获取模型名
+        try:
+            from bicycle_rule import API_CLIENT
+            model_name = API_CLIENT.get_model_name()
+        except:
+            model_name = ""
+    
+    model_name_lower = model_name.lower() if model_name else ""
+    
+    # 智谱AI 配置
+    if api_type == 'zhipu':
+        if 'glm-4v-plus' in model_name_lower:
+            return PROMPT_ZHIPU_GLM4V_PLUS
+        elif 'glm-4v-flash' in model_name_lower:
+            return PROMPT_ZHIPU_GLM4V_FLASH
+        else:
+            return PROMPT_ZHIPU_GLM4V_PLUS  # 默认用 plus 配置
+    
+    # Ollama 配置
+    elif api_type == 'ollama':
+        if 'llama3.2-vision' in model_name_lower:
+            return PROMPT_OLLAMA_LLAMA32_VISION
+        elif 'llava-phi3' in model_name_lower:
+            return PROMPT_OLLAMA_LLAVA_PHI3
+        elif 'moondream' in model_name_lower:
+            return PROMPT_OLLAMA_MOONDREAM
+        elif 'llava' in model_name_lower:
+            return PROMPT_OLLAMA_LLAVA
+        else:
+            return PROMPT_OLLAMA_LLAMA32_VISION  # 默认用 llama3.2 配置
+    
+    # OpenAI 配置
+    elif api_type == 'openai':
+        return PROMPT_OPENAI_GPT4V
+    
+    # Bedrock 配置
+    elif api_type == 'bedrock':
+        return PROMPT_BEDROCK_CLAUDE
+    
+    # 默认配置
+    else:
+        return PROMPT_DEFAULT
+
+
+# ============================================================
+# 兼容旧代码的 CURRENT_CONFIG（保持原有结构，但内容根据模型动态获取）
+# ============================================================
+class DynamicConfig:
+    """动态配置类，根据当前 API 和模型返回对应配置"""
+    
+    def __getitem__(self, key):
+        prompt_config = get_prompt_config()
+        if key == "SYSTEM_PROMPT":
+            return prompt_config.system_prompt
+        elif key == "USER_QUESTION":
+            return prompt_config.user_question
+        elif key == "EXPECTED_YES":
+            return prompt_config.expected_yes
+        elif key == "EXPECTED_NO":
+            return prompt_config.expected_no
+        return ""
+    
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except:
+            return default
+
+
+# 当前激活的语言/模型配置（动态获取）
+CURRENT_CONFIG = DynamicConfig()
+
 
 # ============================================================
 # 文件名验证规则
 # ============================================================
-
-# 期望允许的字符（有自行车且无车牌）-> 应该回答"是"（中文）或"Yes"（英文）
-# 注意：文件名仍使用中文标识
 YES_CHARS = {'是'}
-
-# 期望不允许的字符（其他情况）-> 应该回答"否"（中文）或"No"（英文）
 NO_CHARS = {'否'}
 
 # ============================================================
 # 支持的图片格式
 # ============================================================
-
 SUPPORTED_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.bmp', '.gif'}
 
 # ============================================================
 # 应用配置
 # ============================================================
-
 DEFAULT_STOP_ON_FAILURE = os.getenv('DEFAULT_STOP_ON_FAILURE', 'True').lower() == 'true'
 DEFAULT_STOP_ON_VALIDATION_ERROR = os.getenv('DEFAULT_STOP_ON_VALIDATION_ERROR', 'True').lower() == 'true'
 DEFAULT_CSV_FILENAME = os.getenv('DEFAULT_CSV_FILENAME', 'detection_results.csv')

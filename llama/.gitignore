@@ -1,0 +1,40 @@
+# Python 编译文件
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# 虚拟环境
+venv/
+env/
+.venv/
+.env/
+
+# IDE 配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 配置文件（可能包含敏感信息）
+*.config.json
+llama_config.json
+
+# 模型文件（通常很大，不上传）
+models/*.gguf
+models/*.bin
+*.gguf
+*.bin
+
+# 日志和临时文件
+*.log
+*.tmp
+*.bak
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 下载缓存
+huggingface_cache/
+llama.cpp/

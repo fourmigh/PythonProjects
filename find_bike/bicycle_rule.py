@@ -12,10 +12,10 @@ from config import (
     CURRENT_CONFIG, SUPPORTED_EXTENSIONS,
     DEFAULT_CSV_FILENAME, API_TYPE
 )
-# from api_client import create_api_client
 from api_client import create_api_client
 from prompt_optimizer import PromptValidator
 from base_prompt_optimizer import BasePromptOptimizer
+from ocr_parser import parse_ocr_result
 
 
 # ============================================================
@@ -79,8 +79,8 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
     """解析模型回答，返回 (是否符合条件, 推理过程)
     
     业务逻辑：
-    - 模型说"是" → 没有牌照 → 允许 → 返回 True
-    - 模型说"否" → 有牌照或无自行车 → 不允许 → 返回 False
+    - 无牌照 → 允许 → 返回 True
+    - 有牌照 → 不允许 → 返回 False
     """
     reasoning = ""
     answer_original = answer
@@ -90,9 +90,34 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
     print(f"\n  [解析调试] 原始回答: {repr(answer_original)}")
     
     # ============================================================
+    # 自然语言理解（优先处理，因为模型经常不按格式输出）
+    # ============================================================
+    
+    # 提取第一句或主要判断
+    first_line = answer_original.split('\n')[0].strip()
+    
+    # 明确判断"有牌照"
+    if '有牌照' in answer_lower and '没有牌照' not in answer_lower:
+        print(f"  [解析调试] 自然语言: 有牌照 -> 返回 False (不允许)")
+        return False, answer_original
+    
+    # 明确判断"没有牌照"或"无牌照"
+    if '没有牌照' in answer_lower or '无牌照' in answer_lower:
+        print(f"  [解析调试] 自然语言: 无牌照 -> 返回 True (允许)")
+        return True, answer_original
+    
+    # 判断第一行是否为简单结论
+    if first_line in ['有牌照', '无牌照', '没有牌照']:
+        if first_line == '有牌照':
+            print(f"  [解析调试] 首行结论: 有牌照 -> 返回 False")
+            return False, answer_original
+        else:
+            print(f"  [解析调试] 首行结论: 无牌照 -> 返回 True")
+            return True, answer_original
+    
+    # ============================================================
     # 优先：快速解析中文【结论】格式
     # ============================================================
-    # 匹配 【结论】是 或 【结论】否
     match_cn = re.search(r'【结论】\s*([是否])', answer_original)
     if match_cn:
         result_char = match_cn.group(1)
@@ -119,11 +144,20 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
         else:
             return False, ""
     
+    # 匹配 "答案：是" 或 "答案：否" 格式
+    match_answer = re.search(r'答案[：:]\s*([是否])', answer_original)
+    if match_answer:
+        result_char = match_answer.group(1)
+        print(f"  [解析调试] 答案格式 -> 结论: {result_char}")
+        if result_char == '是':
+            return True, ""
+        else:
+            return False, ""
+    
     # ============================================================
     # 定义解析规则数组
     # ============================================================
     parse_rules = [
-        # 格式1: REASONING: ... CONCLUSION: YES/NO
         {
             "split_marker": "CONCLUSION:",
             "reasoning_marker": "REASONING:",
@@ -132,7 +166,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
             "need_strip_marker": True,
             "name": "REASONING/CONCLUSION"
         },
-        # 格式2: 【Reasoning】...【Answer】YES/NO
         {
             "split_marker": "【Answer】",
             "reasoning_marker": "【Reasoning】",
@@ -141,7 +174,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
             "need_strip_marker": True,
             "name": "【Reasoning】/【Answer】"
         },
-        # 格式3: 【分析】...【结论】是/否
         {
             "split_marker": "【结论】",
             "reasoning_marker": "【分析】",
@@ -150,7 +182,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
             "need_strip_marker": True,
             "name": "【分析】/【结论】"
         },
-        # 格式4: [Reasoning]...[Answer] YES/NO
         {
             "split_marker": "[Answer]",
             "reasoning_marker": "[Reasoning]",
@@ -159,7 +190,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
             "need_strip_marker": True,
             "name": "[Reasoning]/[Answer]"
         },
-        # 格式5: **Answer:** YES/NO
         {
             "split_marker": "**Answer:**",
             "reasoning_marker": None,
@@ -168,7 +198,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
             "need_strip_marker": False,
             "name": "**Answer:**"
         },
-        # 格式6: Therefore, the answer is: YES/NO
         {
             "split_marker": "therefore, the answer is:",
             "reasoning_marker": None,
@@ -177,7 +206,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
             "need_strip_marker": False,
             "name": "Therefore"
         },
-        # 格式7: answer: YES/NO
         {
             "split_marker": "answer:",
             "reasoning_marker": None,
@@ -193,14 +221,12 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
     # ============================================================
     for rule in parse_rules:
         split_marker = rule["split_marker"]
-        # 对于大小写敏感的标记，使用原始字符串；否则使用小写
         if split_marker in ["therefore, the answer is:", "answer:"]:
             search_str = answer_lower
             marker_lower = split_marker.lower()
             if marker_lower in search_str:
                 parts = search_str.split(marker_lower)
                 if len(parts) >= 2:
-                    # 提取推理过程
                     if rule["reasoning_marker"] and rule["need_strip_marker"]:
                         reasoning_part = parts[rule["reasoning_index"]]
                         reasoning_marker = rule["reasoning_marker"].lower()
@@ -208,7 +234,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
                     else:
                         reasoning = parts[rule["reasoning_index"]].strip()
                     
-                    # 提取结论
                     conclusion_part = parts[rule["conclusion_index"]].strip().upper()
                     print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论: {conclusion_part}")
                     
@@ -217,11 +242,9 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
                     else:
                         return False, reasoning
         else:
-            # 大小写敏感的标记
             if split_marker in answer_original:
                 parts = answer_original.split(split_marker)
                 if len(parts) >= 2:
-                    # 提取推理过程
                     if rule["reasoning_marker"] and rule["need_strip_marker"]:
                         reasoning_part = parts[rule["reasoning_index"]]
                         reasoning_marker = rule["reasoning_marker"]
@@ -229,7 +252,6 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
                     else:
                         reasoning = parts[rule["reasoning_index"]].strip()
                     
-                    # 提取结论 - 只取第一行或第一个字符
                     conclusion_part = parts[rule["conclusion_index"]].strip()
                     if '\n' in conclusion_part:
                         conclusion_part = conclusion_part.split('\n')[0].strip()
@@ -237,13 +259,11 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
                     conclusion_upper = conclusion_part.upper()
                     print(f"  [解析调试] 匹配到 {rule['name']} 格式 -> 结论部分: {conclusion_part}")
                     
-                    # 中文判断
                     if conclusion_part == '是' or conclusion_part.startswith('是'):
                         return True, reasoning
                     if conclusion_part == '否' or conclusion_part.startswith('否'):
                         return False, reasoning
                     
-                    # 英文判断
                     if "YES" in conclusion_upper:
                         return True, reasoning
                     if "NO" in conclusion_upper:
@@ -280,6 +300,15 @@ def parse_bicycle_response(answer: str) -> Tuple[bool, str]:
     if "是" in answer_clean and "否" not in answer_clean:
         return True, ""
     
+    # 最后兜底：检查是否有"牌照"关键词
+    if '牌照' in answer_lower:
+        if '没有' in answer_lower or '无' in answer_lower:
+            print(f"  [解析调试] 关键词兜底: 无牌照 -> 返回 True")
+            return True, ""
+        else:
+            print(f"  [解析调试] 关键词兜底: 有牌照 -> 返回 False")
+            return False, ""
+    
     print(f"  [解析调试] 未匹配任何规则，默认返回 False")
     return False, ""
 
@@ -297,18 +326,32 @@ def has_bicycle_registration_plate(image_path: str, system_prompt: str, user_pro
     if debug:
         print(f"\n  [API原始返回]")
         print(f"    success: {success}")
-        print(f"    answer: {answer}")
+        print(f"    answer: {answer[:200] if answer else 'None'}")
         print(f"    reasoning: {reasoning if reasoning else 'None'}")
         print(f"    elapsed: {elapsed:.2f}s")
     
     if not success:
         return False, False, elapsed, answer, reasoning
     
-    # 解析模型回答
-    is_allowed, reasoning_from_answer = parse_bicycle_response(answer)
+    # 获取当前模型名称
+    model_name = API_CLIENT.get_model_name().lower()
+    
+    # 初始化变量
+    is_allowed = False
+    reasoning_from_answer = ""
+    
+    # 根据模型类型选择解析方式
+    if 'ocr' in model_name:
+        if debug:
+            print(f"  [调试] 使用 OCR 解析模式")
+        is_allowed, reasoning_from_answer = parse_ocr_result(answer)
+    else:
+        if debug:
+            print(f"  [调试] 使用标准解析模式")
+        is_allowed, reasoning_from_answer = parse_bicycle_response(answer)
     
     if debug:
-        print(f"  [调试] parse_bicycle_response 返回: is_allowed={is_allowed}, reasoning_from_answer={reasoning_from_answer if reasoning_from_answer else 'None'}")
+        print(f"  [调试] 解析结果: is_allowed={is_allowed}, reasoning={reasoning_from_answer[:100] if reasoning_from_answer else 'None'}")
     
     if not reasoning_from_answer and reasoning:
         reasoning_from_answer = reasoning
@@ -452,11 +495,10 @@ def batch_detection_mode(folder_path: str, system_prompt: str, user_prompt: str,
         if reasoning:
             print(f"   [推理过程]: {reasoning}")
         
-        # 记录结果时包含期望值
         results.append({
             "filename": img.name, 
             "is_allowed": is_allowed, 
-            "expected": expected,  # 添加期望值
+            "expected": expected,
             "success": True
         })
         
@@ -542,7 +584,12 @@ def validate_and_save_prompts(system_prompt: str = None, user_prompt: str = None
         if reasoning:
             print(f"  推理过程:\n{reasoning}")
         
-        actual, _ = parse_bicycle_response(answer)
+        # 根据模型类型选择解析方式
+        model_name = API_CLIENT.get_model_name().lower()
+        if 'ocr' in model_name:
+            actual, _ = parse_ocr_result(answer)
+        else:
+            actual, _ = parse_bicycle_response(answer)
         
         act_str = "是" if actual else "否"
         if actual == expected:

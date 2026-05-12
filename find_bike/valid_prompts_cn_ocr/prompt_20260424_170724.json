@@ -1,0 +1,14 @@
+{
+  "timestamp": "20260430_000003",
+  "datetime": "2026-04-30T00:00:03",
+  "accuracy": 100.0,
+  "api_type": "zhipu",
+  "model_name": "glm-ocr",
+  "user_prompt": "请用一句话描述这张图片的内容",
+  "system_prompt": "你是一个图像识别助手。请仔细观察图片，用一句话描述图片中的主要内容和细节。",
+  "test_info": {
+    "total": 44,
+    "correct": 44,
+    "note": "OCR识别模式，通过描述中的车牌号判断"
+  }
+}
