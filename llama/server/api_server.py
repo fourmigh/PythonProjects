@@ -53,8 +53,7 @@ class APIServerManager:
         
         return cmd
     
-    def start_server(self, model_path: str, host: str = None, port: int = None,
-                     start_proxy: bool = False):
+    def start_server(self, model_path: str, host: str = None, port: int = None):
         """启动 API 服务器"""
         if host is None:
             host = self.config.get("server", {}).get("host", "127.0.0.1")
@@ -64,38 +63,23 @@ class APIServerManager:
         print(f"\n[SERVER] 启动 API 服务器")
         print(f"   地址: http://{host}:{port}")
         print(f"   模型: {Path(model_path).name}")
-        print(f"   API 端点: http://{host}:{port}/v1/chat/completions")
-        print(f"   兼容 OpenAI API\n")
+        print("\n   使用提示:")
+        print(f"   - API 端点: http://{host}:{port}/v1/chat/completions")
+        print(f"   - 兼容 OpenAI API")
+        print(f"   - 按 Ctrl+C 停止服务器\n")
         
         cmd = self._build_command(model_path, host, port)
+        
         if not cmd:
             return
         
         try:
-            server_proc = subprocess.Popen(cmd)
+            self.current_process = subprocess.Popen(cmd)
             print("[OK] 服务器运行中...")
-
-            if start_proxy:
-                proxy_port = 11434
-                print(f"\n[PROXY] 启动 Ollama 兼容代理 (端口 {proxy_port})...")
-                try:
-                    from server.ollama_proxy import create_app
-                    app = create_app(f"http://{host}:{port}")
-                    from werkzeug.serving import run_simple
-                    run_simple("0.0.0.0", proxy_port, app)
-                except KeyboardInterrupt:
-                    print("\n[STOP] 正在停止...")
-                finally:
-                    server_proc.terminate()
-                    server_proc.wait()
-                    print("[OK] 服务器和代理已停止")
-            else:
-                server_proc.wait()
-                
+            self.current_process.wait()
         except KeyboardInterrupt:
             print("\n[STOP] 正在停止服务器...")
-            server_proc.terminate()
-            server_proc.wait()
+            self.current_process.terminate()
             print("[OK] 服务器已停止")
     
     def start_server_interactive(self, model_path: str):
@@ -116,7 +100,4 @@ class APIServerManager:
         else:
             port = server_config.get('port', 8080)
         
-        proxy_choice = input("同时启动 Ollama 兼容代理 (端口 11434)? (y/N): ").strip().lower()
-        start_proxy = proxy_choice == 'y'
-        
-        self.start_server(model_path, host, port, start_proxy)
+        self.start_server(model_path, host, port)

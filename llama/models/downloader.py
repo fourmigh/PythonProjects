@@ -7,6 +7,7 @@
 
 import os
 import sys
+import tqdm
 from pathlib import Path
 from typing import List, Dict, Optional
 
@@ -14,6 +15,10 @@ from typing import List, Dict, Optional
 # 在导入 huggingface_hub 之前设置环境变量
 # hf-mirror.com 是国内常用的 Hugging Face 镜像站，无需翻墙即可访问
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
+# 全局超时，避免卡死
+os.environ['HF_HUB_DEFAULT_TIMEOUT'] = '15'
+# tqdm 进度条宽度，防止超长文件名折行
+os.environ['TQDM_NCOLS'] = '80'
 
 # 检查 huggingface_hub 是否可用
 try:
@@ -59,113 +64,62 @@ class ModelDownloader:
         
         print(f"\n[SEARCH] 正在搜索: {query}")
         print("   (这可能需要几秒钟)...")
-        
-        try:
-            api = HfApi()
-            # 搜索模型，按下载量排序
-            models = api.list_models(
-                search=query,
-                limit=limit,
-                sort="downloads",
-                direction=-1
-            )
-            
-            results = []
-            for model in models:
-                # 检查是否有 GGUF 文件
-                try:
-                    files = api.list_repo_files(model.modelId)
-                    gguf_files = [f for f in files if f.endswith('.gguf')]
-                    
-                    if gguf_files:
-                        # 优先选择 Q4_K_M 版本
-                        main_gguf = self._get_preferred_gguf(gguf_files)
-                        if main_gguf:
-                            results.append({
-                                "repo_id": model.modelId,
-                                "filename": main_gguf,
-                                "downloads": model.downloads or 0,
-                                "likes": model.likes or 0,
-                                "tags": model.tags or []
-                            })
-                except Exception:
-                    continue
-            
-            return results
-            
-        except Exception as e:
-            print(f"[X] 搜索失败: {e}")
-            print("   提示: 镜像站可能不支持搜索功能，请使用手动输入仓库 ID 的方式")
-            return []
-    
-    # 精选模型列表（当搜索不可用时的回退方案）
-    CURATED_MODELS = [
-        {"repo_id": "Qwen/Qwen2.5-7B-Instruct-GGUF",       "desc": "通义千问 7B，中文友好"},
-        {"repo_id": "Qwen/Qwen2.5-14B-Instruct-GGUF",      "desc": "通义千问 14B，需要更多内存"},
-        {"repo_id": "Qwen/Qwen2.5-3B-Instruct-GGUF",       "desc": "通义千问 3B，轻量级"},
-        {"repo_id": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",     "desc": "通义千问 1.5B，超轻量"},
-        {"repo_id": "Qwen/Qwen2.5-0.5B-Instruct-GGUF",     "desc": "通义千问 0.5B，最小版本"},
-        {"repo_id": "TheBloke/Llama-2-7B-Chat-GGUF",       "desc": "Llama 2 7B"},
-        {"repo_id": "TheBloke/Llama-2-13B-Chat-GGUF",      "desc": "Llama 2 13B"},
-        {"repo_id": "TheBloke/Mistral-7B-Instruct-v0.2-GGUF", "desc": "Mistral 7B"},
-        {"repo_id": "TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF", "desc": "Mixtral 8x7B 混合专家"},
-        {"repo_id": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF", "desc": "Llama 3.1 8B"},
-        {"repo_id": "microsoft/Phi-3-mini-4k-instruct-gguf", "desc": "Phi-3 mini 3.8B"},
-    ]
 
-    def list_popular_models(self, limit_per_query: int = 10) -> List[Dict]:
-        """
-        搜索热门 GGUF 模型，返回去重后按下载量排序的模型列表
-        :param limit_per_query: 每个关键词返回结果数量
-        :return: 模型信息列表（失败时返回空列表）
-        """
-        if not HF_AVAILABLE:
-            return []
+        endpoints = [
+            os.environ.get('HF_ENDPOINT', 'https://hf-mirror.com'),
+            'https://huggingface.co',
+        ]
+        endpoints = list(dict.fromkeys(endpoints))
 
-        queries = ['gguf', 'gguf chinese', 'gguf instruct']
-        seen = set()
-        results = []
-
-        api = HfApi()
-        for query in queries:
+        for ep in endpoints:
             try:
+                api = HfApi(endpoint=ep)
                 models = api.list_models(
                     search=query,
-                    limit=limit_per_query,
+                    limit=limit,
                     sort="downloads",
-                    direction=-1
                 )
+                
+                results = []
                 for model in models:
-                    if model.modelId in seen:
-                        continue
-                    seen.add(model.modelId)
                     try:
                         files = api.list_repo_files(model.modelId)
                         gguf_files = [f for f in files if f.endswith('.gguf')]
-                        if not gguf_files:
-                            continue
+                        if gguf_files:
+                            main_gguf = self._get_preferred_gguf(gguf_files)
+                            if main_gguf:
+                                results.append({
+                                    "repo_id": model.modelId,
+                                    "filename": main_gguf,
+                                    "downloads": model.downloads or 0,
+                                    "likes": model.likes or 0,
+                                    "tags": model.tags or []
+                                })
                     except Exception:
                         continue
-                    results.append({
-                        "repo_id": model.modelId,
-                        "downloads": model.downloads or 0,
-                        "likes": model.likes or 0,
-                        "tags": model.tags or []
-                    })
-            except Exception:
+
+                if results:
+                    return results
+            except Exception as e:
+                print(f"  [WARN] 端点 {ep} 搜索失败: {e}")
                 continue
 
-        results.sort(key=lambda x: x["downloads"], reverse=True)
-        return results
-
+        print("[X] 搜索失败: 所有端点均不可用")
+        print("   提示: 请使用手动输入仓库 ID 的方式")
+        return []
+    
     def _get_preferred_gguf(self, files):
         """从 GGUF 文件列表中选择优先的文件"""
+        # 优先级顺序（从高到低）
         priorities = ['q4_k_m', 'q5_k_m', 'q4_k_s', 'q5_k_s', 'q4_0', 'q5_0', 'q8_0']
         
         for priority in priorities:
             for f in files:
-                if priority in f.lower():
+                name = f.lower() if isinstance(f, str) else f.rfilename.lower()
+                if priority in name:
                     return f
+        
+        # 如果没有匹配的优先级，返回第一个
         return files[0] if files else None
     
     def list_model_files(self, repo_id: str) -> List[Dict]:
@@ -177,32 +131,40 @@ class ModelDownloader:
         if not HF_AVAILABLE:
             return []
         
-        try:
-            api = HfApi()
-            files = api.list_repo_files(repo_id)
-            gguf_files = [f for f in files if f.endswith('.gguf')]
-            
-            results = []
-            for f in gguf_files:
-                name_lower = f.lower()
-                quant = self._detect_quantization(name_lower)
-                
-                results.append({
-                    "filename": f,
-                    "size_bytes": 0,
-                    "size_mb": 0,
-                    "size_gb": 0,
-                    "quantization": quant
-                })
-            
-            # 按文件名排序
-            results.sort(key=lambda x: x["filename"])
-            return results
-            
-        except Exception as e:
-            print(f"[X] 获取文件列表失败: {e}")
-            print("   提示: 请检查仓库 ID 是否正确，或网络连接是否正常")
-            return []
+        endpoints = [
+            os.environ.get('HF_ENDPOINT', 'https://hf-mirror.com'),
+            'https://huggingface.co',
+        ]
+        endpoints = list(dict.fromkeys(endpoints))
+
+        for ep in endpoints:
+            try:
+                api = HfApi(endpoint=ep)
+                files = api.list_repo_files(repo_id)
+                gguf_files = [f for f in files if f.endswith('.gguf')]
+
+                results = []
+                for f in gguf_files:
+                    name_lower = f.lower()
+                    quant = self._detect_quantization(name_lower)
+                    results.append({
+                        "filename": f,
+                        "size_bytes": 0,
+                        "size_mb": 0,
+                        "size_gb": 0,
+                        "quantization": quant
+                    })
+
+                results.sort(key=lambda x: x["size_mb"])
+                if results:
+                    return results
+            except Exception as e:
+                print(f"  [WARN] 端点 {ep} 获取文件列表失败: {e}")
+                continue
+
+        print(f"[X] 获取文件列表失败: 仓库 {repo_id} 无 GGUF 文件或端点均不可用")
+        print("   提示: 请检查仓库 ID 是否正确，或网络连接是否正常")
+        return []
     
     def _detect_quantization(self, filename: str) -> str:
         """从文件名检测量化类型"""
@@ -258,11 +220,29 @@ class ModelDownloader:
             print("   进度: 开始下载（大文件可能需要较长时间）...")
         
         try:
-            downloaded_path = hf_hub_download(
-                repo_id=repo_id,
-                filename=filename,
-                local_dir=self.models_path,
-            )
+            # 单行进度条
+            tqdm.tqdm.position = 0
+            tqdm.tqdm.leave = False
+
+            # 猴子补丁：所有 tqdm 实例强制 ncols=80 并截断超长描述
+            _orig_tqdm_init = tqdm.tqdm.__init__
+            def _patched_tqdm_init(self, *args, **kwargs):
+                kwargs['ncols'] = 120
+                kwargs['bar_format'] = '{desc}: {percentage:5.2f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]'
+                desc = kwargs.get('desc', '')
+                if len(desc) > 35:
+                    kwargs['desc'] = desc[:32] + '...'
+                return _orig_tqdm_init(self, *args, **kwargs)
+            tqdm.tqdm.__init__ = _patched_tqdm_init
+
+            try:
+                downloaded_path = hf_hub_download(
+                    repo_id=repo_id,
+                    filename=filename,
+                    local_dir=self.models_path,
+                )
+            finally:
+                tqdm.tqdm.__init__ = _orig_tqdm_init
             
             # 获取下载后的文件信息
             downloaded_file = Path(downloaded_path)
@@ -284,24 +264,82 @@ class ModelDownloader:
             print("   - 稍后重试")
             print("   - 尝试使用其他镜像（修改代码中的 HF_ENDPOINT）")
             return False
-    
-    def search_and_download_interactive(self) -> bool:
-        """交互式搜索并下载模型（保留此方法以保持向后兼容）"""
-        return self.list_and_download_interactive()
 
+    # 精选模型列表（当搜索不可用时的回退方案）
+    CURATED_MODELS = [
+        {"repo_id": "Qwen/Qwen2.5-7B-Instruct-GGUF",       "desc": "通义千问 7B，中文友好"},
+        {"repo_id": "Qwen/Qwen2.5-14B-Instruct-GGUF",      "desc": "通义千问 14B，需要更多内存"},
+        {"repo_id": "Qwen/Qwen2.5-3B-Instruct-GGUF",       "desc": "通义千问 3B，轻量级"},
+        {"repo_id": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",     "desc": "通义千问 1.5B，超轻量"},
+        {"repo_id": "Qwen/Qwen2.5-0.5B-Instruct-GGUF",     "desc": "通义千问 0.5B，最小版本"},
+        {"repo_id": "TheBloke/Llama-2-7B-Chat-GGUF",       "desc": "Llama 2 7B"},
+        {"repo_id": "TheBloke/Llama-2-13B-Chat-GGUF",      "desc": "Llama 2 13B"},
+        {"repo_id": "TheBloke/Mistral-7B-Instruct-v0.2-GGUF", "desc": "Mistral 7B"},
+        {"repo_id": "TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF", "desc": "Mixtral 8x7B 混合专家"},
+        {"repo_id": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF", "desc": "Llama 3.1 8B"},
+        {"repo_id": "microsoft/Phi-3-mini-4k-instruct-gguf", "desc": "Phi-3 mini 3.8B"},
+    ]
 
-    def _format_size(self, file_info: Dict) -> str:
-        """格式化文件大小显示"""
-        if file_info.get("size_gb", 0) > 0:
-            if file_info["size_gb"] > 1:
-                return f"{file_info['size_gb']:.2f} GB"
-            elif file_info["size_gb"] > 0.001:
-                return f"{file_info['size_mb']:.0f} MB"
-        return "N/A"
+    def _try_fetch_models(self, queries: List[str], limit_per_query: int, endpoint: str) -> List[Dict]:
+        """用指定 endpoint 尝试获取模型列表，失败返回空列表"""
+        seen = set()
+        results = []
+        try:
+            api = HfApi(endpoint=endpoint)
+            for query in queries:
+                print(f"    [INFO] 搜索 '{query}'...")
+                try:
+                    models = api.list_models(
+                        search=query,
+                        limit=limit_per_query,
+                        sort="downloads",
+                    )
+                    for model in models:
+                        if model.modelId in seen:
+                            continue
+                        seen.add(model.modelId)
+                        results.append({
+                            "repo_id": model.modelId,
+                            "downloads": model.downloads or 0,
+                            "likes": model.likes or 0,
+                            "tags": model.tags or []
+                        })
+                except Exception:
+                    continue
+        except Exception as e:
+            print(f"  [WARN] 端点 {endpoint} 不可用: {e}")
+        return results
+
+    def list_popular_models(self, limit_per_query: int = 10) -> List[Dict]:
+        """
+        搜索热门 GGUF 模型，返回去重后按下载量排序的模型列表
+        :param limit_per_query: 每个关键词返回结果数量
+        :return: 模型信息列表（失败时返回空列表）
+        """
+        if not HF_AVAILABLE:
+            return []
+
+        queries = ['gguf', 'gguf chinese', 'gguf instruct', 'gguf deepseek']
+
+        endpoints = [
+            os.environ.get('HF_ENDPOINT', 'https://hf-mirror.com'),
+            'https://huggingface.co',
+        ]
+        endpoints = list(dict.fromkeys(endpoints))
+
+        results = []
+        for ep in endpoints:
+            print(f"  [INFO] 尝试从 {ep} 获取模型列表...")
+            results = self._try_fetch_models(queries, limit_per_query, ep)
+            if results:
+                break
+
+        results.sort(key=lambda x: x["downloads"], reverse=True)
+        return results
 
     def _display_model_list(self, models: List[Dict], title: str, is_curated: bool = False) -> Optional[str]:
         """
-        统一展示模型列表并提供选择
+        展示模型列表并提供选择
         :param models: 模型列表
         :param title: 列表标题
         :param is_curated: 是否为精选列表（不显示下载/点赞数）
@@ -343,14 +381,28 @@ class ModelDownloader:
             print("[X] 请输入有效的数字")
             return None
 
-    def list_and_download_interactive(self) -> bool:
-        """
-        列出热门模型 → 用户选择序号 → 自动下载最优 GGUF 文件
-        支持三种模式：
-          1. 从热门列表中选择
-          2. 搜索关键词获取列表
-          3. 直接输入仓库 ID
-        """
+    def _format_size(self, file_info: Dict) -> str:
+        """格式化文件大小显示"""
+        if file_info.get("size_gb", 0) > 0:
+            if file_info["size_gb"] > 1:
+                return f"{file_info['size_gb']:.2f} GB"
+            elif file_info["size_gb"] > 0.001:
+                return f"{file_info['size_mb']:.0f} MB"
+        return "N/A"
+
+    def _parse_repo_input(self, repo_input: str) -> str:
+        """从用户输入中提取仓库 ID，支持 URL 格式"""
+        for prefix in ["huggingface.co/", "hf-mirror.com/"]:
+            if prefix in repo_input:
+                parts = repo_input.split(prefix)
+                if len(parts) > 1:
+                    path_parts = parts[1].split("/")
+                    if len(path_parts) >= 2:
+                        return f"{path_parts[0]}/{path_parts[1]}"
+        return repo_input
+
+    def search_and_download_interactive(self) -> bool:
+        """交互式搜索并下载模型"""
         if not HF_AVAILABLE:
             print("[X] 需要安装 huggingface-hub")
             print("   运行: pip install huggingface-hub -i https://pypi.tuna.tsinghua.edu.cn/simple")
@@ -372,7 +424,6 @@ class ModelDownloader:
             is_curated = True
 
         while True:
-            # 展示列表并选择
             if is_curated:
                 title = "[LIST] 精选 GGUF 模型"
             else:
@@ -381,9 +432,8 @@ class ModelDownloader:
             repo_id = self._display_model_list(models, title, is_curated)
 
             if repo_id is not None:
-                break  # 用户选了一个模型
+                break
 
-            # 用户取消或无效选择 → 提供备选入口
             print("\n[INFO] 其他方式:")
             print("  1. 输入关键词搜索")
             print("  2. 直接输入仓库 ID")
@@ -398,14 +448,13 @@ class ModelDownloader:
                 print("[OK] 取消下载")
                 return False
             elif alt == 1:
-                query = input("\n请输入搜索关键词 (例如: Qwen, Llama, Mistral): ").strip()
+                query = input("\n请输入搜索关键词 (例如: Qwen, Llama, DeepSeek): ").strip()
                 if not query:
                     continue
                 search_results = self.search_models(query)
                 if not search_results:
                     print("[X] 未找到相关模型")
                     continue
-                # 展示搜索结果并选择
                 picked = self._display_model_list(search_results, f"[SEARCH] 搜索结果 ({query})")
                 if picked is None:
                     continue
@@ -428,19 +477,7 @@ class ModelDownloader:
             print(f"[X] 仓库 {repo_id} 中未找到 GGUF 文件")
             return False
 
-        # 自动选择最优文件 (Q4_K_M)
-        selected = None
-        for priority in ['q4_k_m', 'q5_k_m', 'q4_k_s', 'q4_0', 'q8_0', 'f16']:
-            for f in files:
-                if priority in f['filename'].lower():
-                    selected = f
-                    break
-            if selected:
-                break
-        if not selected:
-            selected = files[0]
-
-        # 显示文件列表
+        # 显示文件列表并自动推荐
         print(f"\n[FILES] 找到 {len(files)} 个 GGUF 文件:")
         print("-" * 70)
         for i, f in enumerate(files, 1):
@@ -451,6 +488,17 @@ class ModelDownloader:
             print(f"  {i}. {f['filename']}{recommended}")
             print(f"     量化: {f['quantization']} | 大小: {size_display}")
         print("-" * 70)
+
+        selected = None
+        for priority in ['q4_k_m', 'q5_k_m', 'q4_k_s', 'q4_0', 'q8_0', 'f16']:
+            for f in files:
+                if priority in f['filename'].lower():
+                    selected = f
+                    break
+            if selected:
+                break
+        if not selected:
+            selected = files[0]
 
         print(f"\n[INFO] 自动推荐: {selected['filename']} ({selected['quantization']}, {self._format_size(selected)})")
 
@@ -482,32 +530,17 @@ class ModelDownloader:
 
         return self.download_model(repo_id, selected['filename'], show_progress)
 
-    def _parse_repo_input(self, repo_input: str) -> str:
-        """从用户输入中提取仓库 ID，支持 URL 格式"""
-        if "huggingface.co/" in repo_input:
-            parts = repo_input.split("huggingface.co/")
-        elif "hf-mirror.com/" in repo_input:
-            parts = repo_input.split("hf-mirror.com/")
-        else:
-            return repo_input
 
-        if len(parts) > 1:
-            path_parts = parts[1].split("/")
-            if len(path_parts) >= 2:
-                return f"{path_parts[0]}/{path_parts[1]}"
-        return repo_input
-
-    # 测试代码
+# 测试代码
 if __name__ == "__main__":
-    # 测试：列出热门模型并交互式下载
     test_path = Path("./test_models")
     downloader = ModelDownloader(test_path)
-    
+
     print("\n测试下载器:")
     print(f"  huggingface_hub 可用: {downloader.is_available()}")
     print(f"  镜像地址: {os.environ.get('HF_ENDPOINT', 'https://huggingface.co')}")
     print(f"  模型目录: {downloader.models_path}")
-    
+
     if downloader.is_available():
         print("\n[TEST] 获取热门 GGUF 模型列表...")
         models = downloader.list_popular_models()
@@ -515,6 +548,5 @@ if __name__ == "__main__":
             print(f"  找到 {len(models)} 个热门模型")
             for m in models[:5]:
                 print(f"    - {m['repo_id']} (下载: {m['downloads']}, 点赞: {m['likes']})")
-        
-        # 进入交互式下载
-        downloader.list_and_download_interactive()
+
+        downloader.search_and_download_interactive()

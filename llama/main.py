@@ -15,7 +15,6 @@ from models.local_manager import LocalModelManager
 from models.downloader import ModelDownloader
 from chat.conversation import ConversationManager
 from server.api_server import APIServerManager
-from llama_cpp_manager import LLaMACppManager
 
 
 class LLaMAManager:
@@ -42,7 +41,6 @@ class LLaMAManager:
         self.downloader = ModelDownloader(self.models_path)
         self.chat = ConversationManager(self.llama_path, self.config)
         self.server = APIServerManager(self.llama_path, self.config)
-        self.llama_manager = LLaMACppManager(self.llama_path)
     
     def show_menu(self):
         """显示主菜单"""
@@ -52,14 +50,13 @@ class LLaMAManager:
             print("="*50)
             print("1. [CHAT] 交互式对话")
             print("2. [?] 单次提问")
-            print("3. [SERVER] 启动 API 服务器 (可选 Ollama 代理)")
+            print("3. [SERVER] 启动 API 服务器")
             print("4. [FILES] 查看本地模型")
             print("5. [STAR] 设置默认模型")
             print("6. [SETTINGS] 编辑默认参数")
             print("7. [DOWNLOAD] 搜索并下载模型")
             print("8. [DELETE] 删除模型")
-            print("9. [LLAMA] 管理 llama.cpp")
-            print("10. [EXIT] 退出")
+            print("9. [EXIT] 退出")
             print("="*50)
             
             choice = input("请选择操作: ").strip()
@@ -100,9 +97,6 @@ class LLaMAManager:
                 self.local_models.delete_model_interactive()
                 
             elif choice == '9':
-                self.llama_manager.interactive_menu()
-                
-            elif choice == '10':
                 print("[BYE] 再见!")
                 break
                 

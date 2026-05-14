@@ -71,6 +71,7 @@ class ConversationManager:
         """启动交互式对话"""
         print("\n[CHAT] 启动交互式对话模式")
         print("   - 直接输入问题进行对话")
+        print("   - 输入 '/clear' 清除对话历史")
         print("   - 输入 '/exit' 或按 Ctrl+C 退出\n")
         
         cmd = self._build_command(model_path, interactive=True)
@@ -79,9 +80,24 @@ class ConversationManager:
             return
         
         try:
-            subprocess.run(cmd, check=True)
+            self.current_process = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+                universal_newlines=True
+            )
+            
+            for line in self.current_process.stdout:
+                print(line, end='')
+                
         except KeyboardInterrupt:
             print("\n\n[BYE] 再见!")
+        finally:
+            if self.current_process:
+                self.current_process.terminate()
     
     def single_query(self, model_path: str, prompt: str):
         """单次查询"""
