@@ -7,6 +7,7 @@
 
 import os
 import sys
+import time
 import tqdm
 from pathlib import Path
 from typing import List, Dict, Optional
@@ -15,8 +16,6 @@ from typing import List, Dict, Optional
 # 在导入 huggingface_hub 之前设置环境变量
 # hf-mirror.com 是国内常用的 Hugging Face 镜像站，无需翻墙即可访问
 os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-# 全局超时，避免卡死
-os.environ['HF_HUB_DEFAULT_TIMEOUT'] = '15'
 # tqdm 进度条宽度，防止超长文件名折行
 os.environ['TQDM_NCOLS'] = '80'
 
@@ -220,11 +219,9 @@ class ModelDownloader:
             print("   进度: 开始下载（大文件可能需要较长时间）...")
         
         try:
-            # 单行进度条
+            # 猴子补丁：所有 tqdm 实例强制 ncols=120、2 位小数百分比、截断超长描述
             tqdm.tqdm.position = 0
             tqdm.tqdm.leave = False
-
-            # 猴子补丁：所有 tqdm 实例强制 ncols=80 并截断超长描述
             _orig_tqdm_init = tqdm.tqdm.__init__
             def _patched_tqdm_init(self, *args, **kwargs):
                 kwargs['ncols'] = 120
@@ -234,20 +231,29 @@ class ModelDownloader:
                     kwargs['desc'] = desc[:32] + '...'
                 return _orig_tqdm_init(self, *args, **kwargs)
             tqdm.tqdm.__init__ = _patched_tqdm_init
-
             try:
-                downloaded_path = hf_hub_download(
-                    repo_id=repo_id,
-                    filename=filename,
-                    local_dir=self.models_path,
-                )
+                max_retries = 99
+                retry_delay = 5
+                for attempt in range(1, max_retries + 1):
+                    try:
+                        downloaded_path = hf_hub_download(
+                            repo_id=repo_id,
+                            filename=filename,
+                            local_dir=self.models_path,
+                        )
+                        break
+                    except Exception as e:
+                        if attempt == max_retries:
+                            raise
+                        print(f"\n[WARN] 下载失败（第{attempt}次），{retry_delay}秒后重试: {e}")
+                        time.sleep(retry_delay)
+                        retry_delay = min(retry_delay * 2, 60)
             finally:
                 tqdm.tqdm.__init__ = _orig_tqdm_init
-            
-            # 获取下载后的文件信息
+
+            # 下载成功，获取文件信息
             downloaded_file = Path(downloaded_path)
             file_size = downloaded_file.stat().st_size / (1024**3)
-            
             print(f"\n[OK] 下载完成!")
             print(f"   文件: {downloaded_file.name}")
             print(f"   大小: {file_size:.2f} GB")
