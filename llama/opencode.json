@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "local-llama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local LLaMA.cpp",
+      "options": {
+        "baseURL": "http://127.0.0.1:8080/v1"
+      },
+      "models": {
+        "qwen-coder": {
+          "name": "Qwen2.5-Coder-7B-Instruct"
+        }
+      }
+    }
+  }
+}

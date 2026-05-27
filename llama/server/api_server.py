@@ -51,6 +51,11 @@ class APIServerManager:
             "-t", str(params.get('threads', 8)),
         ])
         
+        # 使用 chatml jinja 模板以支持工具调用和对话格式
+        cmd.extend([
+            "--jinja",
+            "--chat-template", "chatml",
+        ])
         return cmd
     
     def start_server(self, model_path: str, host: str = None, port: int = None):

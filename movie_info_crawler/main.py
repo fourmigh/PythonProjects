@@ -1,0 +1,206 @@
+"""主程序入口"""
+
+import sys
+import os
+import random
+import queue
+import threading
+import time
+
+# 添加模块路径
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from crawler.browser_fetcher import BrowserFetcher
+from crawler.config_manager import ConfigManager
+from crawler.douban_search import DoubanSearch
+from crawler.info_extractor import InfoExtractor
+from crawler.html_generator import HTMLGenerator
+from crawler.models import MovieResult, UserChoice
+
+
+class MovieInfoCrawler:
+    """豆瓣电影信息爬取主程序"""
+
+    def __init__(self, config_dir: str = '.'):
+        self.config = ConfigManager(config_dir)
+        self.browser = BrowserFetcher(headless=True)
+        self.searcher = DoubanSearch(self.config, self.browser)
+        self.extractor = InfoExtractor(self.config, self.browser)
+        self.results: list = []
+
+    def run(self) -> None:
+        """运行主程序"""
+        try:
+            self._print_banner()
+
+            if not self.config.movies:
+                print("[错误] 配置文件中没有电影列表，请先配置 config.json")
+                return
+
+            self._scrape_all_movies()
+
+            generator = HTMLGenerator(self.config)
+            output_file = generator.generate(self.results)
+            print(f"\n[成功] HTML报告已生成: {output_file}")
+
+            print(f"\n[完成] 程序执行完毕！报告路径: {output_file}")
+        finally:
+            self.browser.close()
+    
+    def _print_banner(self) -> None:
+        """打印程序信息"""
+        print("=" * 70)
+        print("MovieInfoCrawler - 豆瓣电影信息爬取工具")
+        print("=" * 70)
+        print(f"配置文件目录: 当前目录")
+        print(f"电影数量: {len(self.config.movies)}")
+        print(f"显示字段: {', '.join(self.config.display_field_labels[:5])}...")
+        print("=" * 70)
+        print("\n[注意] 豆瓣有反爬虫机制，如遇请求失败请稍后再试\n")
+        
+        if not self._ask_yes_no("是否开始爬取？"):
+            print("已取消")
+            sys.exit(0)
+    
+    def _scrape_all_movies(self) -> None:
+        """爬取所有电影"""
+        for i, movie_name in enumerate(self.config.movies, 1):
+            if i > 1:
+                delay = random.uniform(3, 6)
+                print(f"  等待 {delay:.1f} 秒避免限频...")
+                time.sleep(delay)
+            print(f"\n[{i}/{len(self.config.movies)}] 正在处理: {movie_name}")
+            print("-" * 40)
+            
+            # 搜索电影
+            search_results = self.searcher.search(movie_name)
+            
+            if not search_results:
+                print(f"   [警告] 未找到《{movie_name}》的相关结果")
+                self.results.append(MovieResult(
+                    search_name=movie_name,
+                    found=False,
+                    error="未找到相关结果"
+                ))
+                continue
+            
+            # 用户选择
+            choice = self._get_user_choice(movie_name, search_results)
+            
+            if choice.type == 'skip':
+                print(f"   [跳过] 已跳过《{movie_name}》")
+                self.results.append(MovieResult(
+                    search_name=movie_name,
+                    found=False,
+                    error="用户跳过"
+                ))
+                continue
+            
+            # 确定URL
+            if choice.type == 'select':
+                selected = search_results[choice.index]
+                url = selected.url
+                print(f"   已选择: {selected.title} ({selected.year})")
+            else:  # manual
+                url = choice.url
+                print(f"   使用手动链接: {url}")
+            
+            # 提取信息
+            print(f"   正在提取信息...")
+            info = self.extractor.extract(url)
+            
+            if info:
+                title = info.get_by_label('片名') or movie_name
+                print(f"   成功提取《{title}》的信息")
+                self.results.append(MovieResult(
+                    search_name=movie_name,
+                    found=True,
+                    info=info
+                ))
+            else:
+                print(f"   [失败] 提取失败，退出程序")
+                sys.exit(1)
+    
+    def _get_user_choice(self, movie_name: str, search_results: list) -> UserChoice:
+        """获取用户选择（带倒计时自动选择）"""
+        print(f"\n   搜索到 {len(search_results)} 个相关结果：")
+        print("   " + "-" * 56)
+
+        for i, result in enumerate(search_results, 1):
+            year_info = f" ({result.year})" if result.year else ""
+            print(f"   {i}. {result.title}{year_info}")
+            print(f"      {result.url}")
+
+        print(f"   {len(search_results)+1}. 手动输入豆瓣链接")
+        print(f"   {len(search_results)+2}. [跳过] 跳过此电影")
+        print("   " + "-" * 56)
+
+        # 后台线程读取输入，主线程倒计时
+        q = queue.Queue()
+
+        def _reader():
+            try:
+                line = sys.stdin.readline()
+                q.put(line)
+            except Exception:
+                q.put(None)
+
+        t = threading.Thread(target=_reader, daemon=True)
+        t.start()
+
+        for remaining in range(5, 0, -1):
+            sys.stdout.write(f"\r   请选择 (将在 {remaining} 秒后自动选择第 1 项): ")
+            sys.stdout.flush()
+            try:
+                line = q.get(timeout=1)
+            except queue.Empty:
+                continue
+            # 用户输入了内容，取消倒计时
+            print()
+            break
+        else:
+            # 倒计时结束，自动选择第 1 项
+            print(f"\r   自动选择: 1{' ' * 50}")
+            return UserChoice(type='select', index=0)
+
+        # 取消倒计时后正常交互
+        while True:
+            choice = (line.strip() if line else '') or input("   请选择: ").strip()
+            line = ''
+            if not choice:
+                continue
+
+            try:
+                choice_num = int(choice)
+            except ValueError:
+                print("   请输入有效数字")
+                continue
+
+            if 1 <= choice_num <= len(search_results):
+                return UserChoice(type='select', index=choice_num - 1)
+            elif choice_num == len(search_results) + 1:
+                manual_url = input("   请输入豆瓣电影链接: ").strip()
+                if manual_url and '/subject/' in manual_url:
+                    return UserChoice(type='manual', url=manual_url)
+                print("   链接格式不正确")
+                continue
+            elif choice_num == len(search_results) + 2:
+                return UserChoice(type='skip')
+            else:
+                print(f"   请输入 1-{len(search_results)+2} 之间的数字")
+    
+    def _ask_yes_no(self, question: str) -> bool:
+        """询问是/否"""
+        while True:
+            answer = input(f"{question} (y/n): ").strip().lower()
+            if answer in ['y', 'yes']:
+                return True
+            elif answer in ['n', 'no']:
+                return False
+            else:
+                print("请输入 y 或 n")
+
+
+if __name__ == "__main__":
+    crawler = MovieInfoCrawler()
+    crawler.run()

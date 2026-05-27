@@ -1,0 +1,11 @@
+{
+  "python_packages": [
+    {"name": "playwright", "check": "import playwright", "install": "playwright", "uninstall": "playwright"},
+    {"name": "beautifulsoup4", "check": "import bs4", "install": "beautifulsoup4", "uninstall": "beautifulsoup4"},
+    {"name": "requests", "check": "import requests", "install": "requests", "uninstall": "requests"}
+  ],
+  "system_tools": [],
+  "browsers": [
+    {"name": "Playwright Firefox", "check": "test -d ~/.cache/ms-playwright/firefox-*", "install": "playwright install firefox", "uninstall": "rm -rf ~/.cache/ms-playwright/firefox-*"}
+  ]
+}
