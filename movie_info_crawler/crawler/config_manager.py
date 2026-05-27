@@ -2,10 +2,8 @@
 
 import json
 import os
-from typing import List, Dict, Any
+from typing import List, Any
 from pathlib import Path
-
-from .models import DEFAULT_FIELDS, COMPACT_FIELDS, FULL_FIELDS, MovieField
 
 
 class ConfigManager:
@@ -16,13 +14,11 @@ class ConfigManager:
         
         # 配置文件路径
         self.movies_file = self.config_dir / 'config.json'
-        self.fields_file = self.config_dir / 'fields.json'
         self.settings_file = self.config_dir / 'settings.json'
-        
+
         # 配置数据
-        self.movies_config: Dict[str, Any] = {}
-        self.fields_config: Dict[str, Any] = {}
-        self.settings_config: Dict[str, Any] = {}
+        self.movies_config: dict = {}
+        self.settings_config: dict = {}
         
         # 加载所有配置
         self._load_all_configs()
@@ -30,7 +26,6 @@ class ConfigManager:
     def _load_all_configs(self) -> None:
         """加载所有配置文件"""
         self._load_movies_config()
-        self._load_fields_config()
         self._load_settings_config()
     
     def _load_movies_config(self) -> None:
@@ -46,19 +41,6 @@ class ConfigManager:
             self._save_movies_config()
             print(f"✓ 已创建电影配置文件: {self.movies_file}")
             print("  请根据需要修改电影列表后重新运行程序")
-    
-    def _load_fields_config(self) -> None:
-        """加载字段配置"""
-        default = {"display_fields": "DEFAULT"}
-        
-        if self.fields_file.exists():
-            with open(self.fields_file, 'r', encoding='utf-8') as f:
-                self.fields_config = json.load(f)
-            print(f"✓ 已加载字段配置: {self.fields_file}")
-        else:
-            self.fields_config = default
-            self._save_fields_config()
-            print(f"✓ 已创建字段配置文件: {self.fields_file}")
     
     def _load_settings_config(self) -> None:
         """加载系统设置"""
@@ -85,11 +67,6 @@ class ConfigManager:
         with open(self.movies_file, 'w', encoding='utf-8') as f:
             json.dump(self.movies_config, f, ensure_ascii=False, indent=2)
     
-    def _save_fields_config(self) -> None:
-        """保存字段配置"""
-        with open(self.fields_file, 'w', encoding='utf-8') as f:
-            json.dump(self.fields_config, f, ensure_ascii=False, indent=2)
-    
     def _save_settings_config(self) -> None:
         """保存系统设置"""
         with open(self.settings_file, 'w', encoding='utf-8') as f:
@@ -105,42 +82,6 @@ class ConfigManager:
         """设置电影列表"""
         self.movies_config['movies'] = value
         self._save_movies_config()
-    
-    @property
-    def display_fields(self) -> List[MovieField]:
-        """获取需要显示的字段列表（返回枚举列表）"""
-        field_config = self.fields_config.get('display_fields', "DEFAULT")
-        
-        # 支持预设组合名称
-        if field_config == "COMPACT" or field_config == ["COMPACT"]:
-            return COMPACT_FIELDS
-        elif field_config == "DEFAULT" or field_config == ["DEFAULT"]:
-            return DEFAULT_FIELDS
-        elif field_config == "FULL" or field_config == ["FULL"]:
-            return FULL_FIELDS
-        
-        # 如果是列表，根据名称转换为枚举
-        if isinstance(field_config, list):
-            result = []
-            for name in field_config:
-                try:
-                    field = MovieField.get_by_label(name)
-                    result.append(field)
-                except ValueError:
-                    try:
-                        field = MovieField.get_by_key(name)
-                        result.append(field)
-                    except ValueError:
-                        print(f"警告: 未知字段 '{name}'，已忽略")
-            return result if result else DEFAULT_FIELDS
-        
-        # 默认返回DEFAULT
-        return DEFAULT_FIELDS
-    
-    @property
-    def display_field_labels(self) -> List[str]:
-        """获取需要显示的字段的中文标签列表"""
-        return [field.label for field in self.display_fields]
     
     @property
     def request_interval(self) -> int:

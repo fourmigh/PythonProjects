@@ -113,7 +113,9 @@ class InfoExtractor:
             '上映日期': MovieField.RELEASE_DATE,
             '片长': MovieField.RUNTIME,
             '又名': MovieField.AKA,
-            'IMDb': MovieField.IMDB_LINK
+            'IMDb': MovieField.IMDB_LINK,
+            '票房': MovieField.BOX_OFFICE,
+            '累计票房': MovieField.BOX_OFFICE,
         }
         
         # 从HTML中提取结构化信息

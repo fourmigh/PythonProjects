@@ -35,6 +35,9 @@ class MovieField(Enum):
     DOUBAN_LINK = ("豆瓣链接", "douban_link")
     IMDB_LINK = ("IMDb链接", "imdb_link")
     
+    # 财务信息
+    BOX_OFFICE = ("票房", "box_office")
+
     # 简介
     SUMMARY = ("简介", "summary")
     

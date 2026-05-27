@@ -188,6 +188,38 @@
             border-top: 1px solid #e0e0e0;
         }
         
+        .field-filter {
+            background: #f8f9fa;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .field-filter h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+
+        .field-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+        }
+
+        .field-checkboxes label {
+            font-size: 0.88em;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+
+        .field-checkboxes input[type="checkbox"] {
+            cursor: pointer;
+        }
+
         .toggle-all {
             margin: 20px 0;
             text-align: center;
@@ -223,7 +255,7 @@
     <div class="container">
         <div class="header">
             <h1>豆瓣电影信息报告</h1>
-            <div class="info">生成时间: 2026-05-27 23:21:50</div>
+            <div class="info">生成时间: 2026-05-28 00:02:46</div>
         </div>
         
         <div class="stats">
@@ -245,6 +277,27 @@
             <button class="toggle-btn" onclick="toggleAll()">展开/收起所有详情</button>
         </div>
         
+        <div class="field-filter">
+            <h3>显示字段</h3>
+            <div class="field-checkboxes">
+                            <label><input type="checkbox" data-field="year" checked> 年份</label>
+            <label><input type="checkbox" data-field="aka" checked> 又名</label>
+            <label><input type="checkbox" data-field="director" checked> 导演</label>
+            <label><input type="checkbox" data-field="screenwriter" checked> 编剧</label>
+            <label><input type="checkbox" data-field="actors" checked> 主演</label>
+            <label><input type="checkbox" data-field="genre" checked> 类型</label>
+            <label><input type="checkbox" data-field="region" checked> 地区</label>
+            <label><input type="checkbox" data-field="language" checked> 语言</label>
+            <label><input type="checkbox" data-field="release_date" checked> 上映日期</label>
+            <label><input type="checkbox" data-field="runtime" checked> 片长</label>
+            <label><input type="checkbox" data-field="rating" checked> 豆瓣评分</label>
+            <label><input type="checkbox" data-field="rating_count" checked> 评分人数</label>
+            <label><input type="checkbox" data-field="imdb_link" checked> IMDb链接</label>
+            <label><input type="checkbox" data-field="box_office" checked> 票房</label>
+            <label><input type="checkbox" data-field="summary" checked> 简介</label>
+            </div>
+        </div>
+
         <div class="content">
             
                 <div class="movie-card">
@@ -255,64 +308,74 @@
                     <div class="movie-body" id="movie-body-0">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">疯狂的石头</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">2006</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">Crazy Stone</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">宁浩</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">张承 / 宁浩 / 岳小军</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">郭涛 / 刘桦 / 连晋 / 黄渤 / 徐峥 / 岳小军 / 罗兰 / 王迅更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">喜剧 / 犯罪</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆 / 中国香港</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">汉语普通话 / 重庆话</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">2006-06-30(中国大陆) / 2006-08-10(中国香港)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">106分钟(香港) / 98分钟(中国大陆)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">8.6</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">931807</div>
+                            <div class="info-value">931812</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt0843270</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>重庆一间工艺品厂已经濒临倒闭，却不料在拆倒旧厂房的时候，发现了厕所里的一件宝物——一块价值连城的翡翠。厂里决定用这块翡翠举办一个展览，赚些钱发拖欠了几个月的工人工资。期间由工艺品厂保卫科长包世宏（郭涛 饰）负责看守这件宝物。但是，国际大盗麦克与本地一帮小偷却让包世宏一筹莫展，他们各施其技接近翡翠，展览馆开始了一场明争暗斗的较量。黑色幽默也开始幕幕上演。翡翠的价值几何？最后谁是胜出者？事情远没有表面那么简单……</p>
                         </div>
@@ -329,64 +392,74 @@
                     <div class="movie-body" id="movie-body-1">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">爱情神话</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">2021</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">B for Busy / Myth of Love</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">邵艺辉</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">邵艺辉</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">徐峥 / 马伊琍 / 吴越 / 倪虹洁 / 周野芒 / 黄明昊 / 王影璐 / 宁理 / 张芝华 / 吴冕 / 冯玛娅 / 哈姆扎·阿萨尔 / 孙思瀚 / 赵胤胤 / 卫莱 / 赵国云 / 杨蔚岚 / 白红卫 / 史航更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">剧情 / 喜剧 / 爱情</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">汉语普通话 / 沪语</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">2021-12-24(中国大陆) / 2024-11-02(中国大陆重映)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">112分钟</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">8.1</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">875148</div>
+                            <div class="info-value">875150</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt16606348</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>离异多年的画家老白（徐峥 饰）经朋友介绍认识了同样离异，带着一个孩子的李小姐（马伊琍 饰），老白对李小姐一见倾心，可是李小姐似乎对这段感情有所顾虑，一直止步不前。老白在家里开设了美术班，教成年人画画，格洛瑞亚（倪虹洁 饰）是他的学生之一。热情奔放的格洛瑞亚虽然已经结婚，但是丈夫远在国外常年不回家，她似乎对老白有着超越了师生的感情。蓓蓓（吴越 饰）是老白的前妻，两人虽然已经离婚多年，而且是蓓蓓背叛了老白，但老白的母亲还是希望两人有朝一日可以复婚。在上海的弄堂里，一个男人和三个女人的故事徐徐拉开序幕。</p>
                         </div>
@@ -403,64 +476,74 @@
                     <div class="movie-body" id="movie-body-2">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">人生大事</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">2022</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">上天堂 / Lighting Up The Stars / Funeral Family</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">刘江江</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">刘江江</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">朱一龙 / 杨恩又 / 王戈 / 刘陆 / 罗京民 / 吴倩 / 郑卫莉 / 陈创 / 李春嫒 / 钟宇升 / 刘亚津 / 小爱 / 韩延更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">剧情 / 家庭</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆 / 中国香港</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">汉语普通话 / 武汉方言 / 四川方言</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">2022-06-24(中国大陆)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">112分钟</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">7.4</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">685158</div>
+                            <div class="info-value">685164</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt15801594</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>莫三妹是一个刑满释放后子承父业，经营殡葬店的“殡葬师”。他玩世不恭，对生活和职业充满厌倦。一次出殡中，他遇到了孤儿武小文。小文的外婆去世，她无法理解“死亡”的含义，固执地缠着三哥要找回外婆。两人的意外相遇，搅黄了三哥的生意，也给他的生活带来一连串麻烦。但在不断的争吵和磨合中，毫无血缘关系的两人逐渐产生了类似父女的亲情。</p>
                         </div>
@@ -477,64 +560,74 @@
                     <div class="movie-body" id="movie-body-3">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">路边野餐</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">2015</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">惶然录 / 铁锈之花 / Kaili Blues</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">毕赣</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">毕赣</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">陈永忠 / 谢理循 / 余世学 / 郭月 / 赵达清 / 罗飞扬 / 曾帅 / 秦光黔 / 刘林艳 / 杨卓华 / 杨江船 / 欧孟军 / 吴得水 / 宋大成 / 廖冬凯更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">剧情</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">贵州方言</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">2016-07-15(中国大陆) / 2015-08-11(洛迦诺电影节)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">110分钟</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">8.0</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">215286</div>
+                            <div class="info-value">215288</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt4613272</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>在贵州黔东南神秘潮湿的亚热带乡土，大雾弥漫的凯里县城诊所里，两个医生心事重重活得像幽灵。陈升为了母亲的遗愿，踏上火车寻找弟弟抛弃的孩子；而另一位孤独的老女人托他带一张照片、一件衬衫、一盒磁带给病重的旧情人。去镇远县城的路上，陈升（陈永忠 饰）来到一个叫荡麦的地方，那里的时间不是线性的 ，人们的生活相互补充和消解。他似乎经历了过去、现在和未来，重新思索了自己的生活。最终，陈升到了镇远，只是用望远镜远远地看了孩子。把老女人的信物给了她旧情人的儿子。一个人再次踏上火车。分不清这个世界是我的记忆，还是我是这世界的一个浮想……</p>
                         </div>
@@ -551,64 +644,74 @@
                     <div class="movie-body" id="movie-body-4">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">秋菊打官司</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">1992</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">The Story of Qiu-Ju / Qiu Ju Goes to Court</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">张艺谋</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">陈源斌 / 刘恒</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">巩俐 / 刘佩琦 / 雷恪生 / 戈治均 / 杨柳春 / 朱万清 / 崔络纹 / 杨惠琴 / 王建法 / 林子 / 叶军更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">剧情</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆 / 中国香港</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">陕西话 / 汉语普通话</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">1992-08-31(中国大陆) / 1992-09-07(威尼斯电影节)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">100分钟</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">8.3</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">120065</div>
+                            <div class="info-value">120066</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt0105197</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>中国西北某个小山村里，村妇秋菊（巩俐 饰）的丈夫万庆来（刘佩琦 饰）在与村长争执时被对方踢伤下体无法再干农活，只能整日躺在床上，对此村长没表一态。秋菊气不过，找村长理论不得对方理会，为讨一口气，她一纸诉状将村长告到了乡政府。乡政府李公安耐心调解一番后，村长答应赔偿秋菊家的经济损 失，却是把钞票直接扔在地上拒不道歉。村长的举动虽蛮横无理，众人还是觉得事情可以就此划上句号，唯独秋菊被激怒，立誓要讨个说法，于是她挺着个大肚子和妹妹来到县城，开始了漫漫告状路。</p>
                         </div>
@@ -625,64 +728,74 @@
                     <div class="movie-body" id="movie-body-5">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">给阿嬷的情书</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">2026</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">Dear You</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">蓝鸿春</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">蓝鸿春 / 郑萱轩 / 杨冷 / 朱丽云</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">李思潼 / 王彦桐 / 吴少卿 / 郑润奇 / 王晓慧 / 赵曙光 / 李德如 / 李树浩 / 乌萨·萨梅坎姆 / 方培松 / 钟少贤 / 郑鹏生 / 麦乐瑟 / 徐培涌更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">剧情 / 家庭</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">汉语普通话 / 潮汕话</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">2026-04-30(中国大陆)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">118分钟</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">9.2</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">700554</div>
+                            <div class="info-value">701181</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt41791573</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>潮汕阿嬷叶淑柔一直守着平淡的日子，安享晚年。孙子晓伟因债务缠身，瞒着家人远赴泰国，寻找传闻中的亿万富豪阿公郑木生。然而，晓伟最后却带回了一个震惊整个家族的消息：阿公早已不在人世，那个与阿嬷一直在书信中谈情说爱的，竟是一个陌生人。随着晓伟的调查，一段隐藏了半世纪的感情赫然袭来，击中了阿嬷的心。</p>
                         </div>
@@ -699,64 +812,74 @@
                     <div class="movie-body" id="movie-body-6">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">爸，我一定行的</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">2018</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">Proud of Me</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">蓝鸿春</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">郑润奇 / 蓝鸿春</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">郑润奇 / 郑鹏生 / 张咏娴 / 李树浩 / 林俊鑫 / 陈锦标 / 周素琴 / 郑辉松 / 张翼就 / 陈昱曦 / 苏细珍更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">剧情 / 喜剧 / 家庭</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">潮汕方言 / 汉语普通话</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">2018-08-24(中国大陆)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">100分钟</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">6.3</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">8568</div>
+                            <div class="info-value">8569</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt8901722</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>369（郑润奇 饰）是父亲李锦龙（郑鹏生 饰）拉扯大的，父亲最大的愿望，是369能考上大学，将来有个像样的生计，但369的成绩总是全校倒数前十。高二那年，369逃课被退学了，父亲的愿望泡汤，只能各种托关系，让儿子去学个一技之长，望他出社会能够独立。然而， 369做一样厌一样，混了七八年一事无成，被乡里人唱衰。最终，369决定逃离乡里，逃离每天被流言蜚语的日子，跑到深圳，做起了网络主播。父子俩的关系，在369一次次违背父亲的愿望中，走向了决裂。</p>
                         </div>
@@ -773,64 +896,74 @@
                     <div class="movie-body" id="movie-body-7">
                         <div class="info-grid">
                             
-                        <div class="info-item">
-                            <div class="info-label">片名</div>
-                            <div class="info-value">带你去见我妈</div>
-                        </div>
-                        
-                        <div class="info-item">
+                        <div class="info-item" data-field="year">
                             <div class="info-label">年份</div>
                             <div class="info-value">2022</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="aka">
+                            <div class="info-label">又名</div>
+                            <div class="info-value">Back to Love</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="director">
                             <div class="info-label">导演</div>
                             <div class="info-value">蓝鸿春</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="screenwriter">
+                            <div class="info-label">编剧</div>
+                            <div class="info-value">郑润奇 / 蓝鸿春 / 杨冷 / 郭竑邑</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="actors">
                             <div class="info-label">主演</div>
                             <div class="info-value">郑润奇 / 钟少贤 / 卢珊 / 郑鹏生 / 连锡龙 / 连映珠 / 范婵真 / 李树浩 / 卢敏敏 / 黄庚州更多...</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="genre">
                             <div class="info-label">类型</div>
                             <div class="info-value">喜剧 / 爱情 / 家庭</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="region">
                             <div class="info-label">地区</div>
                             <div class="info-value">中国大陆</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="language">
                             <div class="info-label">语言</div>
                             <div class="info-value">汉语普通话 / 潮汕方言</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="release_date">
                             <div class="info-label">上映日期</div>
                             <div class="info-value">2022-01-07(中国大陆)</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="runtime">
                             <div class="info-label">片长</div>
                             <div class="info-value">101分钟</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating">
                             <div class="info-label">豆瓣评分</div>
                             <div class="info-value">7.4</div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item" data-field="rating_count">
                             <div class="info-label">评分人数</div>
-                            <div class="info-value">34525</div>
+                            <div class="info-value">34529</div>
+                        </div>
+                        
+                        <div class="info-item" data-field="imdb_link">
+                            <div class="info-label">IMDb链接</div>
+                            <div class="info-value">tt17008712</div>
                         </div>
                         
                         </div>
                 
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>泽凯跟静珊交往两年了，两个人在深圳一起打拼，相伴相依甚是幸福。但在汕头老家的妈妈，却不知道泽凯已经有了女朋友，不停地给泽凯找对象，甚至安排人跑到深圳来跟泽凯相亲。泽凯知道，要让妈妈接受静珊是很难迈过去的坎，因为静珊有过一段婚姻，所以迟迟没有跟家人介绍过静珊。但妈妈不停地催婚，泽凯不得不面对，最终决定跟静珊领证结婚，带她回家，跟妈妈坦白一切。</p>
                         </div>
@@ -872,6 +1005,21 @@
                 }
             }
         }
+
+        document.querySelectorAll('.field-filter input[type="checkbox"]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                var key = this.dataset.field;
+                document.querySelectorAll('[data-field="' + key + '"]').forEach(function(el) {
+                    el.style.display = this.checked ? '' : 'none';
+                }.bind(this));
+                localStorage.setItem('field_' + key, this.checked);
+            });
+            var saved = localStorage.getItem('field_' + cb.dataset.field);
+            if (saved !== null) {
+                cb.checked = saved === 'true';
+            }
+            cb.dispatchEvent(new Event('change'));
+        });
     </script>
 </body>
 </html>

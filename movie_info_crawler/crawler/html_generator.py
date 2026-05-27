@@ -8,6 +8,8 @@ from pathlib import Path
 from .models import MovieResult, MovieField
 from .config_manager import ConfigManager
 
+_CHECKBOX_FIELDS = [f for f in MovieField if f != MovieField.DOUBAN_LINK]
+
 
 class HTMLGenerator:
     """HTML报告生成器"""
@@ -21,25 +23,34 @@ class HTMLGenerator:
         """确保输出目录存在"""
         self.output_dir.mkdir(exist_ok=True)
     
-    def generate(self, results: List[MovieResult]) -> str:
+    def generate(self, results: List[MovieResult], fields: list = None) -> str:
         """生成HTML报告"""
+        if fields is None:
+            fields = _CHECKBOX_FIELDS
         total = len(results)
         found = sum(1 for r in results if r.found)
         not_found = total - found
-        
+
         movie_cards = []
         for idx, result in enumerate(results):
             if result.found and result.info:
-                card = self._generate_success_card(idx, result)
+                card = self._generate_success_card(idx, result, fields)
             else:
                 card = self._generate_not_found_card(idx, result)
             movie_cards.append(card)
-        
+
+        is_summary_selected = MovieField.SUMMARY in fields
+        checkboxes_html = '\n'.join(
+            f'            <label><input type="checkbox" data-field="{f.key}" checked> {f.label}</label>'
+            for f in fields
+            if f != MovieField.SUMMARY or is_summary_selected
+        )
         html_content = self._get_html_template().safe_substitute(
             generate_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             total_movies=total,
             found_movies=found,
             not_found_movies=not_found,
+            field_checkboxes=checkboxes_html,
             movie_cards='\n'.join(movie_cards)
         )
         
@@ -49,29 +60,30 @@ class HTMLGenerator:
         
         return str(output_file.absolute())
     
-    def _generate_success_card(self, idx: int, result: MovieResult) -> str:
+    def _generate_success_card(self, idx: int, result: MovieResult, fields: list) -> str:
         """生成成功获取的电影卡片"""
         info = result.info
-        display_fields = self.config.display_fields
-        
+
         fields_html = ""
-        for field in display_fields:
+        for field in fields:
+            if field in (MovieField.TITLE, MovieField.DOUBAN_LINK, MovieField.SUMMARY):
+                continue
             value = info.get(field)
             if value:
                 fields_html += f"""
-                        <div class="info-item">
+                        <div class="info-item" data-field="{field.key}">
                             <div class="info-label">{field.label}</div>
                             <div class="info-value">{self._escape_html(value)}</div>
                         </div>
                         """
-        
+
         rating_html = ""
         rating = info.get(MovieField.RATING)
         if rating:
             rating_html = f'<span class="rating">[评分] {rating}</span>'
-        
+
         title = info.get(MovieField.TITLE) or result.search_name
-        
+
         card = f"""
                 <div class="movie-card">
                     <div class="movie-header" onclick="toggleCard({idx})">
@@ -83,21 +95,21 @@ class HTMLGenerator:
                             {fields_html}
                         </div>
                 """
-        
+
         summary = info.get(MovieField.SUMMARY)
-        if summary:
+        if summary and MovieField.SUMMARY in fields:
             card += f"""
-                        <div class="summary">
+                        <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
                             <p>{self._escape_html(summary)}</p>
                         </div>
                     """
-        
+
         card += """
                     </div>
                 </div>
                 """
-        
+
         return card
     
     def _generate_not_found_card(self, idx: int, result: MovieResult) -> str:
@@ -322,6 +334,38 @@ class HTMLGenerator:
             border-top: 1px solid #e0e0e0;
         }
         
+        .field-filter {
+            background: #f8f9fa;
+            padding: 20px 25px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .field-filter h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+
+        .field-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+        }
+
+        .field-checkboxes label {
+            font-size: 0.88em;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+
+        .field-checkboxes input[type="checkbox"] {
+            cursor: pointer;
+        }
+
         .toggle-all {
             margin: 20px 0;
             text-align: center;
@@ -379,6 +423,13 @@ class HTMLGenerator:
             <button class="toggle-btn" onclick="toggleAll()">展开/收起所有详情</button>
         </div>
         
+        <div class="field-filter">
+            <h3>显示字段</h3>
+            <div class="field-checkboxes">
+                $field_checkboxes
+            </div>
+        </div>
+
         <div class="content">
             $movie_cards
         </div>
@@ -415,6 +466,21 @@ class HTMLGenerator:
                 }
             }
         }
+
+        document.querySelectorAll('.field-filter input[type="checkbox"]').forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                var key = this.dataset.field;
+                document.querySelectorAll('[data-field="' + key + '"]').forEach(function(el) {
+                    el.style.display = this.checked ? '' : 'none';
+                }.bind(this));
+                localStorage.setItem('field_' + key, this.checked);
+            });
+            var saved = localStorage.getItem('field_' + cb.dataset.field);
+            if (saved !== null) {
+                cb.checked = saved === 'true';
+            }
+            cb.dispatchEvent(new Event('change'));
+        });
     </script>
 </body>
 </html>""")

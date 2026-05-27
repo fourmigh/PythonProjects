@@ -15,7 +15,7 @@ from crawler.config_manager import ConfigManager
 from crawler.douban_search import DoubanSearch
 from crawler.info_extractor import InfoExtractor
 from crawler.html_generator import HTMLGenerator
-from crawler.models import MovieResult, UserChoice
+from crawler.models import MovieResult, UserChoice, MovieField
 
 
 class MovieInfoCrawler:
@@ -39,8 +39,10 @@ class MovieInfoCrawler:
 
             self._scrape_all_movies()
 
+            selected_fields = self._select_fields()
+
             generator = HTMLGenerator(self.config)
-            output_file = generator.generate(self.results)
+            output_file = generator.generate(self.results, fields=selected_fields)
             print(f"\n[成功] HTML报告已生成: {output_file}")
 
             print(f"\n[完成] 程序执行完毕！报告路径: {output_file}")
@@ -54,7 +56,6 @@ class MovieInfoCrawler:
         print("=" * 70)
         print(f"配置文件目录: 当前目录")
         print(f"电影数量: {len(self.config.movies)}")
-        print(f"显示字段: {', '.join(self.config.display_field_labels[:5])}...")
         print("=" * 70)
         print("\n[注意] 豆瓣有反爬虫机制，如遇请求失败请稍后再试\n")
         
@@ -121,6 +122,37 @@ class MovieInfoCrawler:
                 print(f"   [失败] 提取失败，退出程序")
                 sys.exit(1)
     
+    def _select_fields(self) -> list:
+        all_fields = [f for f in MovieField if f not in (MovieField.TITLE, MovieField.DOUBAN_LINK)]
+        selected = set(all_fields)
+
+        print("\n选择要显示的字段（默认全部显示，输入编号取消）:")
+        for i, field in enumerate(all_fields, 1):
+            print(f"  {i:2d}. {field.label}")
+        print("直接回车全部显示，或输入要取消的编号（逗号分隔）:")
+        try:
+            line = input("> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            return list(all_fields)
+
+        if not line:
+            return list(all_fields)
+
+        for part in line.replace('，', ',').split(','):
+            part = part.strip()
+            try:
+                idx = int(part) - 1
+                if 0 <= idx < len(all_fields):
+                    selected.discard(all_fields[idx])
+            except ValueError:
+                pass
+
+        result = [f for f in all_fields if f in selected]
+        hidden = [f.label for f in all_fields if f not in selected]
+        if hidden:
+            print(f"  已取消: {', '.join(hidden)}")
+        return result
+
     def _get_user_choice(self, movie_name: str, search_results: list) -> UserChoice:
         """获取用户选择（带倒计时自动选择）"""
         print(f"\n   搜索到 {len(search_results)} 个相关结果：")
