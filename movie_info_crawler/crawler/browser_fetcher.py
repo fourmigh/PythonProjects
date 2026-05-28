@@ -1,5 +1,7 @@
 """Playwright 浏览器管理器 - 使用真实浏览器获取页面"""
 
+from typing import Optional
+
 from playwright.sync_api import sync_playwright
 
 
@@ -19,9 +21,12 @@ class BrowserFetcher:
         )
         self.page = self.context.new_page()
 
-    def get_html(self, url: str, timeout: int = 60000) -> str:
+    def get_html(self, url: str, timeout: int = 120000,
+                 wait_for_data: bool = False,
+                 wait_for_selector: Optional[str] = None,
+                 wait_until: str = "commit") -> str:
         """访问 URL 并等待 PoW 挑战解决后返回 HTML"""
-        self.page.goto(url, timeout=timeout, wait_until="domcontentloaded")
+        self.page.goto(url, timeout=timeout, wait_until=wait_until)
 
         # 检测 PoW 挑战页（包含 #sec 表单）
         if self.page.query_selector('#sec'):
@@ -32,12 +37,17 @@ class BrowserFetcher:
             )
             print("  挑战完成")
 
-        # 等待真实内容加载（#content 或 #wrapper 是豆瓣页面通用容器）
-        self.page.wait_for_load_state("domcontentloaded", timeout=timeout)
-        try:
-            self.page.wait_for_selector('#content, #wrapper', timeout=15000)
-        except Exception:
-            pass
+        # 等待页面数据就绪（仅搜索页有 __DATA__）
+        if wait_for_data:
+            self.page.wait_for_function(
+                '() => typeof window.__DATA__ !== "undefined"',
+                timeout=timeout
+            )
+
+        # 等待 JS 渲染指定元素
+        if wait_for_selector:
+            self.page.wait_for_selector(wait_for_selector, timeout=timeout)
+
         self.page.wait_for_timeout(1000)
         return self.page.content()
 

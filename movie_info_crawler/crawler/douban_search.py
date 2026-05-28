@@ -29,7 +29,7 @@ class DoubanSearch:
         print(f"  请求: GET {full_url}")
 
         try:
-            html = self.browser.get_html(full_url)
+            html = self.browser.get_html(full_url, wait_for_data=True)
         except Exception as e:
             print(f"  搜索请求失败: [{type(e).__name__}] {e}")
             return []

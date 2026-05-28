@@ -3,8 +3,6 @@
 import sys
 import os
 import random
-import queue
-import threading
 import time
 
 # 添加模块路径
@@ -14,18 +12,20 @@ from crawler.browser_fetcher import BrowserFetcher
 from crawler.config_manager import ConfigManager
 from crawler.douban_search import DoubanSearch
 from crawler.info_extractor import InfoExtractor
+from crawler.maoyan_extractor import MaoyanExtractor
 from crawler.html_generator import HTMLGenerator
-from crawler.models import MovieResult, UserChoice, MovieField
+from crawler.models import MovieResult, UserChoice, MovieField, Source
 
 
 class MovieInfoCrawler:
-    """豆瓣电影信息爬取主程序"""
+    """主程序"""
 
     def __init__(self, config_dir: str = '.'):
         self.config = ConfigManager(config_dir)
         self.browser = BrowserFetcher(headless=True)
         self.searcher = DoubanSearch(self.config, self.browser)
         self.extractor = InfoExtractor(self.config, self.browser)
+        self.maoyan = MaoyanExtractor(self.config, self.browser)
         self.results: list = []
 
     def run(self) -> None:
@@ -52,13 +52,12 @@ class MovieInfoCrawler:
     def _print_banner(self) -> None:
         """打印程序信息"""
         print("=" * 70)
-        print("MovieInfoCrawler - 豆瓣电影信息爬取工具")
+        print("MovieInfoCrawler - 电影信息爬取工具")
         print("=" * 70)
         print(f"配置文件目录: 当前目录")
         print(f"电影数量: {len(self.config.movies)}")
         print("=" * 70)
-        print("\n[注意] 豆瓣有反爬虫机制，如遇请求失败请稍后再试\n")
-        
+
         if not self._ask_yes_no("是否开始爬取？"):
             print("已取消")
             sys.exit(0)
@@ -109,10 +108,32 @@ class MovieInfoCrawler:
             # 提取信息
             print(f"   正在提取信息...")
             info = self.extractor.extract(url)
-            
+
             if info:
                 title = info.get_by_label('片名') or movie_name
                 print(f"   成功提取《{title}》的信息")
+                douban_fields = [f.label for f in MovieField if info.get(f, Source.DOUBAN)]
+                if douban_fields:
+                    print(f"   豆瓣提取到字段: {', '.join(douban_fields)}")
+
+                # 补充猫眼数据
+                print(f"   正在补充猫眼数据...")
+                maoyan_url = self.maoyan.search(movie_name)
+                if maoyan_url:
+                    maoyan_info = self.maoyan.extract(maoyan_url)
+                    if maoyan_info:
+                        info.merge(maoyan_info)
+                        maoyan_fields = [f.label for f in MovieField if info.get(f, Source.MAOYAN)]
+                        if maoyan_fields:
+                            print(f"   猫眼数据已合并")
+                            print(f"   猫眼提取到字段: {', '.join(maoyan_fields)}")
+                        else:
+                            print(f"   猫眼数据已合并（无新字段）")
+                    else:
+                        print(f"   无猫眼数据")
+                else:
+                    print(f"   未找到猫眼页面")
+
                 self.results.append(MovieResult(
                     search_name=movie_name,
                     found=True,
@@ -153,6 +174,26 @@ class MovieInfoCrawler:
             print(f"  已取消: {', '.join(hidden)}")
         return result
 
+    @staticmethod
+    def _kbhit() -> bool:
+        if sys.platform == 'win32':
+            import msvcrt
+            return msvcrt.kbhit()
+        import select
+        r, _, _ = select.select([sys.stdin], [], [], 0)
+        return bool(r)
+
+    @staticmethod
+    def _getch() -> str:
+        if sys.platform == 'win32':
+            import msvcrt
+            return msvcrt.getch().decode('utf-8', errors='ignore')
+        import select
+        r, _, _ = select.select([sys.stdin], [], [], 0.1)
+        if r:
+            return sys.stdin.read(1)
+        return ''
+
     def _get_user_choice(self, movie_name: str, search_results: list) -> UserChoice:
         """获取用户选择（带倒计时自动选择）"""
         print(f"\n   搜索到 {len(search_results)} 个相关结果：")
@@ -163,41 +204,40 @@ class MovieInfoCrawler:
             print(f"   {i}. {result.title}{year_info}")
             print(f"      {result.url}")
 
-        print(f"   {len(search_results)+1}. 手动输入豆瓣链接")
+        print(f"   {len(search_results)+1}. 手动输入链接")
         print(f"   {len(search_results)+2}. [跳过] 跳过此电影")
         print("   " + "-" * 56)
 
-        # 后台线程读取输入，主线程倒计时
-        q = queue.Queue()
-
-        def _reader():
-            try:
-                line = sys.stdin.readline()
-                q.put(line)
-            except Exception:
-                q.put(None)
-
-        t = threading.Thread(target=_reader, daemon=True)
-        t.start()
-
+        # 倒计时 + 平台无关的键盘轮询（无需后台线程，避免 stdin 残留）
+        line = ''
         for remaining in range(5, 0, -1):
             sys.stdout.write(f"\r   请选择 (将在 {remaining} 秒后自动选择第 1 项): ")
             sys.stdout.flush()
-            try:
-                line = q.get(timeout=1)
-            except queue.Empty:
+            deadline = time.time() + 1
+            while time.time() < deadline:
+                if self._kbhit():
+                    ch = self._getch()
+                    if ch in ('\r', '\n'):
+                        print()
+                        break
+                    elif ch == '\x08' and line:
+                        line = line[:-1]
+                    elif ch.isdigit():
+                        line += ch
+                    sys.stdout.write(f"\r   请选择 (将在 {remaining} 秒后自动选择第 1 项): {line}  ")
+                    sys.stdout.flush()
+                time.sleep(0.05)
+            else:
                 continue
-            # 用户输入了内容，取消倒计时
-            print()
             break
         else:
-            # 倒计时结束，自动选择第 1 项
             print(f"\r   自动选择: 1{' ' * 50}")
             return UserChoice(type='select', index=0)
 
         # 取消倒计时后正常交互
+        line = line.strip()
         while True:
-            choice = (line.strip() if line else '') or input("   请选择: ").strip()
+            choice = line or input("   请选择: ").strip()
             line = ''
             if not choice:
                 continue
@@ -211,7 +251,7 @@ class MovieInfoCrawler:
             if 1 <= choice_num <= len(search_results):
                 return UserChoice(type='select', index=choice_num - 1)
             elif choice_num == len(search_results) + 1:
-                manual_url = input("   请输入豆瓣电影链接: ").strip()
+                manual_url = input("   请输入链接: ").strip()
                 if manual_url and '/subject/' in manual_url:
                     return UserChoice(type='manual', url=manual_url)
                 print("   链接格式不正确")

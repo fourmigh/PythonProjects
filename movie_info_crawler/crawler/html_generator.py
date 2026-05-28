@@ -5,7 +5,7 @@ from string import Template
 from typing import List
 from pathlib import Path
 
-from .models import MovieResult, MovieField
+from .models import MovieResult, MovieField, Source
 from .config_manager import ConfigManager
 
 _CHECKBOX_FIELDS = [f for f in MovieField if f != MovieField.DOUBAN_LINK]
@@ -33,11 +33,13 @@ class HTMLGenerator:
 
         movie_cards = []
         for idx, result in enumerate(results):
+            print(f"  生成报告中... [{idx+1}/{total}]")
             if result.found and result.info:
                 card = self._generate_success_card(idx, result, fields)
             else:
                 card = self._generate_not_found_card(idx, result)
             movie_cards.append(card)
+        print()
 
         is_summary_selected = MovieField.SUMMARY in fields
         checkboxes_html = '\n'.join(
@@ -54,7 +56,7 @@ class HTMLGenerator:
             movie_cards='\n'.join(movie_cards)
         )
         
-        output_file = self.output_dir / 'douban_movies_report.html'
+        output_file = self.output_dir / 'movies_report.html'
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(html_content)
         
@@ -68,19 +70,28 @@ class HTMLGenerator:
         for field in fields:
             if field in (MovieField.TITLE, MovieField.DOUBAN_LINK, MovieField.SUMMARY):
                 continue
-            value = info.get(field)
-            if value:
-                fields_html += f"""
+            sources = info.get_all(field)
+            if not sources:
+                continue
+            value_html = ' '.join(
+                f'<span class="value-tag">{self._escape_html(v)}<sup class="source">{s}</sup></span>'
+                for s, v in sorted(sources.items(), key=lambda x: Source.ALL.index(x[0]) if x[0] in Source.ALL else 99)
+            )
+            fields_html += f"""
                         <div class="info-item" data-field="{field.key}">
                             <div class="info-label">{field.label}</div>
-                            <div class="info-value">{self._escape_html(value)}</div>
+                            <div class="info-value">{value_html}</div>
                         </div>
                         """
 
         rating_html = ""
-        rating = info.get(MovieField.RATING)
-        if rating:
-            rating_html = f'<span class="rating">[评分] {rating}</span>'
+        rating_sources = info.get_all(MovieField.RATING)
+        if rating_sources:
+            parts = ' '.join(
+                f'{v}<sup class="source">{s}</sup>'
+                for s, v in sorted(rating_sources.items(), key=lambda x: Source.ALL.index(x[0]) if x[0] in Source.ALL else 99)
+            )
+            rating_html = f'<span class="rating">{parts}</span>'
 
         title = info.get(MovieField.TITLE) or result.search_name
 
@@ -96,12 +107,16 @@ class HTMLGenerator:
                         </div>
                 """
 
-        summary = info.get(MovieField.SUMMARY)
-        if summary and MovieField.SUMMARY in fields:
+        summary_sources = info.get_all(MovieField.SUMMARY)
+        if summary_sources and MovieField.SUMMARY in fields:
+            summary_html = ''.join(
+                f'<p><sup class="source">{s}</sup>{self._escape_html(v)}</p>'
+                for s, v in sorted(summary_sources.items(), key=lambda x: Source.ALL.index(x[0]) if x[0] in Source.ALL else 99)
+            )
             card += f"""
                         <div class="summary" data-field="summary">
                             <h4>[剧情简介]</h4>
-                            <p>{self._escape_html(summary)}</p>
+                            {summary_html}
                         </div>
                     """
 
@@ -149,7 +164,7 @@ class HTMLGenerator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>豆瓣电影信息报告</title>
+    <title>电影信息报告</title>
     <style>
         * {
             margin: 0;
@@ -290,6 +305,23 @@ class HTMLGenerator:
             font-size: 1em;
             word-wrap: break-word;
         }
+
+        .value-tag {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .value-tag:not(:last-child)::after {
+            content: '';
+            margin-right: 4px;
+        }
+
+        .source {
+            color: #999;
+            font-size: 0.75em;
+            margin-left: 2px;
+            font-weight: normal;
+        }
         
         .summary {
             background: #f8f9fa;
@@ -400,7 +432,7 @@ class HTMLGenerator:
 <body>
     <div class="container">
         <div class="header">
-            <h1>豆瓣电影信息报告</h1>
+            <h1>电影信息报告</h1>
             <div class="info">生成时间: $generate_time</div>
         </div>
         
@@ -435,7 +467,7 @@ class HTMLGenerator:
         </div>
         
         <div class="footer">
-            <p>数据来源：豆瓣电影 | 本报告由 MovieInfoCrawler 自动生成</p>
+            <p>数据来源：豆瓣电影、猫眼电影 | 本报告由 MovieInfoCrawler 自动生成</p>
             <p style="margin-top: 5px;">注意：数据仅供参考，实际信息以豆瓣官网为准</p>
         </div>
     </div>
