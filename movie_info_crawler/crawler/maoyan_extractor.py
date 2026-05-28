@@ -117,11 +117,24 @@ class MaoyanExtractor:
                 info.set(MovieField.BOX_OFFICE, api_box_office, Source.MAOYAN)
                 return info
 
+        captured_font = []
+        def on_font_resp(resp):
+            if resp.ok and ('.woff' in resp.url or '.woff2' in resp.url):
+                try:
+                    captured_font.append(resp.body())
+                except Exception:
+                    pass
+        self.browser.page.on('response', on_font_resp)
+
         try:
             html = self.browser.get_html(url, timeout=60000, wait_until="domcontentloaded")
         except Exception as e:
             print(f"  猫眼提取失败: [{type(e).__name__}] {e}")
             return info
+        finally:
+            self.browser.page.remove_listener('response', on_font_resp)
+
+        font_data = captured_font[0] if captured_font else None
 
         html_vals = self._find_in_html(html)
         if html_vals.get('box_office') or html_vals.get('want_to_see'):
@@ -133,7 +146,7 @@ class MaoyanExtractor:
             want_to_see_val = page_vals.get('want_to_see', '')
 
         if not box_office_val and not want_to_see_val:
-            box_office_val, want_to_see_val = self._try_stonefont_decode(html)
+            box_office_val, want_to_see_val = self._try_stonefont_decode(html, font_data)
 
         if box_office_val:
             print(f"  提取到票房: {box_office_val}")
@@ -193,11 +206,12 @@ class MaoyanExtractor:
         }''')
         return result or {}
 
-    def _try_stonefont_decode(self, html: str) -> tuple:
+    def _try_stonefont_decode(self, html: str, font_data: Optional[bytes] = None) -> tuple:
         print(f"  尝试 StonefontDecoder 解码...")
         try:
             decoder = StonefontDecoder()
-            mapping = decoder.build_mapping(self.browser.page, html)
+            mapping = decoder.build_mapping(self.browser.page, html,
+                                            font_data_override=font_data)
             if not mapping:
                 return ('', '')
 

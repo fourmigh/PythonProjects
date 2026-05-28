@@ -20,17 +20,25 @@ class StonefontDecoder:
 
     # ── 外部接口 ──────────────────────────────────────
 
-    def build_mapping(self, page, html: Optional[str] = None) -> Dict[str, str]:
+    def build_mapping(self, page, html: Optional[str] = None,
+                      font_data_override: Optional[bytes] = None) -> Dict[str, str]:
         self._mapping = {}
 
-        woff_url = self._get_woff_url(page)
-        if not woff_url:
-            print("  [stonefont] 未找到 woff 字体 URL")
-            return {}
+        if font_data_override:
+            woff_data = font_data_override
+        else:
+            woff_url = self._get_woff_url(page, html)
+            if not woff_url:
+                print("  [stonefont] 未找到 woff 字体 URL，尝试 Canvas 自举...")
+                pixel_mapping = self._canvas_bootstrap(page)
+                if pixel_mapping:
+                    self._mapping = pixel_mapping
+                    print(f"  [stonefont] Canvas 自举映射: {len(pixel_mapping)} 个字符")
+                return self._mapping
 
-        woff_data = self._download_woff(woff_url)
-        if not woff_data:
-            return {}
+            woff_data = self._download_woff(woff_url, page)
+            if not woff_data:
+                return {}
 
         font = TTFont(BytesIO(woff_data))
         cmap = font.getBestCmap()
@@ -103,7 +111,22 @@ class StonefontDecoder:
     # ── woff URL 提取 ─────────────────────────────────
 
     @staticmethod
-    def _get_woff_url(page) -> Optional[str]:
+    def _get_woff_url(page, html: Optional[str] = None) -> Optional[str]:
+        url = StonefontDecoder._get_woff_url_from_cssom(page)
+        if url:
+            return url
+
+        if html:
+            url = StonefontDecoder._get_woff_url_from_html(html)
+            if url:
+                print(f"  [stonefont] 从外部 CSS 提取到 woff URL")
+                return url
+
+        print("  [stonefont] CSSOM 和 HTML 均未找到 woff URL")
+        return None
+
+    @staticmethod
+    def _get_woff_url_from_cssom(page) -> Optional[str]:
         result = page.evaluate('''() => {
             const sheets = document.styleSheets;
             for (let i = 0; i < sheets.length; i++) {
@@ -135,11 +158,107 @@ class StonefontDecoder:
             url = 'https:' + url
         elif url.startswith('/'):
             url = 'https://maoyan.com' + url
+        elif url.startswith('data:'):
+            return url
 
         return url if url.startswith('http') else None
 
     @staticmethod
-    def _download_woff(url: str) -> Optional[bytes]:
+    def _get_woff_url_from_html(html: str) -> Optional[str]:
+        soup = BeautifulSoup(html, 'html.parser')
+
+        for link in soup.select('link[rel="stylesheet"]'):
+            href = link.get('href')
+            if not href:
+                continue
+            if href.startswith('//'):
+                href = 'https:' + href
+            elif href.startswith('/'):
+                href = 'https://maoyan.com' + href
+            elif not href.startswith('http'):
+                continue
+
+            css_url = StonefontDecoder._find_woff_in_css_url(href)
+            if css_url:
+                return css_url
+
+        for style in soup.select('style'):
+            css_text = style.string or ''
+            url = StonefontDecoder._find_woff_in_css_text(css_text)
+            if url:
+                return url
+
+        return None
+
+    @staticmethod
+    def _find_woff_in_css_url(css_url: str) -> Optional[str]:
+        try:
+            resp = requests.get(css_url, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) '
+                              'Chrome/120.0.0.0 Safari/537.36',
+            }, timeout=10)
+            resp.raise_for_status()
+            return StonefontDecoder._find_woff_in_css_text(resp.text)
+        except Exception:
+            return None
+
+    @staticmethod
+    def _find_woff_in_css_text(css: str) -> Optional[str]:
+        pattern = (
+            r'@font-face\s*\{[^}]*?'
+            r'font-family\s*:\s*["\']?(?:mtsi-font|stonefont)["\']?[^}]*?'
+            r'src\s*:\s*(?:[^;]*?url\(["\']?)([^"\'\)]+\.woff2?[^"\'\)]*)'
+        )
+        m = re.search(pattern, css, re.IGNORECASE | re.DOTALL)
+        if not m:
+            return None
+
+        url = m.group(1).strip()
+        if url.startswith('//'):
+            url = 'https:' + url
+        elif url.startswith('/'):
+            url = 'https://maoyan.com' + url
+        elif url.startswith('data:'):
+            return url
+        return url if url.startswith('http') else None
+
+    @staticmethod
+    def _download_woff(url: str, page=None) -> Optional[bytes]:
+        if url.startswith('data:'):
+            return StonefontDecoder._decode_data_url(url)
+
+        data = StonefontDecoder._download_woff_requests(url)
+        if data and StonefontDecoder._is_valid_font_data(data):
+            return data
+
+        if page is not None:
+            print("  [stonefont] requests 下载无效，尝试浏览器内下载...")
+            data = StonefontDecoder._download_woff_via_page(page, url)
+            if data and StonefontDecoder._is_valid_font_data(data):
+                return data
+
+            print("  [stonefont] 尝试网络拦截捕获...")
+            data = StonefontDecoder._capture_font_via_intercept(page, url)
+            if data and StonefontDecoder._is_valid_font_data(data):
+                return data
+
+        print("  [stonefont] 无法获取有效的字体文件")
+        return None
+
+    @staticmethod
+    def _decode_data_url(data_url: str) -> Optional[bytes]:
+        try:
+            import base64
+            if ',' not in data_url:
+                return None
+            return base64.b64decode(data_url.split(',', 1)[1])
+        except Exception as e:
+            print(f"  [stonefont] data URL 解码失败: {e}")
+            return None
+
+    @staticmethod
+    def _download_woff_requests(url: str) -> Optional[bytes]:
         try:
             resp = requests.get(url, headers={
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -150,8 +269,64 @@ class StonefontDecoder:
             resp.raise_for_status()
             return resp.content
         except Exception as e:
-            print(f"  [stonefont] 下载 woff 失败: {e}")
+            print(f"  [stonefont] requests 下载失败: {e}")
             return None
+
+    @staticmethod
+    def _download_woff_via_page(page, url: str) -> Optional[bytes]:
+        try:
+            b64 = page.evaluate('''async (url) => {
+                try {
+                    const resp = await fetch(url, {
+                        credentials: 'include',
+                        referrerPolicy: 'unsafe-url',
+                        headers: { 'Referer': document.location.href }
+                    });
+                    if (!resp.ok) return null;
+                    const blob = await resp.blob();
+                    return new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
+                    });
+                } catch(e) { return null; }
+            }''', url)
+            if b64 and ',' in b64:
+                import base64
+                return base64.b64decode(b64.split(',', 1)[1])
+        except Exception as e:
+            print(f"  [stonefont] 浏览器内下载失败: {e}")
+        return None
+
+    @staticmethod
+    def _capture_font_via_intercept(page, url: str) -> Optional[bytes]:
+        font_data = []
+
+        def handle_route(route):
+            response = route.fetch()
+            body = response.body()
+            font_data.append(body)
+            route.fulfill(body=body)
+
+        page.route(url, handle_route)
+        try:
+            page.goto(page.url, timeout=60000, wait_until='load')
+            page.wait_for_timeout(1000)
+            if font_data:
+                return font_data[0]
+        except Exception:
+            pass
+        finally:
+            page.unroute(url)
+        return None
+
+    @staticmethod
+    def _is_valid_font_data(data: bytes) -> bool:
+        if len(data) < 20:
+            return False
+        if data[:4] in (b'wOFF', b'wOF2', b'ttcf', b'\x00\x01\x00\x00', b'OTTO'):
+            return True
+        return False
 
     # ── 字符提取 ──────────────────────────────────────
 
