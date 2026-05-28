@@ -2,7 +2,8 @@
   "python_packages": [
     {"name": "playwright", "check": "import playwright", "install": "playwright", "uninstall": "playwright"},
     {"name": "beautifulsoup4", "check": "import bs4", "install": "beautifulsoup4", "uninstall": "beautifulsoup4"},
-    {"name": "requests", "check": "import requests", "install": "requests", "uninstall": "requests"}
+    {"name": "requests", "check": "import requests", "install": "requests", "uninstall": "requests"},
+    {"name": "fonttools", "check": "import fontTools", "install": "fonttools", "uninstall": "fonttools"}
   ],
   "system_tools": [],
   "browsers": [

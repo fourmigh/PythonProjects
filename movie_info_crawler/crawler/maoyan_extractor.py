@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from .browser_fetcher import BrowserFetcher
 from .models import MovieInfo, MovieField, SearchResult, Source
 from .config_manager import ConfigManager
+from .stonefont_decoder import StonefontDecoder
 
 
 class MaoyanExtractor:
@@ -131,6 +132,9 @@ class MaoyanExtractor:
             box_office_val = page_vals.get('box_office', '')
             want_to_see_val = page_vals.get('want_to_see', '')
 
+        if not box_office_val and not want_to_see_val:
+            box_office_val, want_to_see_val = self._try_stonefont_decode(html)
+
         if box_office_val:
             print(f"  提取到票房: {box_office_val}")
         info.set(MovieField.BOX_OFFICE, box_office_val, Source.MAOYAN)
@@ -176,7 +180,7 @@ class MaoyanExtractor:
         return result
 
     def _try_extract_inline_data(self) -> dict:
-        result = self.browser.page.evaluate('''() => {
+        result = self.browser.page.evaluate(r'''() => {
             for (const key of ['__INITIAL_STATE__', '__NUXT__', '__NEXT_DATA__']) {
                 if (window[key]) {
                     const t = JSON.stringify(window[key]);
@@ -188,6 +192,29 @@ class MaoyanExtractor:
             return null;
         }''')
         return result or {}
+
+    def _try_stonefont_decode(self, html: str) -> tuple:
+        print(f"  尝试 StonefontDecoder 解码...")
+        try:
+            decoder = StonefontDecoder()
+            mapping = decoder.build_mapping(self.browser.page, html)
+            if not mapping:
+                return ('', '')
+
+            decoded_html = decoder.decode_page(html)
+            decoded_soup = BeautifulSoup(decoded_html, 'html.parser')
+            box_office_val = self._extract_box_office(decoded_soup)
+            want_to_see_val = self._extract_want_to_see(decoded_soup)
+
+            if box_office_val or want_to_see_val:
+                print(f"  [stonefont] 解码成功: 票房='{box_office_val}', 想看='{want_to_see_val}'")
+            else:
+                print(f"  [stonefont] 解码后未匹配到数值")
+
+            return (box_office_val, want_to_see_val)
+        except Exception as e:
+            print(f"  [stonefont] 解码失败: [{type(e).__name__}] {e}")
+            return ('', '')
 
     def _extract_box_office(self, soup: BeautifulSoup) -> str:
         box_selectors = [
