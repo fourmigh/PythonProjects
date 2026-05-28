@@ -118,7 +118,22 @@ class MovieInfoCrawler:
 
                 # 补充猫眼数据
                 print(f"   正在补充猫眼数据...")
-                maoyan_url = self.maoyan.search(movie_name)
+                maoyan_results = self.maoyan.search(movie_name)
+                maoyan_url = None
+
+                if len(maoyan_results) == 0:
+                    print(f"   未找到猫眼页面")
+                elif len(maoyan_results) == 1:
+                    maoyan_url = maoyan_results[0].url
+                else:
+                    choice = self._get_user_choice(movie_name, maoyan_results)
+                    if choice.type == 'skip':
+                        print(f"   [跳过] 已跳过猫眼数据")
+                    elif choice.type == 'select':
+                        maoyan_url = maoyan_results[choice.index].url
+                    else:
+                        maoyan_url = choice.url
+
                 if maoyan_url:
                     maoyan_info = self.maoyan.extract(maoyan_url)
                     if maoyan_info:
@@ -131,8 +146,6 @@ class MovieInfoCrawler:
                             print(f"   猫眼数据已合并（无新字段）")
                     else:
                         print(f"   无猫眼数据")
-                else:
-                    print(f"   未找到猫眼页面")
 
                 self.results.append(MovieResult(
                     search_name=movie_name,
@@ -252,7 +265,7 @@ class MovieInfoCrawler:
                 return UserChoice(type='select', index=choice_num - 1)
             elif choice_num == len(search_results) + 1:
                 manual_url = input("   请输入链接: ").strip()
-                if manual_url and '/subject/' in manual_url:
+                if manual_url:
                     return UserChoice(type='manual', url=manual_url)
                 print("   链接格式不正确")
                 continue

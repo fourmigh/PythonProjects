@@ -29,7 +29,7 @@ def _pip(args, mirror=None):
     cmd = [sys.executable, '-m', 'pip'] + args
     if mirror:
         cmd += ['-i', mirror]
-    return subprocess.run(cmd, capture_output=True, text=True)
+    return subprocess.run(cmd)
 
 
 def install_python_packages(mirror=PIP_MIRROR):
@@ -40,18 +40,24 @@ def install_python_packages(mirror=PIP_MIRROR):
         if _check(entry):
             print(f"  [跳过] {name} 已安装")
             continue
-        print(f"  [安装] {name}...", end=' ')
+        hint = " (需下载 ~500MB 依赖，请耐心等待)" if name == 'easyocr' else ""
+        print(f"  [安装] {name}{hint}...", flush=True)
         r = _pip(['install', entry['install']], mirror=mirror)
         if r.returncode == 0:
-            print("OK")
+            print(f"  [完成] {name} 安装成功")
         else:
-            print(f"失败\n{r.stderr.strip()}")
-            failed += 1
+            print(f"  镜像失败，尝试官方源...", flush=True)
+            r = _pip(['install', entry['install']])
+            if r.returncode == 0:
+                print(f"  [完成] {name} 安装成功")
+            else:
+                print(f"  [失败] {name}")
+                failed += 1
 
     # 对齐系统 requests 与已升级的依赖版本，消除版本警告
     r = _pip(['install', '--upgrade', 'requests'], mirror=mirror)
     if r.returncode != 0:
-        print(f"  [警告] requests 升级失败: {r.stderr.strip()}")
+        print(f"  [警告] requests 升级失败")
     return failed
 
 

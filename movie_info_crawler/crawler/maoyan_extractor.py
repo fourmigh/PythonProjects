@@ -1,14 +1,14 @@
 import re
-from typing import Optional
+from datetime import datetime
+from typing import Dict, List, Optional
 from urllib.parse import urlencode
 
 import requests
 from bs4 import BeautifulSoup
 
 from .browser_fetcher import BrowserFetcher
-from .models import MovieInfo, MovieField, Source
+from .models import MovieInfo, MovieField, SearchResult, Source
 from .config_manager import ConfigManager
-from .stonefont_decoder import StonefontDecoder
 
 
 class MaoyanExtractor:
@@ -18,9 +18,9 @@ class MaoyanExtractor:
     def __init__(self, config: ConfigManager, browser: BrowserFetcher):
         self.config = config
         self.browser = browser
-        self._cached_info: Optional[MovieInfo] = None
+        self._cached_info: Dict[str, MovieInfo] = {}
 
-    def search(self, movie_name: str) -> Optional[str]:
+    def search(self, movie_name: str) -> List[SearchResult]:
         params = {'keyword': movie_name, 'ci': 1, 'limit': 5, 'offset': 0}
         full_url = f"{self.SEARCH_URL}?{urlencode(params)}"
         print(f"  猫眼搜索: GET {full_url}")
@@ -33,80 +33,108 @@ class MaoyanExtractor:
             html = resp.text
         except Exception as e:
             print(f"  猫眼搜索失败: [{type(e).__name__}] {e}")
-            return None
+            return []
 
         soup = BeautifulSoup(html, 'html.parser')
-        item = soup.select_one('.movie.cell')
-        if not item:
+        items = soup.select('.movie.cell')
+        if not items:
             print(f"  未找到相关电影")
-            return None
+            return []
 
-        movie_id = item.get('data-id')
-        if not movie_id:
-            print(f"  无法获取电影 ID")
-            return None
+        results = []
+        for item in items:
+            movie_id = item.get('data-id')
+            if not movie_id:
+                continue
 
-        info = MovieInfo()
-        title_el = item.select_one('.name .title')
-        if title_el:
-            info.set(MovieField.TITLE, title_el.get_text(strip=True), Source.MAOYAN)
+            title_el = item.select_one('.name .title')
+            title = title_el.get_text(strip=True) if title_el else ''
 
-        score_el = item.select_one('.score .num')
-        if score_el:
-            info.set(MovieField.RATING, score_el.get_text(strip=True), Source.MAOYAN)
+            year = ''
+            date_el = item.select_one('.release')
+            if date_el:
+                date_text = date_el.get_text(strip=True)
+                year_match = re.search(r'(\d{4})', date_text)
+                if year_match:
+                    year = year_match.group(1)
 
-        cat_el = item.select_one('.catogary')
-        if cat_el:
-            info.set(MovieField.GENRE, cat_el.get_text(strip=True), Source.MAOYAN)
+            url = self.DETAIL_URL.format(movie_id)
 
-        date_el = item.select_one('.release')
-        if date_el:
-            info.set(MovieField.RELEASE_DATE, date_el.get_text(strip=True), Source.MAOYAN)
+            info = MovieInfo()
+            if title:
+                info.set(MovieField.TITLE, title, Source.MAOYAN)
+            score_el = item.select_one('.score .num')
+            if score_el:
+                info.set(MovieField.RATING, score_el.get_text(strip=True), Source.MAOYAN)
+            cat_el = item.select_one('.catogary')
+            if cat_el:
+                info.set(MovieField.GENRE, cat_el.get_text(strip=True), Source.MAOYAN)
+            if date_el:
+                info.set(MovieField.RELEASE_DATE, date_el.get_text(strip=True), Source.MAOYAN)
+            ename_el = item.select_one('.ename')
+            if ename_el:
+                text = ename_el.get_text(strip=True)
+                if text:
+                    info.set(MovieField.AKA, text, Source.MAOYAN)
 
-        ename_el = item.select_one('.ename')
-        if ename_el:
-            text = ename_el.get_text(strip=True)
-            if text:
-                info.set(MovieField.AKA, text, Source.MAOYAN)
+            self._cached_info[url] = info
+            results.append(SearchResult(title=title, url=url, year=year))
 
-        has_data = any(
-            info.get(f, Source.MAOYAN) for f in MovieField
-            if f is not MovieField.TITLE
-        )
-        if has_data:
-            self._cached_info = info
+        return results
 
-        return self.DETAIL_URL.format(movie_id)
+    @staticmethod
+    def _extract_movie_id(url: str) -> Optional[str]:
+        m = re.search(r'/films/(\d+)', url)
+        return m.group(1) if m else None
+
+    def _fetch_box_office_from_api(self, movie_id: str) -> Optional[str]:
+        today = datetime.now().strftime('%Y-%m-%d')
+        api_url = f'https://box.maoyan.com/promovie/api/box/second.json?beginDate={today}'
+        try:
+            resp = requests.get(api_url, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
+                'Referer': 'https://piaofang.maoyan.com/',
+            }, timeout=10)
+            resp.raise_for_status()
+            data = resp.json()
+            for item in data.get('data', {}).get('list', []):
+                if str(item.get('movieId')) == movie_id:
+                    return item.get('sumBoxInfo', '') or None
+        except Exception:
+            pass
+        return None
 
     def extract(self, url: str) -> Optional[MovieInfo]:
         print(f"  猫眼提取: GET {url}")
+        info = self._cached_info.get(url, MovieInfo())
+
+        movie_id = self._extract_movie_id(url)
+        if movie_id:
+            api_box_office = self._fetch_box_office_from_api(movie_id)
+            if api_box_office:
+                print(f"  [API] 提取到票房: {api_box_office}")
+                info.set(MovieField.BOX_OFFICE, api_box_office, Source.MAOYAN)
+                return info
 
         try:
-            html = self.browser.get_html(url, timeout=60000, wait_until="networkidle")
+            html = self.browser.get_html(url, timeout=60000, wait_until="domcontentloaded")
         except Exception as e:
             print(f"  猫眼提取失败: [{type(e).__name__}] {e}")
-            return self._cached_info
+            return info
 
-        decoder = StonefontDecoder()
-        try:
-            decoder.build_mapping(self.browser.page)
-        except Exception as e:
-            print(f"  字体映射失败: {e}")
+        html_vals = self._find_in_html(html)
+        if html_vals.get('box_office') or html_vals.get('want_to_see'):
+            box_office_val = html_vals.get('box_office', '')
+            want_to_see_val = html_vals.get('want_to_see', '')
+        else:
+            page_vals = self._try_extract_inline_data()
+            box_office_val = page_vals.get('box_office', '')
+            want_to_see_val = page_vals.get('want_to_see', '')
 
-        decoded_html = decoder.decode_page(html)
-        soup = BeautifulSoup(decoded_html, 'html.parser')
-
-        decoded_stonefont = [s.get_text(strip=True) for s in soup.select('span.stonefont') if s.get_text(strip=True)]
-        if decoded_stonefont:
-            print(f"  解码后 stonefont 文本: {decoded_stonefont[:5]}")
-
-        info = self._cached_info or MovieInfo()
-        box_office_val = self._extract_box_office(soup)
         if box_office_val:
             print(f"  提取到票房: {box_office_val}")
         info.set(MovieField.BOX_OFFICE, box_office_val, Source.MAOYAN)
 
-        want_to_see_val = self._extract_want_to_see(soup)
         if want_to_see_val:
             print(f"  提取到想看人数: {want_to_see_val}")
         info.set(MovieField.WANT_TO_SEE, want_to_see_val, Source.MAOYAN)
@@ -119,6 +147,47 @@ class MaoyanExtractor:
             print(f"  无猫眼详情数据")
 
         return info
+
+    @staticmethod
+    def _find_in_html(html: str) -> dict:
+        soup = BeautifulSoup(html, 'html.parser')
+        result = {'box_office': '', 'want_to_see': ''}
+
+        for script in soup.find_all('script'):
+            text = script.string or ''
+
+            if not result['box_office']:
+                for key in ['sumBoxInfo', 'boxOffice', 'boxOfficeDesc']:
+                    m = re.search(r'"' + key + r'"\s*:\s*"([^"]*)"', text)
+                    if m:
+                        result['box_office'] = m.group(1)
+                        break
+
+            if not result['want_to_see']:
+                for key in ['wantToSee', 'wishCount', 'showCount', 'show_count']:
+                    m = re.search(r'"' + key + r'"\s*:\s*(\d+)', text)
+                    if m:
+                        result['want_to_see'] = m.group(1)
+                        break
+
+            if result['box_office'] and result['want_to_see']:
+                break
+
+        return result
+
+    def _try_extract_inline_data(self) -> dict:
+        result = self.browser.page.evaluate('''() => {
+            for (const key of ['__INITIAL_STATE__', '__NUXT__', '__NEXT_DATA__']) {
+                if (window[key]) {
+                    const t = JSON.stringify(window[key]);
+                    const box = (t.match(/"sumBoxInfo"\s*:\s*"([^"]*)"/) || [])[1] || '';
+                    const want = (t.match(/"wantToSee"\s*:\s*(\d+)/) || [])[1] || '';
+                    return {box_office: box, want_to_see: want};
+                }
+            }
+            return null;
+        }''')
+        return result or {}
 
     def _extract_box_office(self, soup: BeautifulSoup) -> str:
         box_selectors = [
