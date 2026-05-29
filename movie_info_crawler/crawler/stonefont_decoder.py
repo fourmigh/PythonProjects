@@ -526,6 +526,8 @@ class StonefontDecoder:
                 ctx.fillText(String(d), W / 2, H / 2);
                 const img = ctx.getImageData(0, 0, W, H);
                 const mask = new Uint8Array(W * H);
+                const hProfile = new Array(H).fill(0);
+                const vProfile = new Array(W).fill(0);
                 let topPixels = 0, botPixels = 0;
                 const mid = Math.floor(H / 2);
                 for (let y = 0; y < H; y++) {
@@ -534,13 +536,15 @@ class StonefontDecoder:
                         const val = img.data[i * 4 + 3] > 0 ? 1 : 0;
                         mask[i] = val;
                         if (val) {
+                            hProfile[y]++;
+                            vProfile[x]++;
                             if (y < mid) topPixels++;
                             else botPixels++;
                         }
                     }
                 }
                 const ratio = botPixels > 0 ? topPixels / botPixels : 0;
-                refCache[d] = { mask, ratio };
+                refCache[d] = { mask, ratio, hProfile, vProfile };
                 return refCache[d];
             }
 
@@ -556,6 +560,8 @@ class StonefontDecoder:
                 const img = ctx.getImageData(0, 0, W, H);
 
                 const mask = new Uint8Array(W * H);
+                const hProfile = new Array(H).fill(0);
+                const vProfile = new Array(W).fill(0);
                 let topPixels = 0, botPixels = 0;
                 const mid = Math.floor(H / 2);
                 for (let y = 0; y < H; y++) {
@@ -564,6 +570,8 @@ class StonefontDecoder:
                         const val = img.data[i * 4 + 3] > 0 ? 1 : 0;
                         mask[i] = val;
                         if (val) {
+                            hProfile[y]++;
+                            vProfile[x]++;
                             if (y < mid) topPixels++;
                             else botPixels++;
                         }
@@ -585,8 +593,23 @@ class StonefontDecoder:
                         }
                     }
                     const jaccard = union > 0 ? intersection / union : 0;
-                    const ratioPenalty = Math.abs(maskRatio - ref.ratio) * 0.3;
-                    const score = jaccard - ratioPenalty;
+
+                    let hSim = 0, hTotal = 0;
+                    for (let y = 0; y < H; y++) {
+                        hSim += Math.min(hProfile[y], ref.hProfile[y]);
+                        hTotal += Math.max(hProfile[y], ref.hProfile[y]);
+                    }
+                    const hScore = hTotal > 0 ? hSim / hTotal : 1;
+
+                    let vSim = 0, vTotal = 0;
+                    for (let x = 0; x < W; x++) {
+                        vSim += Math.min(vProfile[x], ref.vProfile[x]);
+                        vTotal += Math.max(vProfile[x], ref.vProfile[x]);
+                    }
+                    const vScore = vTotal > 0 ? vSim / vTotal : 1;
+
+                    const ratioPenalty = Math.abs(maskRatio - ref.ratio) * 0.1;
+                    const score = jaccard * 0.4 + hScore * 0.25 + vScore * 0.25 - ratioPenalty;
                     if (score > bestScore) {
                         bestScore = score;
                         bestDigit = d;
@@ -712,14 +735,16 @@ class StonefontDecoder:
         if not pts1 or not pts2:
             return float('inf')
 
-        total = 0.0
-        for p1 in pts1:
-            min_dist = min(
-                math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
-                for p2 in pts2
-            )
-            total += min_dist
-        return total / len(pts1)
+        def avg_min_dist(a, b):
+            total = 0.0
+            for p in a:
+                total += min(
+                    math.sqrt((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2)
+                    for q in b
+                )
+            return total / len(a)
+
+        return max(avg_min_dist(pts1, pts2), avg_min_dist(pts2, pts1))
 
     def _match_against_reference(
         self,
