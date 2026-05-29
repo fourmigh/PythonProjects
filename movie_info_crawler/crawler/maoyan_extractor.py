@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from .browser_fetcher import BrowserFetcher
 from .models import MovieInfo, MovieField, SearchResult, Source
 from .config_manager import ConfigManager
-from .stonefont_decoder import StonefontDecoder
+from .stonefont import StonefontDecoder
 
 
 class MaoyanExtractor:
@@ -120,8 +120,8 @@ class MaoyanExtractor:
         try:
             html = self.browser.get_html(url, timeout=60000, wait_until="domcontentloaded")
         except Exception as e:
-            print(f"  猫眼提取失败: [{type(e).__name__}] {e}")
-            return info
+            print(f"  猫眼提取超时: [{type(e).__name__}] {e}，使用当前页面内容...")
+            html = self.browser.page.content()
 
         html_vals = self._find_in_html(html)
         if html_vals.get('box_office') or html_vals.get('want_to_see'):

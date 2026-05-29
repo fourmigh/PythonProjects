@@ -74,9 +74,11 @@ class _OutlinePen:
 
 
 class StonefontDecoder:
-    REFERENCE_FILE = 'stonefont_reference.json'
+    REFERENCE_FILE = 'reference.json'
 
-    def __init__(self, reference_dir: str = '.'):
+    def __init__(self, reference_dir: Optional[str] = None):
+        if reference_dir is None:
+            reference_dir = Path(__file__).parent
         self._mapping: Dict[str, str] = {}
         self._reference_path = Path(reference_dir) / self.REFERENCE_FILE
         self._reference: Dict[str, List[Tuple[float, float]]] = {}
@@ -113,6 +115,7 @@ class StonefontDecoder:
         digit_ref = StonefontDecoder._get_digit_reference()
         if digit_ref:
             print("  [stonefont] fontTools 轮廓匹配中...")
+            self._fonttools_all_scores = {}
             for ch in stonefont_chars:
                 code_point = ord(ch)
                 glyph_name = cmap.get(code_point)
@@ -121,22 +124,54 @@ class StonefontDecoder:
                 points = StonefontDecoder._get_glyph_contour_points(font, glyph_name)
                 if not points:
                     continue
-                digit = self._match_against_reference(points, digit_ref, threshold=1.0)
-                if digit is not None:
-                    self._mapping[ch] = digit
+                scores = self._score_all_digits(points, digit_ref)
+                self._fonttools_all_scores[ch] = scores
+                best_digit, best_score = scores[0]
+                if best_score <= 1.0:
+                    self._mapping[ch] = best_digit
 
             if self._mapping:
                 for ch, d in self._mapping.items():
                     print(f"    U+{ord(ch):04X} -> {d}")
                 print(f"  [stonefont] fontTools 匹配了 {len(self._mapping)}/{len(stonefont_chars)} 个字符")
                 if len(self._mapping) >= len(stonefont_chars):
-                    print("  [stonefont] 完成映射")
-                    return self._mapping
-                print("  [stonefont] fontTools 未完全匹配，回退到 Canvas 自举补充...")
+                    inv = {}
+                    for ch, d in self._mapping.items():
+                        inv.setdefault(d, []).append(ch)
+                    conflicts = {d: cs for d, cs in inv.items() if len(cs) > 1}
+                    if not conflicts:
+                        print("  [stonefont] 完成映射")
+                        return self._mapping
+                    print(f"  [stonefont] fontTools 发现冲突: {list(conflicts.keys())}，保留非冲突映射...")
+                    taken = set()
+                    for d, chars in conflicts.items():
+                        chars.sort(key=lambda ch: self._fonttools_all_scores[ch][0][1])
+                        keeper = chars[0]
+                        taken.add(d)
+                        for loser in chars[1:]:
+                            del self._mapping[loser]
+                    print("  [stonefont] 注入字体，用 Canvas 裁决冲突字符...")
+                    StonefontDecoder._inject_font_to_page(page, woff_data)
+                    canvas_mapping = self._canvas_bootstrap(page, exclude_digits=taken) or {}
+                    self._mapping.update(canvas_mapping)
+                    if canvas_mapping:
+                        for ch, d in canvas_mapping.items():
+                            print(f"    U+{ord(ch):04X} -> {d} (Canvas)")
+                    else:
+                        print("  [stonefont] Canvas 未映射到冲突字符")
+                    if len(self._mapping) >= len(stonefont_chars):
+                        print("  [stonefont] 完成映射")
+                        return self._mapping
 
-        print("  [stonefont] 注入字体后 Canvas 自举...")
-        StonefontDecoder._inject_font_to_page(page, woff_data)
-        self._mapping = self._canvas_bootstrap(page) or {}
+                else:
+                    print("  [stonefont] fontTools 未完全匹配，回退到 Canvas 自举补充...")
+
+        if len(self._mapping) < len(stonefont_chars):
+            print("  [stonefont] 注入字体后 Canvas 自举补充...")
+            StonefontDecoder._inject_font_to_page(page, woff_data)
+            canvas_all = self._canvas_bootstrap(page) or {}
+            # Merge: keep fontTools results, fill gaps with Canvas
+            self._mapping.update(canvas_all)
 
         if self._mapping:
             for ch, d in self._mapping.items():
@@ -501,8 +536,9 @@ class StonefontDecoder:
             return False
 
     @staticmethod
-    def _canvas_bootstrap(page) -> Dict[str, str]:
-        return page.evaluate('''async () => {
+    def _canvas_bootstrap(page, exclude_digits: Optional[Set[str]] = None) -> Dict[str, str]:
+        exclude_list = list(exclude_digits or [])
+        return page.evaluate('''async (exclude) => {
             const spans = document.querySelectorAll('span.stonefont');
             if (!spans.length) return {};
             const text = [...spans].map(s => s.textContent).join('');
@@ -563,6 +599,16 @@ class StonefontDecoder:
                 return holes;
             }
 
+            function getQuadDensity(mask, W, H) {
+                const mw = W >> 1, mh = H >> 1;
+                let tl = 0, tr = 0;
+                for (let y = 0; y < mh; y++)
+                    for (let x = 0; x < W; x++)
+                        if (mask[y * W + x])
+                            if (x < mw) tl++; else tr++;
+                return tl > 0 ? tr / tl : 0;
+            }
+
             function getRefDigit(d) {
                 if (refCache[d]) return refCache[d];
                 const c = document.createElement('canvas');
@@ -576,7 +622,7 @@ class StonefontDecoder:
                 const mask = new Uint8Array(W * H);
                 const hProfile = new Array(H).fill(0);
                 const vProfile = new Array(W).fill(0);
-                let topPixels = 0, botPixels = 0;
+                let topPixels = 0, botPixels = 0, sumY = 0, pixelCount = 0;
                 const mid = Math.floor(H / 2);
                 for (let y = 0; y < H; y++) {
                     for (let x = 0; x < W; x++) {
@@ -586,6 +632,8 @@ class StonefontDecoder:
                         if (val) {
                             hProfile[y]++;
                             vProfile[x]++;
+                            sumY += y;
+                            pixelCount++;
                             if (y < mid) topPixels++;
                             else botPixels++;
                         }
@@ -593,7 +641,9 @@ class StonefontDecoder:
                 }
                 const ratio = botPixels > 0 ? topPixels / botPixels : 0;
                 const holeCount = countHoles(mask, W, H);
-                refCache[d] = { mask, ratio, hProfile, vProfile, holeCount };
+                const qRatio = getQuadDensity(mask, W, H);
+                const centroidY = pixelCount > 0 ? sumY / pixelCount : H / 2;
+                refCache[d] = { mask, ratio, hProfile, vProfile, holeCount, qRatio, centroidY };
                 return refCache[d];
             }
 
@@ -611,7 +661,7 @@ class StonefontDecoder:
                 const mask = new Uint8Array(W * H);
                 const hProfile = new Array(H).fill(0);
                 const vProfile = new Array(W).fill(0);
-                let topPixels = 0, botPixels = 0;
+                let topPixels = 0, botPixels = 0, sumY = 0, pixelCount = 0;
                 const mid = Math.floor(H / 2);
                 for (let y = 0; y < H; y++) {
                     for (let x = 0; x < W; x++) {
@@ -621,6 +671,8 @@ class StonefontDecoder:
                         if (val) {
                             hProfile[y]++;
                             vProfile[x]++;
+                            sumY += y;
+                            pixelCount++;
                             if (y < mid) topPixels++;
                             else botPixels++;
                         }
@@ -628,10 +680,12 @@ class StonefontDecoder:
                 }
                 const maskRatio = botPixels > 0 ? topPixels / botPixels : 0;
                 const glyphHoles = countHoles(mask, W, H);
+                const glyphQRatio = getQuadDensity(mask, W, H);
+                const glyphCentroidY = pixelCount > 0 ? sumY / pixelCount : H / 2;
 
-                let bestDigit = -1;
-                let bestScore = -Infinity;
+                const allScores = [];
                 for (let d = 0; d <= 9; d++) {
+                    if (exclude.includes(String(d))) continue;
                     const ref = getRefDigit(d);
                     let intersection = 0, union = 0;
                     for (let i = 0; i < W * H; i++) {
@@ -660,16 +714,60 @@ class StonefontDecoder:
 
                     const ratioPenalty = Math.abs(maskRatio - ref.ratio) * 0.1;
                     const holePenalty = (glyphHoles !== ref.holeCount) ? 0.5 : 0;
-                    const score = jaccard * 0.3 + hScore * 0.2 + vScore * 0.2 - ratioPenalty - holePenalty;
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestDigit = d;
+                    const quadPenalty = Math.abs(glyphQRatio - ref.qRatio) > 0.3 ? 0.3 : 0;
+                    const centroidPenalty = Math.abs(glyphCentroidY - ref.centroidY) * 0.03;
+                    const score = jaccard * 0.3 + hScore * 0.2 + vScore * 0.2 - ratioPenalty - holePenalty - quadPenalty - centroidPenalty;
+                    allScores.push({ digit: d, score });
+                }
+                allScores.sort((a, b) => b.score - a.score);
+                result[ch] = String(allScores[0].digit);
+                // Store for conflict resolution
+                const entry = { ch, scores: allScores, centroidY: glyphCentroidY };
+                if (!window._glyphEntries) window._glyphEntries = [];
+                window._glyphEntries.push(entry);
+            }
+
+            // Conflict resolution: ensure each digit maps to at most one codepoint
+            let hasConflicts = true;
+            while (hasConflicts) {
+                hasConflicts = false;
+                const groups = {};
+                for (const e of window._glyphEntries) {
+                    const d = result[e.ch];
+                    if (!groups[d]) groups[d] = [];
+                    groups[d].push(e);
+                }
+                for (const [digit, entries] of Object.entries(groups)) {
+                    if (entries.length <= 1) continue;
+                    hasConflicts = true;
+                    const ref = getRefDigit(Number(digit));
+                    entries.sort((a, b) =>
+                        Math.abs(a.centroidY - ref.centroidY) - Math.abs(b.centroidY - ref.centroidY));
+                    for (let i = 1; i < entries.length; i++) {
+                        const e = entries[i];
+                        let reassigned = false;
+                        for (const c of e.scores) {
+                            if (String(c.digit) === digit) continue;
+                            if (!groups[String(c.digit)] || groups[String(c.digit)].length === 0) {
+                                result[e.ch] = String(c.digit);
+                                reassigned = true;
+                                break;
+                            }
+                        }
+                        if (!reassigned) result[e.ch] = String(e.scores[1].digit);
                     }
                 }
-                result[ch] = String(bestDigit);
+                // Rebuild groups for next iteration
+                for (const k of Object.keys(groups)) groups[k] = [];
+                for (const e of window._glyphEntries) {
+                    const d = result[e.ch];
+                    if (!groups[d]) groups[d] = [];
+                    groups[d].push(e);
+                }
             }
+            delete window._glyphEntries;
             return result;
-        }''')
+        }''', exclude_list)
 
     # ── 数字参考轮廓（系统字体） ──────────────────────
 
@@ -796,6 +894,16 @@ class StonefontDecoder:
             return total / len(a)
 
         return max(avg_min_dist(pts1, pts2), avg_min_dist(pts2, pts1))
+
+    def _score_all_digits(
+        self,
+        points: List[Tuple[float, float]],
+        reference: Dict[str, List[Tuple[float, float]]]
+    ) -> List[Tuple[str, float]]:
+        scores = [(digit, self._compare_contours(points, ref_points))
+                  for digit, ref_points in reference.items()]
+        scores.sort(key=lambda x: x[1])
+        return scores
 
     def _match_against_reference(
         self,
