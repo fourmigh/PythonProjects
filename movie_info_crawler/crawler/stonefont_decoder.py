@@ -1,5 +1,6 @@
 import json
 import math
+import os
 import re
 from io import BytesIO
 from pathlib import Path
@@ -8,6 +9,68 @@ from typing import Dict, List, Optional, Tuple, Set
 import requests
 from bs4 import BeautifulSoup
 from fontTools.ttLib import TTFont
+
+
+class _OutlinePen:
+    """fontTools Pen that samples TrueType quadratic bezier outlines."""
+
+    def __init__(self, samples: int = 10):
+        self.points: List[Tuple[float, float]] = []
+        self._samples = samples
+        self._start: Optional[Tuple[float, float]] = None
+        self._current: Optional[Tuple[float, float]] = None
+
+    def _add_quadratic(self, start: Tuple[float, float],
+                       control: Tuple[float, float],
+                       end: Tuple[float, float]) -> None:
+        for i in range(1, self._samples + 1):
+            t = i / self._samples
+            x = (1 - t) ** 2 * start[0] + 2 * t * (1 - t) * control[0] + t * t * end[0]
+            y = (1 - t) ** 2 * start[1] + 2 * t * (1 - t) * control[1] + t * t * end[1]
+            self.points.append((x, y))
+
+    def moveTo(self, pt: Tuple[float, float]) -> None:
+        self._start = pt
+        self._current = pt
+        self.points.append(pt)
+
+    def lineTo(self, pt: Tuple[float, float]) -> None:
+        self.points.append(pt)
+        self._current = pt
+
+    def qCurveTo(self, *pts: Tuple[float, float]) -> None:
+        start = self._current
+        controls = list(pts)
+
+        if len(controls) == 2:
+            self._add_quadratic(start, controls[0], controls[1])
+            self._current = controls[1]
+        else:
+            for i in range(len(controls) - 1):
+                cp = controls[i]
+                if i == len(controls) - 2:
+                    end_pt = controls[i + 1]
+                else:
+                    next_cp = controls[i + 1]
+                    end_pt = ((cp[0] + next_cp[0]) / 2.0,
+                              (cp[1] + next_cp[1]) / 2.0)
+                self._add_quadratic(start, cp, end_pt)
+                start = end_pt
+            self._current = controls[-1]
+
+    def curveTo(self, *pts: Tuple[float, float]) -> None:
+        for pt in pts:
+            self.points.append(pt)
+        self._current = pts[-1]
+
+    def closePath(self) -> None:
+        if (self._start and self._current
+                and self._start != self._current):
+            self.points.append(self._start)
+        self._current = self._start
+
+    def endPath(self) -> None:
+        self._current = self._start
 
 
 class StonefontDecoder:
@@ -20,69 +83,66 @@ class StonefontDecoder:
 
     # ── 外部接口 ──────────────────────────────────────
 
-    def build_mapping(self, page, html: Optional[str] = None,
+    def build_mapping(self, page, initial_html: Optional[str] = None,
                       font_data_override: Optional[bytes] = None) -> Dict[str, str]:
         self._mapping = {}
 
         if font_data_override:
             woff_data = font_data_override
         else:
-            woff_url = self._get_woff_url(page, html)
-            if not woff_url:
-                print("  [stonefont] 未找到 woff 字体 URL，尝试 Canvas 自举...")
-                pixel_mapping = self._canvas_bootstrap(page)
-                if pixel_mapping:
-                    self._mapping = pixel_mapping
-                    print(f"  [stonefont] Canvas 自举映射: {len(pixel_mapping)} 个字符")
-                return self._mapping
+            woff_data = self._try_get_font_data(page, initial_html)
 
-            woff_data = self._download_woff(woff_url, page)
-            if not woff_data:
-                return {}
+        if not woff_data:
+            print("  [stonefont] 未找到 woff 字体 URL，尝试 Canvas 自举...")
+            pixel_mapping = self._canvas_bootstrap(page)
+            if pixel_mapping:
+                self._mapping = pixel_mapping
+                print(f"  [stonefont] Canvas 自举映射: {len(pixel_mapping)} 个字符")
+            return self._mapping
 
         font = TTFont(BytesIO(woff_data))
         cmap = font.getBestCmap()
 
-        if html is None:
-            html = page.content()
-        stonefont_chars = self._extract_stonefont_chars(html)
+        live_html = page.content()
+        stonefont_chars = self._extract_stonefont_chars(live_html)
         if not stonefont_chars:
             print("  [stonefont] 页面中无 stonefont 字符")
             return {}
 
-        reference = self._load_reference()
-        if not reference:
-            print("  [stonefont] 无参考轮廓，启动 Canvas 自举...")
-            pixel_mapping = self._canvas_bootstrap(page)
-            if not pixel_mapping:
-                print("  [stonefont] Canvas 自举失败")
-                return {}
-            reference = self._build_reference_from_mapping(font, cmap, pixel_mapping)
-            if not reference:
-                print("  [stonefont] 无法从自举结果构建参考轮廓")
-                return {}
-            self._save_reference(reference)
-            print(f"  [stonefont] 参考轮廓已保存 ({len(reference)} 个数字)")
+        # Try fontTools contour matching first (fixes 5/6 misidentification)
+        digit_ref = StonefontDecoder._get_digit_reference()
+        if digit_ref:
+            print("  [stonefont] fontTools 轮廓匹配中...")
+            for ch in stonefont_chars:
+                code_point = ord(ch)
+                glyph_name = cmap.get(code_point)
+                if glyph_name is None:
+                    continue
+                points = StonefontDecoder._get_glyph_contour_points(font, glyph_name)
+                if not points:
+                    continue
+                digit = self._match_against_reference(points, digit_ref, threshold=1.0)
+                if digit is not None:
+                    self._mapping[ch] = digit
 
-        self._reference = reference
-        for code in stonefont_chars:
-            code_point = ord(code)
-            glyph_name = cmap.get(code_point)
-            if glyph_name is None:
-                print(f"  [stonefont] 警告: U+{code_point:04X} 不在字体 cmap 中")
-                continue
-            points = self._get_glyph_contour_points(font, glyph_name)
-            if not points:
-                continue
-            digit = self._match_against_reference(points, reference)
-            if digit is not None:
-                self._mapping[code] = digit
+            if self._mapping:
+                for ch, d in self._mapping.items():
+                    print(f"    U+{ord(ch):04X} -> {d}")
+                print(f"  [stonefont] fontTools 匹配了 {len(self._mapping)}/{len(stonefont_chars)} 个字符")
+                if len(self._mapping) >= len(stonefont_chars):
+                    print("  [stonefont] 完成映射")
+                    return self._mapping
+                print("  [stonefont] fontTools 未完全匹配，回退到 Canvas 自举补充...")
+
+        print("  [stonefont] 注入字体后 Canvas 自举...")
+        StonefontDecoder._inject_font_to_page(page, woff_data)
+        self._mapping = self._canvas_bootstrap(page) or {}
 
         if self._mapping:
             for ch, d in self._mapping.items():
                 print(f"    U+{ord(ch):04X} -> {d}")
         else:
-            print("  [stonefont] 未匹配到任何字符")
+            print("  [stonefont] Canvas 自举未匹配到字符")
 
         return self._mapping
 
@@ -112,23 +172,48 @@ class StonefontDecoder:
 
     @staticmethod
     def _get_woff_url(page, html: Optional[str] = None) -> Optional[str]:
+        url = StonefontDecoder._get_woff_url_from_performance(page)
+        if url:
+            print(f"  [stonefont] Performance API 发现字体 URL: {url}")
+            return url
+
         url = StonefontDecoder._get_woff_url_from_cssom(page)
         if url:
+            print(f"  [stonefont] CSSOM 发现字体 URL: {url}")
             return url
 
         if html:
             url = StonefontDecoder._get_woff_url_from_html(html)
             if url:
-                print(f"  [stonefont] 从外部 CSS 提取到 woff URL")
+                print(f"  [stonefont] 外部 CSS 提取到 woff URL: {url}")
                 return url
 
         print("  [stonefont] CSSOM 和 HTML 均未找到 woff URL")
         return None
 
     @staticmethod
+    def _get_woff_url_from_performance(page) -> Optional[str]:
+        return page.evaluate('''() => {
+            const entries = performance.getEntriesByType('resource');
+            for (const entry of entries) {
+                if (entry.initiatorType === 'css' &&
+                    (entry.name.includes('.woff') || entry.name.includes('.woff2'))) {
+                    return entry.name;
+                }
+            }
+            for (const entry of entries) {
+                if (entry.name.includes('.woff') || entry.name.includes('.woff2')) {
+                    return entry.name;
+                }
+            }
+            return null;
+        }''')
+
+    @staticmethod
     def _get_woff_url_from_cssom(page) -> Optional[str]:
         result = page.evaluate('''() => {
             const sheets = document.styleSheets;
+            let found = null;
             for (let i = 0; i < sheets.length; i++) {
                 try {
                     const rules = sheets[i].cssRules || sheets[i].rules;
@@ -141,13 +226,13 @@ class StonefontDecoder:
                             if (family === 'mtsi-font' || family === 'stonefont') {
                                 const src = rule.style.src || '';
                                 const m = src.match(/url\\(['"]?([^'")]+)['"]?\\)/);
-                                if (m) return m[1];
+                                if (m) found = m[1];
                             }
                         }
                     }
                 } catch(e) {}
             }
-            return null;
+            return found;
         }''')
 
         if not result:
@@ -161,7 +246,9 @@ class StonefontDecoder:
         elif url.startswith('data:'):
             return url
 
-        return url if url.startswith('http') else None
+        if url.startswith('http') and not re.search(r'\.eot[\?#]', url, re.I):
+            return url
+        return None
 
     @staticmethod
     def _get_woff_url_from_html(html: str) -> Optional[str]:
@@ -210,9 +297,10 @@ class StonefontDecoder:
             r'font-family\s*:\s*["\']?(?:mtsi-font|stonefont)["\']?[^}]*?'
             r'src\s*:\s*(?:[^;]*?url\(["\']?)([^"\'\)]+\.woff2?[^"\'\)]*)'
         )
-        m = re.search(pattern, css, re.IGNORECASE | re.DOTALL)
-        if not m:
+        matches = list(re.finditer(pattern, css, re.IGNORECASE | re.DOTALL))
+        if not matches:
             return None
+        m = matches[-1]
 
         url = m.group(1).strip()
         if url.startswith('//'):
@@ -231,9 +319,16 @@ class StonefontDecoder:
         data = StonefontDecoder._download_woff_requests(url)
         if data and StonefontDecoder._is_valid_font_data(data):
             return data
+        if data:
+            print(f"  [stonefont] requests 返回无效字体 ({len(data)} bytes, 头部: {data[:16].hex()})")
 
         if page is not None:
-            print("  [stonefont] requests 下载无效，尝试浏览器内下载...")
+            print("  [stonefont] requests 下载无效，尝试 Playwright API...")
+            data = StonefontDecoder._download_woff_via_api(page, url)
+            if data and StonefontDecoder._is_valid_font_data(data):
+                return data
+
+            print("  [stonefont] 尝试浏览器内 fetch...")
             data = StonefontDecoder._download_woff_via_page(page, url)
             if data and StonefontDecoder._is_valid_font_data(data):
                 return data
@@ -259,6 +354,7 @@ class StonefontDecoder:
 
     @staticmethod
     def _download_woff_requests(url: str) -> Optional[bytes]:
+        print(f"  [stonefont] requests 下载: {url}")
         try:
             resp = requests.get(url, headers={
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -273,7 +369,22 @@ class StonefontDecoder:
             return None
 
     @staticmethod
+    def _download_woff_via_api(page, url: str) -> Optional[bytes]:
+        print(f"  [stonefont] Playwright API 下载: {url}")
+        try:
+            response = page.request.get(url)
+            if response and response.ok:
+                body = response.body()
+                if body:
+                    print(f"  [stonefont] Playwright API 下载成功 ({len(body)} bytes)")
+                    return body
+        except Exception as e:
+            print(f"  [stonefont] Playwright API 下载失败: {e}")
+        return None
+
+    @staticmethod
     def _download_woff_via_page(page, url: str) -> Optional[bytes]:
+        print(f"  [stonefont] 浏览器内 fetch 下载: {url}")
         try:
             b64 = page.evaluate('''async (url) => {
                 try {
@@ -300,6 +411,7 @@ class StonefontDecoder:
 
     @staticmethod
     def _capture_font_via_intercept(page, url: str) -> Optional[bytes]:
+        print(f"  [stonefont] 网络拦截捕获: {url}")
         font_data = []
 
         def handle_route(route):
@@ -321,6 +433,38 @@ class StonefontDecoder:
         return None
 
     @staticmethod
+    def _try_get_font_data(page, html: Optional[str] = None) -> Optional[bytes]:
+        perf_url = StonefontDecoder._get_woff_url_from_performance(page)
+        if perf_url:
+            print(f"  [stonefont] Performance API 发现 URL: {perf_url}")
+            data = StonefontDecoder._download_woff_via_page(page, perf_url)
+            if data and StonefontDecoder._is_valid_font_data(data):
+                print(f"  [stonefont] 浏览器内下载成功 ({len(data)} bytes)")
+                return data
+            print(f"  [stonefont] 浏览器内下载失败，尝试 requests...")
+            data = StonefontDecoder._download_woff_requests(perf_url)
+            if data and StonefontDecoder._is_valid_font_data(data):
+                print(f"  [stonefont] requests 下载成功 ({len(data)} bytes)")
+                return data
+
+        cssom_url = StonefontDecoder._get_woff_url_from_cssom(page)
+        if cssom_url:
+            print(f"  [stonefont] CSSOM 发现 URL: {cssom_url}")
+            data = StonefontDecoder._download_woff(cssom_url, page)
+            if data:
+                return data
+
+        if html:
+            html_url = StonefontDecoder._get_woff_url_from_html(html)
+            if html_url:
+                print(f"  [stonefont] 外部 CSS 发现 URL: {html_url}")
+                data = StonefontDecoder._download_woff(html_url, page)
+                if data:
+                    return data
+
+        return None
+
+    @staticmethod
     def _is_valid_font_data(data: bytes) -> bool:
         if len(data) < 20:
             return False
@@ -338,7 +482,23 @@ class StonefontDecoder:
             chars.update(ch for ch in span.get_text() if ord(ch) > 0xFF)
         return chars
 
-    # ── Canvas 自举 (复用现有像素匹配) ──────────────────
+    # ── 字体注入 + Canvas 自举 ─────────────────────────
+
+    @staticmethod
+    def _inject_font_to_page(page, font_data: bytes, font_family: str = 'mtsi-font') -> bool:
+        import base64
+        b64 = base64.b64encode(font_data).decode()
+        try:
+            return page.evaluate(f'''async () => {{
+                const font = new FontFace('{font_family}',
+                    'url(data:font/woff;base64,{b64})');
+                await font.load();
+                document.fonts.add(font);
+                return true;
+            }}''')
+        except Exception as e:
+            print(f"  [stonefont] 字体注入失败: {e}")
+            return False
 
     @staticmethod
     def _canvas_bootstrap(page) -> Dict[str, str]:
@@ -350,9 +510,9 @@ class StonefontDecoder:
             if (!chars.length) return {};
 
             const fontFamily = window.getComputedStyle(spans[0]).fontFamily;
-            try { await document.fonts.load('40px ' + fontFamily); } catch(e) {}
+            try { await document.fonts.load('64px ' + fontFamily); } catch(e) {}
 
-            const W = 36, H = 54;
+            const W = 64, H = 96;
             const refCache = {};
 
             function getRefDigit(d) {
@@ -360,17 +520,28 @@ class StonefontDecoder:
                 const c = document.createElement('canvas');
                 c.width = W; c.height = H;
                 const ctx = c.getContext('2d');
-                ctx.font = '40px sans-serif';
+                ctx.font = '64px sans-serif';
                 ctx.textBaseline = 'middle';
                 ctx.textAlign = 'center';
                 ctx.fillText(String(d), W / 2, H / 2);
                 const img = ctx.getImageData(0, 0, W, H);
                 const mask = new Uint8Array(W * H);
-                for (let i = 0; i < W * H; i++) {
-                    mask[i] = img.data[i * 4 + 3] > 0 ? 1 : 0;
+                let topPixels = 0, botPixels = 0;
+                const mid = Math.floor(H / 2);
+                for (let y = 0; y < H; y++) {
+                    for (let x = 0; x < W; x++) {
+                        const i = y * W + x;
+                        const val = img.data[i * 4 + 3] > 0 ? 1 : 0;
+                        mask[i] = val;
+                        if (val) {
+                            if (y < mid) topPixels++;
+                            else botPixels++;
+                        }
+                    }
                 }
-                refCache[d] = mask;
-                return mask;
+                const ratio = botPixels > 0 ? topPixels / botPixels : 0;
+                refCache[d] = { mask, ratio };
+                return refCache[d];
             }
 
             const result = {};
@@ -378,27 +549,46 @@ class StonefontDecoder:
                 const c = document.createElement('canvas');
                 c.width = W; c.height = H;
                 const ctx = c.getContext('2d');
-                ctx.font = '40px ' + fontFamily;
+                ctx.font = '64px ' + fontFamily;
                 ctx.textBaseline = 'middle';
                 ctx.textAlign = 'center';
                 ctx.fillText(ch, W / 2, H / 2);
                 const img = ctx.getImageData(0, 0, W, H);
 
                 const mask = new Uint8Array(W * H);
-                for (let i = 0; i < W * H; i++) {
-                    mask[i] = img.data[i * 4 + 3] > 0 ? 1 : 0;
+                let topPixels = 0, botPixels = 0;
+                const mid = Math.floor(H / 2);
+                for (let y = 0; y < H; y++) {
+                    for (let x = 0; x < W; x++) {
+                        const i = y * W + x;
+                        const val = img.data[i * 4 + 3] > 0 ? 1 : 0;
+                        mask[i] = val;
+                        if (val) {
+                            if (y < mid) topPixels++;
+                            else botPixels++;
+                        }
+                    }
                 }
+                const maskRatio = botPixels > 0 ? topPixels / botPixels : 0;
 
                 let bestDigit = -1;
-                let bestScore = Infinity;
+                let bestScore = -Infinity;
                 for (let d = 0; d <= 9; d++) {
                     const ref = getRefDigit(d);
-                    let diff = 0;
+                    let intersection = 0, union = 0;
                     for (let i = 0; i < W * H; i++) {
-                        if (mask[i] !== ref[i]) diff++;
+                        if (mask[i]) {
+                            union++;
+                            if (ref.mask[i]) intersection++;
+                        } else if (ref.mask[i]) {
+                            union++;
+                        }
                     }
-                    if (diff < bestScore) {
-                        bestScore = diff;
+                    const jaccard = union > 0 ? intersection / union : 0;
+                    const ratioPenalty = Math.abs(maskRatio - ref.ratio) * 0.3;
+                    const score = jaccard - ratioPenalty;
+                    if (score > bestScore) {
+                        bestScore = score;
                         bestDigit = d;
                     }
                 }
@@ -406,6 +596,49 @@ class StonefontDecoder:
             }
             return result;
         }''')
+
+    # ── 数字参考轮廓（系统字体） ──────────────────────
+
+    _DIGIT_REFERENCE_CACHE: Optional[Dict[str, List[Tuple[float, float]]]] = None
+
+    @staticmethod
+    def _get_digit_reference() -> Dict[str, List[Tuple[float, float]]]:
+        if StonefontDecoder._DIGIT_REFERENCE_CACHE is not None:
+            return StonefontDecoder._DIGIT_REFERENCE_CACHE
+
+        font_paths = [
+            r'C:\Windows\Fonts\arial.ttf',
+            r'C:\Windows\Fonts\Arial.ttf',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+            '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+            '/usr/share/fonts/TTF/DejaVuSans.ttf',
+            '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf',
+        ]
+
+        for font_path in font_paths:
+            if os.path.exists(font_path):
+                try:
+                    font = TTFont(font_path)
+                    cmap = font.getBestCmap()
+                    reference = {}
+                    for d in range(10):
+                        glyph_name = cmap.get(ord(str(d)))
+                        if glyph_name:
+                            points = StonefontDecoder._get_glyph_contour_points(font, glyph_name)
+                            if points:
+                                reference[str(d)] = points
+                    font.close()
+                    if len(reference) >= 8:
+                        print(f"  [stonefont] 从 {font_path} 加载数字参考 ({len(reference)} 个数字)")
+                        StonefontDecoder._DIGIT_REFERENCE_CACHE = reference
+                        return reference
+                except Exception as e:
+                    print(f"  [stonefont] 加载 {font_path} 失败: {e}")
+                    continue
+
+        print("  [stonefont] 未找到系统字体，跳过 fontTools 匹配")
+        StonefontDecoder._DIGIT_REFERENCE_CACHE = {}
+        return {}
 
     # ── 参考轮廓构建 ──────────────────────────────────
 
@@ -432,22 +665,29 @@ class StonefontDecoder:
 
     @staticmethod
     def _get_glyph_contour_points(
-        font: TTFont, glyph_name: str
+        font: TTFont, glyph_name: str, samples: int = 10
     ) -> List[Tuple[float, float]]:
         glyf = font['glyf']
         glyph = glyf[glyph_name]
 
-        if not hasattr(glyph, 'coordinates') or glyph.numberOfContours <= 0:
+        if not hasattr(glyph, 'coordinates'):
             return []
 
-        points = []
-        for i, (x, y) in enumerate(glyph.coordinates):
-            if glyph.flags[i] & 1:
-                points.append((float(x), float(y)))
+        # Try _OutlinePen first (dense TrueType quadratic bezier sampling)
+        pen = _OutlinePen(samples)
+        try:
+            glyph.draw(pen, glyf)
+        except Exception as e:
+            print(f"  [stonefont] _OutlinePen 失败 ({glyph_name}): {e}")
 
-        if not points:
+        if pen.points:
+            return StonefontDecoder._normalize_points(pen.points)
+
+        # Fallback: use all raw coordinates (on + off curve)
+        coords = list(glyph.coordinates)
+        if not coords:
             return []
-
+        points = [(float(x), float(y)) for x, y in coords]
         return StonefontDecoder._normalize_points(points)
 
     @staticmethod

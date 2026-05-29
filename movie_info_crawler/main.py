@@ -17,11 +17,13 @@ from crawler.models import MovieResult, UserChoice, MovieField, Source
 class MovieInfoCrawler:
     def __init__(self, config_dir: str = '.'):
         self.config = ConfigManager(config_dir)
-        self.browser = BrowserFetcher(headless=True)
-        self.searcher = DoubanSearch(self.config, self.browser)
-        self.extractor = InfoExtractor(self.config, self.browser)
-        self.maoyan = MaoyanExtractor(self.config, self.browser)
+        self.browser = None
+        self.searcher = None
+        self.extractor = None
+        self.maoyan = None
         self.results: list = []
+        self._douban_headless = True
+        self._maoyan_headless = True
 
     def run(self) -> None:
         try:
@@ -41,7 +43,8 @@ class MovieInfoCrawler:
 
             print(f"\n[完成] 程序执行完毕！报告路径: {output_file}")
         finally:
-            self.browser.close()
+            if self.browser:
+                self.browser.close()
 
     def _print_banner(self) -> None:
         print("=" * 70)
@@ -54,6 +57,38 @@ class MovieInfoCrawler:
         if not self._ask_yes_no("是否开始爬取？"):
             print("已取消")
             sys.exit(0)
+
+        self._douban_headless = self._ask_headless("豆瓣")
+        self._maoyan_headless = self._ask_headless("猫眼")
+        self._ensure_browser_mode(self._douban_headless)
+
+    def _init_browser(self, headless: bool = True) -> None:
+        from crawler.browser_fetcher import BrowserFetcher
+        from crawler.douban_search import DoubanSearch
+        from crawler.info_extractor import InfoExtractor
+        from crawler.maoyan_extractor import MaoyanExtractor
+        self.browser = BrowserFetcher(headless=headless)
+        self.searcher = DoubanSearch(self.config, self.browser)
+        self.extractor = InfoExtractor(self.config, self.browser)
+        self.maoyan = MaoyanExtractor(self.config, self.browser)
+
+    def _ensure_browser_mode(self, headless: bool) -> None:
+        if self.browser is None or self.browser.is_headless != headless:
+            if self.browser:
+                print(f"  [浏览器] 切换至 {'可见' if not headless else 'headless'} 模式")
+                self.browser.restart_browser(headless)
+            else:
+                print(f"  [浏览器] 启动 {'可见' if not headless else 'headless'} 模式")
+                self._init_browser(headless=headless)
+
+    @staticmethod
+    def _ask_headless(source_name: str) -> bool:
+        while True:
+            answer = input(f"  {source_name}使用可见浏览器? (y/n, 默认 n): ").strip().lower()
+            if answer in ('y', 'yes'):
+                return False
+            if answer in ('n', 'no', ''):
+                return True
 
     def _search_and_choose(
         self, movie_name: str, source_name: str, searcher,
@@ -91,6 +126,19 @@ class MovieInfoCrawler:
             print(f"\n[{i}/{len(self.config.movies)}] 正在处理: {movie_name}")
             print("-" * 40)
 
+            maoyan_info = None
+            self._ensure_browser_mode(self._maoyan_headless)
+            maoyan_url = self._search_and_choose(movie_name, '猫眼', self.maoyan, auto_single=True)
+            if maoyan_url:
+                maoyan_info = self.maoyan.extract(maoyan_url)
+                if maoyan_info:
+                    maoyan_fields = [f.label for f in MovieField if maoyan_info.get(f, Source.MAOYAN)]
+                    if maoyan_fields:
+                        print(f"   猫眼提取到字段: {', '.join(maoyan_fields)}")
+            else:
+                print(f"   未找到猫眼页面")
+
+            self._ensure_browser_mode(self._douban_headless)
             url = self._search_and_choose(movie_name, '豆瓣', self.searcher)
             if not url:
                 self.results.append(MovieResult(
@@ -109,22 +157,14 @@ class MovieInfoCrawler:
             if douban_fields:
                 print(f"   豆瓣提取到字段: {', '.join(douban_fields)}")
 
-            print(f"   正在补充猫眼数据...")
-            maoyan_url = self._search_and_choose(movie_name, '猫眼', self.maoyan, auto_single=True)
-            if maoyan_url:
-                maoyan_info = self.maoyan.extract(maoyan_url)
-                if maoyan_info:
-                    info.merge(maoyan_info)
-                    maoyan_fields = [f.label for f in MovieField if info.get(f, Source.MAOYAN)]
-                    if maoyan_fields:
-                        print(f"   猫眼数据已合并")
-                        print(f"   猫眼提取到字段: {', '.join(maoyan_fields)}")
-                    else:
-                        print(f"   猫眼数据已合并（无新字段）")
+            if maoyan_info:
+                info.merge(maoyan_info)
+                maoyan_fields = [f.label for f in MovieField if info.get(f, Source.MAOYAN)]
+                if maoyan_fields:
+                    print(f"   猫眼数据已合并")
+                    print(f"   猫眼提取到字段: {', '.join(maoyan_fields)}")
                 else:
-                    print(f"   无猫眼数据")
-            else:
-                print(f"   未找到猫眼页面")
+                    print(f"   猫眼数据已合并（无新字段）")
 
             self.results.append(MovieResult(
                 search_name=movie_name, found=True, info=info

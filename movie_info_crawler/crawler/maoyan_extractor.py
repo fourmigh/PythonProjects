@@ -117,24 +117,11 @@ class MaoyanExtractor:
                 info.set(MovieField.BOX_OFFICE, api_box_office, Source.MAOYAN)
                 return info
 
-        captured_font = []
-        def on_font_resp(resp):
-            if resp.ok and ('.woff' in resp.url or '.woff2' in resp.url):
-                try:
-                    captured_font.append(resp.body())
-                except Exception:
-                    pass
-        self.browser.page.on('response', on_font_resp)
-
         try:
             html = self.browser.get_html(url, timeout=60000, wait_until="domcontentloaded")
         except Exception as e:
             print(f"  猫眼提取失败: [{type(e).__name__}] {e}")
             return info
-        finally:
-            self.browser.page.remove_listener('response', on_font_resp)
-
-        font_data = captured_font[0] if captured_font else None
 
         html_vals = self._find_in_html(html)
         if html_vals.get('box_office') or html_vals.get('want_to_see'):
@@ -145,8 +132,9 @@ class MaoyanExtractor:
             box_office_val = page_vals.get('box_office', '')
             want_to_see_val = page_vals.get('want_to_see', '')
 
+        rating_count_val = ''
         if not box_office_val and not want_to_see_val:
-            box_office_val, want_to_see_val = self._try_stonefont_decode(html, font_data)
+            box_office_val, want_to_see_val, rating_count_val = self._try_stonefont_decode(html)
 
         if box_office_val:
             print(f"  提取到票房: {box_office_val}")
@@ -156,8 +144,13 @@ class MaoyanExtractor:
             print(f"  提取到想看人数: {want_to_see_val}")
         info.set(MovieField.WANT_TO_SEE, want_to_see_val, Source.MAOYAN)
 
+        if rating_count_val:
+            print(f"  提取到评分人数: {rating_count_val}")
+        info.set(MovieField.RATING_COUNT, rating_count_val, Source.MAOYAN)
+
         has_extra = bool(info.get(MovieField.BOX_OFFICE, Source.MAOYAN)) or bool(
-            info.get(MovieField.WANT_TO_SEE, Source.MAOYAN))
+            info.get(MovieField.WANT_TO_SEE, Source.MAOYAN)) or bool(
+                info.get(MovieField.RATING_COUNT, Source.MAOYAN))
         if has_extra:
             print(f"  成功提取猫眼详情数据")
         else:
@@ -213,22 +206,49 @@ class MaoyanExtractor:
             mapping = decoder.build_mapping(self.browser.page, html,
                                             font_data_override=font_data)
             if not mapping:
-                return ('', '')
+                return ('', '', '')
 
-            decoded_html = decoder.decode_page(html)
+            decoded_html = decoder.decode_page(self.browser.page.content())
+            for span in BeautifulSoup(decoded_html, 'html.parser').select('span.stonefont'):
+                print(f"  [stonefont] 解码后 stonefont 文本: {repr(span.get_text(strip=True))}")
             decoded_soup = BeautifulSoup(decoded_html, 'html.parser')
-            box_office_val = self._extract_box_office(decoded_soup)
-            want_to_see_val = self._extract_want_to_see(decoded_soup)
 
-            if box_office_val or want_to_see_val:
-                print(f"  [stonefont] 解码成功: 票房='{box_office_val}', 想看='{want_to_see_val}'")
+            box_office_val = self._extract_box_office(decoded_soup)
+            want_to_see_val = ''
+            rating_count_val = ''
+
+            for span in decoded_soup.select('span.stonefont'):
+                text = span.get_text(strip=True)
+                if not re.search(r'\d', text):
+                    continue
+                parent_text = span.parent.get_text(strip=True) if span.parent else ''
+
+                if '万' in parent_text or '亿' in parent_text:
+                    continue
+                if '评' in parent_text and '.' not in text:
+                    rating_count_val = text if not rating_count_val else rating_count_val
+                elif '想看' in parent_text and '.' not in text:
+                    want_to_see_val = text
+
+            exclude = frozenset()
+            if box_office_val:
+                clean = re.sub(r'\s*万\s*|\s*亿\s*', '', box_office_val)
+                exclude = frozenset([clean, box_office_val])
+            if rating_count_val:
+                exclude = frozenset(list(exclude) + [rating_count_val])
+
+            if not want_to_see_val:
+                want_to_see_val = self._extract_want_to_see(decoded_soup, exclude) or ''
+
+            if box_office_val or want_to_see_val or rating_count_val:
+                print(f"  [stonefont] 解码成功: 票房='{box_office_val}', 想看='{want_to_see_val}', 评分人数='{rating_count_val}'")
             else:
                 print(f"  [stonefont] 解码后未匹配到数值")
 
-            return (box_office_val, want_to_see_val)
+            return (box_office_val, want_to_see_val, rating_count_val)
         except Exception as e:
             print(f"  [stonefont] 解码失败: [{type(e).__name__}] {e}")
-            return ('', '')
+            return ('', '', '')
 
     def _extract_box_office(self, soup: BeautifulSoup) -> str:
         box_selectors = [
@@ -240,38 +260,49 @@ class MaoyanExtractor:
             'span.stonefont',
         ]
 
-        stonefont_texts = []
         for sel in box_selectors:
             for el in soup.select(sel):
                 text = el.get_text(strip=True)
                 if text and re.search(r'\d', text):
-                    stonefont_texts.append(text)
+                    parent_text = el.parent.get_text(strip=True) if el.parent else text
+                    match = re.search(r'([\d,]+\.?\d*\s*(?:亿|万))', parent_text)
+                    if match:
+                        return match.group(1)
 
-        for text in stonefont_texts:
-            match = re.search(r'([\d,]+\.?\d*\s*(?:亿|万))', text)
-            if match:
-                return match.group(1)
+        for sel in box_selectors:
+            for el in soup.select(sel):
+                text = el.get_text(strip=True)
+                if text and re.search(r'\d', text) and '.' not in text:
+                    return text
 
-        all_text = ' '.join(stonefont_texts)
-        match = re.search(r'[\d,]+\.?\d*\s*(?:亿|万)', all_text)
+        match = re.search(r'(\d[\d,]*\s*(?:万|亿))', ' '.join(soup.stripped_strings))
         if match:
-            return match.group(0)
+            return match.group(1)
 
         return ''
 
-    def _extract_want_to_see(self, soup: BeautifulSoup) -> str:
+    def _extract_want_to_see(self, soup: BeautifulSoup,
+                             exclude_values: frozenset = frozenset()) -> str:
         want_selectors = [
             '.want-see-num .stonefont',
             '.want-num .stonefont',
             '.wish-num .stonefont',
             '.want-see .stonefont',
-            'span.stonefont',
         ]
 
         for sel in want_selectors:
             for el in soup.select(sel):
                 text = el.get_text(strip=True)
-                if text and re.search(r'\d', text):
+                if text and text not in exclude_values and re.search(r'\d', text) and '.' not in text:
+                    parent_text = el.parent.get_text(strip=True) if el.parent else ''
+                    if '.' not in parent_text:
+                        return text
+
+        for el in soup.select('span.stonefont'):
+            text = el.get_text(strip=True)
+            if text and text not in exclude_values and re.search(r'\d', text) and '.' not in text:
+                parent_text = el.parent.get_text(strip=True) if el.parent else ''
+                if '.' not in parent_text and '评' not in parent_text:
                     return text
 
         return ''
