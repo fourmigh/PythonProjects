@@ -515,6 +515,54 @@ class StonefontDecoder:
             const W = 64, H = 96;
             const refCache = {};
 
+            function countHoles(mask, W, H) {
+                const N = W * H;
+                const visited = new Uint8Array(N);
+                const stack = [];
+
+                for (let x = 0; x < W; x++) {
+                    if (!mask[x] && !visited[x]) { visited[x] = 1; stack.push(x); }
+                    const bi = (H - 1) * W + x;
+                    if (!mask[bi] && !visited[bi]) { visited[bi] = 1; stack.push(bi); }
+                }
+                for (let y = 0; y < H; y++) {
+                    if (!mask[y * W] && !visited[y * W]) { visited[y * W] = 1; stack.push(y * W); }
+                    const ri = y * W + W - 1;
+                    if (!mask[ri] && !visited[ri]) { visited[ri] = 1; stack.push(ri); }
+                }
+
+                while (stack.length) {
+                    const i = stack.pop();
+                    const cy = Math.floor(i / W), cx = i % W;
+                    const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                    for (const [dy, dx] of dirs) {
+                        const ny = cy + dy, nx = cx + dx;
+                        if (ny < 0 || ny >= H || nx < 0 || nx >= W) continue;
+                        const ni = ny * W + nx;
+                        if (!mask[ni] && !visited[ni]) { visited[ni] = 1; stack.push(ni); }
+                    }
+                }
+
+                let holes = 0;
+                for (let i = 0; i < N; i++) {
+                    if (!mask[i] && !visited[i]) {
+                        holes++;
+                        const s = [i]; visited[i] = 1;
+                        while (s.length) {
+                            const ci = s.pop();
+                            const cy = Math.floor(ci / W), cx = ci % W;
+                            for (const [dy, dx] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
+                                const ny = cy + dy, nx = cx + dx;
+                                if (ny < 0 || ny >= H || nx < 0 || nx >= W) continue;
+                                const ni = ny * W + nx;
+                                if (!mask[ni] && !visited[ni]) { visited[ni] = 1; s.push(ni); }
+                            }
+                        }
+                    }
+                }
+                return holes;
+            }
+
             function getRefDigit(d) {
                 if (refCache[d]) return refCache[d];
                 const c = document.createElement('canvas');
@@ -544,7 +592,8 @@ class StonefontDecoder:
                     }
                 }
                 const ratio = botPixels > 0 ? topPixels / botPixels : 0;
-                refCache[d] = { mask, ratio, hProfile, vProfile };
+                const holeCount = countHoles(mask, W, H);
+                refCache[d] = { mask, ratio, hProfile, vProfile, holeCount };
                 return refCache[d];
             }
 
@@ -578,6 +627,7 @@ class StonefontDecoder:
                     }
                 }
                 const maskRatio = botPixels > 0 ? topPixels / botPixels : 0;
+                const glyphHoles = countHoles(mask, W, H);
 
                 let bestDigit = -1;
                 let bestScore = -Infinity;
@@ -609,7 +659,8 @@ class StonefontDecoder:
                     const vScore = vTotal > 0 ? vSim / vTotal : 1;
 
                     const ratioPenalty = Math.abs(maskRatio - ref.ratio) * 0.1;
-                    const score = jaccard * 0.4 + hScore * 0.25 + vScore * 0.25 - ratioPenalty;
+                    const holePenalty = (glyphHoles !== ref.holeCount) ? 0.5 : 0;
+                    const score = jaccard * 0.3 + hScore * 0.2 + vScore * 0.2 - ratioPenalty - holePenalty;
                     if (score > bestScore) {
                         bestScore = score;
                         bestDigit = d;
