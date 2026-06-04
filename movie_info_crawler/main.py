@@ -54,12 +54,6 @@ class MovieInfoCrawler:
         print(f"电影数量: {len(self.config.movies)}")
         print("=" * 70)
 
-        if not self._ask_yes_no("是否开始爬取？"):
-            print("已取消")
-            sys.exit(0)
-
-        self._douban_headless = self._ask_headless("豆瓣")
-        self._maoyan_headless = self._ask_headless("猫眼")
         self._ensure_browser_mode(self._douban_headless)
 
     def _init_browser(self, headless: bool = True) -> None:
@@ -80,15 +74,6 @@ class MovieInfoCrawler:
             else:
                 print(f"  [浏览器] 启动 {'可见' if not headless else 'headless'} 模式")
                 self._init_browser(headless=headless)
-
-    @staticmethod
-    def _ask_headless(source_name: str) -> bool:
-        while True:
-            answer = input(f"  {source_name}使用可见浏览器? (y/n, 默认 n): ").strip().lower()
-            if answer in ('y', 'yes'):
-                return False
-            if answer in ('n', 'no', ''):
-                return True
 
     def _search_and_choose(
         self, movie_name: str, source_name: str, searcher,
@@ -286,17 +271,6 @@ class MovieInfoCrawler:
                 return UserChoice(type='skip')
             else:
                 print(f"   请输入 1-{len(search_results)+2} 之间的数字")
-
-    def _ask_yes_no(self, question: str) -> bool:
-        while True:
-            answer = input(f"{question} (y/n): ").strip().lower()
-            if answer in ['y', 'yes']:
-                return True
-            elif answer in ['n', 'no']:
-                return False
-            else:
-                print("请输入 y 或 n")
-
 
 if __name__ == "__main__":
     crawler = MovieInfoCrawler()
