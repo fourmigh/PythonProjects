@@ -129,16 +129,20 @@ class MaoyanExtractor:
         rating_count_val = html_vals.get('rating_count', '') or page_vals.get('rating_count', '')
 
         if not box_office_val or not rating_count_val:
-            print("  猫眼详情页面包含 stonefont 编码数据，需要您手动查看浏览器...")
-            if self.browser.is_headless:
-                print("  正在切换为可见浏览器...")
-                self.browser.restart_browser(headless=False)
-                self.browser.get_html(url, timeout=60000, wait_until='domcontentloaded')
+            import tempfile, os
+            print("  猫眼页面含 stonefont 编码数据，正在截图供您查看...")
+            self.browser.page.evaluate('document.fonts.ready')
+            self.browser.page.wait_for_timeout(500)
+            movie_label = re.sub(r'[\\/:*?"<>|]', '', info.get(MovieField.TITLE, Source.MAOYAN) or 'unknown')
+            ss_path = os.path.join(tempfile.gettempdir(), f'maoyan_{movie_label}.png')
+            self.browser.page.screenshot(path=ss_path)
+            import subprocess
+            subprocess.Popen(['display', '-immutable', ss_path],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             if not box_office_val:
-                box_office_val = input("  票房 (如 2534w 或 2.61y): ").strip()
-                box_office_val = box_office_val.replace('w', '万').replace('y', '亿')
+                box_office_val = MaoyanExtractor._ask_value("票房 (如 2534w 或 2.61y)")
             if not rating_count_val:
-                rating_count_val = input("  评分人数 (如 1469): ").strip()
+                rating_count_val = MaoyanExtractor._ask_value("评分人数 (如 1469)")
 
         if box_office_val:
             print(f"  提取到票房: {box_office_val}")
@@ -161,6 +165,10 @@ class MaoyanExtractor:
             print(f"  无猫眼详情数据")
 
         return info
+
+    @staticmethod
+    def _ask_value(prompt: str) -> str:
+        return input(f"  {prompt}: ").strip().replace('w', '万').replace('y', '亿')
 
     @staticmethod
     def _find_in_html(html: str) -> dict:

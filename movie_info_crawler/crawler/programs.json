@@ -3,7 +3,8 @@
     {"name": "playwright", "check": "import playwright", "install": "playwright", "uninstall": "playwright"},
     {"name": "beautifulsoup4", "check": "import bs4", "install": "beautifulsoup4", "uninstall": "beautifulsoup4"},
     {"name": "requests", "check": "import requests", "install": "requests", "uninstall": "requests"},
-    {"name": "fonttools", "check": "import fontTools", "install": "fonttools", "uninstall": "fonttools"}
+    {"name": "fonttools", "check": "import fontTools", "install": "fonttools", "uninstall": "fonttools"},
+    {"name": "playwright-stealth", "check": "import playwright_stealth", "install": "playwright-stealth", "uninstall": "playwright-stealth"}
   ],
   "system_tools": [],
   "browsers": [

@@ -4,6 +4,7 @@ import time
 from typing import Optional
 
 from playwright.sync_api import sync_playwright
+from playwright_stealth import Stealth
 
 
 class BrowserFetcher:
@@ -95,6 +96,7 @@ class BrowserFetcher:
             ),
             locale="zh-CN",
         )
+        Stealth().apply_stealth_sync(self.context)
         self.page = self.context.new_page()
 
     def restart_browser(self, headless: bool) -> None:
