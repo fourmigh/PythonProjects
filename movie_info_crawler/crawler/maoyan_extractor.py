@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlencode
 
 import requests
@@ -139,6 +139,11 @@ class MaoyanExtractor:
             import subprocess
             subprocess.Popen(['display', '-immutable', ss_path],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            ocr_val = MaoyanExtractor._try_ocr(ss_path, self.browser.page)
+            if ocr_val:
+                box_office_val = input(f"  票房 (OCR={ocr_val[0]}, 回车确认): ").strip() or ocr_val[0]
+                box_office_val = box_office_val.replace('w', '万').replace('y', '亿')
+                rating_count_val = input(f"  评分人数 (OCR={ocr_val[1]}, 回车确认): ").strip() or ocr_val[1]
             if not box_office_val:
                 box_office_val = MaoyanExtractor._ask_value("票房 (如 2534w 或 2.61y)")
             if not rating_count_val:
@@ -170,6 +175,76 @@ class MaoyanExtractor:
     @staticmethod
     def _ask_value(prompt: str) -> str:
         return input(f"  {prompt}: ").strip().replace('w', '万').replace('y', '亿')
+
+    @staticmethod
+    def _try_ocr(ss_path: str, page=None) -> Optional[Tuple[str, str]]:
+        try:
+            import warnings
+            warnings.filterwarnings('ignore')
+            import easyocr
+            reader = easyocr.Reader(['ch_sim', 'en'], gpu=False)
+
+            def _ocr(img_path):
+                texts = []
+                for r in reader.readtext(img_path, paragraph=True):
+                    t = r[1] if len(r) >= 2 else ''
+                    if t:
+                        texts.append(t)
+                return ''.join(texts)
+
+            box_office = rating_count = ''
+            if page:
+                from PIL import Image
+                areas = page.evaluate('''() => {
+                    const spans = document.querySelectorAll('span.stonefont');
+                    const a = {};
+                    for (const s of spans) {
+                        if (!s.textContent || s.textContent.charCodeAt(0) <= 0xFF) continue;
+                        const p = s.parentElement;
+                        if (!p) continue;
+                        if (p.classList.contains('box') && !a.box) {
+                            const r = p.getBoundingClientRect();
+                            a.box = {x: r.x, y: r.y, w: r.width, h: r.height};
+                        }
+                        if (p.classList.contains('score-num') && !a.rc) {
+                            const r = p.getBoundingClientRect();
+                            a.rc = {x: r.x, y: r.y, w: r.width, h: r.height};
+                        }
+                    }
+                    return a;
+                }''')
+                full = Image.open(ss_path)
+                for key, field in [('box', 'box_office'), ('rc', 'rating_count')]:
+                    area = areas.get(key)
+                    if not area:
+                        continue
+                    margin = 20
+                    crop = full.crop((area['x']-margin, area['y']-margin, area['x']+area['w']+margin, area['y']+area['h']+margin))
+                    crop_path = ss_path.replace('.png', f'_{key}.png')
+                    crop.save(crop_path)
+                    ocr_text = _ocr(crop_path)
+                    if field == 'box_office':
+                        m = re.search(r'[\d.]+\.?\d*\s*[万亿]', ocr_text)
+                        if m:
+                            box_office = m.group()
+                    elif field == 'rating_count':
+                        m = re.search(r'[\d.]+\s*[万亿]?', ocr_text)
+                        if m:
+                            rating_count = m.group().strip()
+            else:
+                ocr_text = _ocr(ss_path)
+                m = re.search(r'[\d.]+\.?\d*\s*[万亿]', ocr_text)
+                if m:
+                    box_office = m.group()
+                m = re.search(r'[\d.]+\s*[万亿]?', ocr_text)
+                if m:
+                    rating_count = m.group().strip()
+
+            if box_office or rating_count:
+                return (box_office, rating_count)
+        except Exception as e:
+            print(f"  OCR 失败: {e}")
+        return None
 
     @staticmethod
     def _find_in_html(html: str) -> dict:
