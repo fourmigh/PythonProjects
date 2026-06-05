@@ -143,6 +143,7 @@ class MaoyanExtractor:
                 box_office_val = MaoyanExtractor._ask_value("票房 (如 2534w 或 2.61y)")
             if not rating_count_val:
                 rating_count_val = MaoyanExtractor._ask_value("评分人数 (如 1469)")
+            subprocess.run(['pkill', '-f', 'display.*maoyan_'], capture_output=True)
 
         if box_office_val:
             print(f"  提取到票房: {box_office_val}")
