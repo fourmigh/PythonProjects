@@ -7,9 +7,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from crawler.browser_fetcher import BrowserFetcher
 from crawler.config_manager import ConfigManager
-from crawler.douban_search import DoubanSearch
+from crawler.db_search import DbSearch
 from crawler.info_extractor import InfoExtractor
-from crawler.maoyan_extractor import MaoyanExtractor
+from crawler.my_extractor import MyExtractor
 from crawler.html_generator import HTMLGenerator
 from crawler.models import MovieResult, UserChoice, MovieField, Source
 
@@ -18,9 +18,9 @@ class MovieInfoCrawler:
     def __init__(self, config_dir: str = '.'):
         self.config = ConfigManager(config_dir)
         self.browser = None
-        self.searcher = None
+        self.db_search = None
         self.extractor = None
-        self.maoyan = None
+        self.my = None
         self.results: list = []
         self._douban_headless = True
         self._maoyan_headless = True
@@ -58,13 +58,13 @@ class MovieInfoCrawler:
 
     def _init_browser(self, headless: bool = True) -> None:
         from crawler.browser_fetcher import BrowserFetcher
-        from crawler.douban_search import DoubanSearch
+        from crawler.db_search import DbSearch
         from crawler.info_extractor import InfoExtractor
-        from crawler.maoyan_extractor import MaoyanExtractor
+        from crawler.my_extractor import MyExtractor
         self.browser = BrowserFetcher(headless=headless)
-        self.searcher = DoubanSearch(self.config, self.browser)
+        self.db_search = DbSearch(self.config, self.browser)
         self.extractor = InfoExtractor(self.config, self.browser)
-        self.maoyan = MaoyanExtractor(self.config, self.browser)
+        self.my = MyExtractor(self.config, self.browser)
 
     def _ensure_browser_mode(self, headless: bool) -> None:
         if self.browser is None or self.browser.is_headless != headless:
@@ -113,9 +113,9 @@ class MovieInfoCrawler:
 
             maoyan_info = None
             self._ensure_browser_mode(self._maoyan_headless)
-            maoyan_url = self._search_and_choose(movie_name, '猫眼', self.maoyan, auto_single=True)
+            maoyan_url = self._search_and_choose(movie_name, '猫眼', self.my, auto_single=True)
             if maoyan_url:
-                maoyan_info = self.maoyan.extract(maoyan_url)
+                maoyan_info = self.my.extract(maoyan_url)
                 if maoyan_info:
                     maoyan_fields = [f.label for f in MovieField if maoyan_info.get(f, Source.MAOYAN)]
                     if maoyan_fields:
@@ -124,7 +124,7 @@ class MovieInfoCrawler:
                 print(f"   未找到猫眼页面")
 
             self._ensure_browser_mode(self._douban_headless)
-            url = self._search_and_choose(movie_name, '豆瓣', self.searcher)
+            url = self._search_and_choose(movie_name, '豆瓣', self.db_search)
             if not url:
                 self.results.append(MovieResult(
                     search_name=movie_name, found=False, error="未找到或用户跳过"

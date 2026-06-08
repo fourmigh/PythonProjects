@@ -1,4 +1,4 @@
-"""豆瓣搜索模块"""
+"""搜索模块"""
 
 import json
 import re
@@ -10,8 +10,8 @@ from .models import SearchResult
 from .config_manager import ConfigManager
 
 
-class DoubanSearch:
-    """豆瓣搜索类"""
+class DbSearch:
+    """搜索类"""
 
     SEARCH_URL = "https://movie.douban.com/subject_search"
 

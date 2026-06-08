@@ -10,7 +10,7 @@ from .browser_fetcher import BrowserFetcher
 from .models import MovieInfo, MovieField, SearchResult, Source
 from .config_manager import ConfigManager
 
-class MaoyanExtractor:
+class MyExtractor:
     SEARCH_URL = "https://m.maoyan.com/searchlist/movies"
     DETAIL_URL = "https://www.maoyan.com/films/{}"
 
@@ -139,15 +139,15 @@ class MaoyanExtractor:
             import subprocess
             subprocess.Popen(['display', '-immutable', ss_path],
                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            ocr_val = MaoyanExtractor._try_ocr(ss_path, self.browser.page)
+            ocr_val = MyExtractor._try_ocr(ss_path, self.browser.page)
             if ocr_val:
                 box_office_val = input(f"  票房 (OCR={ocr_val[0]}, 回车确认): ").strip() or ocr_val[0]
                 box_office_val = box_office_val.replace('w', '万').replace('y', '亿')
                 rating_count_val = input(f"  评分人数 (OCR={ocr_val[1]}, 回车确认): ").strip() or ocr_val[1]
             if not box_office_val:
-                box_office_val = MaoyanExtractor._ask_value("票房 (如 2534w 或 2.61y)")
+                box_office_val = MyExtractor._ask_value("票房 (如 2534w 或 2.61y)")
             if not rating_count_val:
-                rating_count_val = MaoyanExtractor._ask_value("评分人数 (如 1469)")
+                rating_count_val = MyExtractor._ask_value("评分人数 (如 1469)")
             subprocess.run(['pkill', '-f', 'display.*maoyan_'], capture_output=True)
 
         if box_office_val:
