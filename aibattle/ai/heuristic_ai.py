@@ -65,16 +65,16 @@ class HeuristicAI(Player[T]):
 
     def _negamax(self, board: Board[T], rules: Rules[T], depth: int, alpha: float, beta: float, player: PlayerColor) -> float:
         if self._time_up():
-            return rules.evaluate(board, self.color)
+            return rules.evaluate(board, player)
 
         result = rules.get_result(board, None, player)
         if result.winner is not None:
-            return 100000 if result.winner == self.color else -100000
+            return 100000 if result.winner == player else -100000
         if result.is_draw:
             return 0
 
         if depth == 0:
-            return rules.evaluate(board, self.color)
+            return rules.evaluate(board, player)
 
         candidates = self._get_ordered_moves(board, rules, player)
         max_score = float("-inf")
@@ -96,8 +96,9 @@ class HeuristicAI(Player[T]):
         if len(candidates) <= 20:
             return candidates
 
+        # Candidates are proximity-sorted; evaluate top 30, keep best 20
         scored_moves = []
-        for move in candidates:
+        for move in candidates[:30]:
             board.set(move, player)
             score = rules.evaluate(board, player)
             board.remove(move)

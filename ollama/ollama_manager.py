@@ -8,6 +8,7 @@ import time
 import json
 import requests
 import re
+import unicodedata
 
 # 导入模型列表
 from model_list import VLM_MODELS
@@ -119,16 +120,19 @@ class OllamaManager:
         if self.is_ollama_running():
             print("[OK] Ollama 已经在运行中")
             return True
-        
+
         print("[INFO] 正在启动 Ollama 服务...")
-        self.run_cmd_no_wait(f"start /B {self.ollama_cmd} serve")
-        
+        if os.name == 'nt':
+            self.run_cmd_no_wait(f"start /B {self.ollama_cmd} serve")
+        else:
+            self.run_cmd_no_wait(f"nohup {self.ollama_cmd} serve > /dev/null 2>&1 &")
+
         for i in range(10):
             time.sleep(1)
             if self.is_ollama_running():
                 print("[OK] Ollama 服务已启动")
                 return True
-        
+
         print("[ERROR] 启动失败")
         return False
     
@@ -148,7 +152,10 @@ class OllamaManager:
                     except:
                         pass
         except:
-            os.system("taskkill /IM ollama.exe /F 2>nul")
+            if os.name == 'nt':
+                os.system("taskkill /IM ollama.exe /F 2>nul")
+            else:
+                os.system("pkill -f ollama 2>/dev/null")
         
         time.sleep(2)
         
@@ -185,12 +192,26 @@ class OllamaManager:
         if not self.is_ollama_running():
             print("[INFO] Ollama 未运行，正在启动...")
             self.start_service()
-        
+
         print(f"[INFO] 正在启动模型: {model_name}")
-        subprocess.Popen(
-            f'start "Ollama - {model_name}" cmd /k "echo 模型: {model_name} && echo. && {self.ollama_cmd} run {model_name}"',
-            shell=True
-        )
+        if os.name == 'nt':
+            subprocess.Popen(
+                f'start "Ollama - {model_name}" cmd /k "echo 模型: {model_name} && echo. && {self.ollama_cmd} run {model_name}"',
+                shell=True
+            )
+        else:
+            term_cmd = None
+            for term in ["x-terminal-emulator", "gnome-terminal", "konsole", "xfce4-terminal"]:
+                if subprocess.call(f"which {term}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0:
+                    term_cmd = term
+                    break
+            if term_cmd:
+                if term_cmd == "gnome-terminal":
+                    subprocess.Popen(f'{term_cmd} -- bash -c "{self.ollama_cmd} run {model_name}; exec bash"', shell=True)
+                else:
+                    subprocess.Popen(f'{term_cmd} -e bash -c "{self.ollama_cmd} run {model_name}; exec bash"', shell=True)
+            else:
+                subprocess.Popen(f'nohup {self.ollama_cmd} run {model_name} > /dev/null 2>&1 &', shell=True)
         print(f"[OK] 模型 {model_name} 已在新窗口启动")
         return True
     
@@ -277,45 +298,87 @@ def print_installed_models(manager):
     
     print("\n已安装的模型:")
     print("-" * 60)
-    print(f"  {'序号':<4} {'模型名称':<25} {'大小':<10}")
+    print(f"  {ljust_cjk('序号', 4)} {ljust_cjk('模型名称', 25)} {ljust_cjk('大小', 10)}")
     print("-" * 60)
-    
+
     idx = 1
     model_list = []
     for name, info in installed.items():
-        print(f"  {idx:<4} {name:<25} {info.get('size', 'unknown'):<10}")
+        print(f"  {idx:<4} {ljust_cjk(name, 25)} {ljust_cjk(info.get('size', 'unknown'), 10)}")
         model_list.append(name)
         idx += 1
-    
+
     return model_list
 
+def display_width(s):
+    """计算字符串的显示宽度（CJK=2，ASCII=1）"""
+    return sum(2 if unicodedata.east_asian_width(c) in 'WF' else 1 for c in s)
+
+def ljust_cjk(s, width):
+    """按显示宽度左对齐"""
+    return s + ' ' * max(0, width - display_width(s))
+
+def parse_size_to_gb(size_str):
+    """将大小字符串解析为 GB 数值"""
+    if size_str == "未知":
+        return float('inf')
+    try:
+        if size_str.endswith('GB'):
+            return float(size_str.replace('GB', '').strip())
+        elif size_str.endswith('MB'):
+            return float(size_str.replace('MB', '').strip()) / 1024
+    except:
+        return float('inf')
+    return float('inf')
+
+def get_available_memory_gb():
+    """获取可用内存（GB）"""
+    try:
+        import psutil
+        mem = psutil.virtual_memory()
+        return mem.available / (1024**3)
+    except:
+        return 0
+
 def print_available_models(manager):
-    """打印可安装的模型"""
+    """打印可安装的模型（按大小排序，标注推荐）"""
     installed = manager.get_installed_models() if manager.is_ollama_running() else {}
+    avail_gb = get_available_memory_gb()
     
-    print("\n可安装的 VLM 模型:")
-    print("-" * 80)
-    print(f"  {'序号':<4} {'模型名称':<20} {'大小':<10} {'说明':<30}")
-    print("-" * 80)
+    # 排序：按大小升序，未知放最后
+    sorted_models = sorted(VLM_MODELS, key=lambda m: parse_size_to_gb(m['size']))
     
+    print(f"\n可安装的 VLM 模型 (可用内存: {avail_gb:.1f}GB)")
+    print("-" * 96)
+    print(f"  {ljust_cjk('序号', 4)} {ljust_cjk('模型名称', 22)} {ljust_cjk('大小', 8)} {ljust_cjk('说明', 34)} {ljust_cjk('推荐', 10)}")
+    print("-" * 96)
+
     idx = 1
     model_names = {}
-    
-    for model in VLM_MODELS:
+
+    for model in sorted_models:
         name = model['name']
         size = model['size']
         desc = model['desc']
         is_installed = name in installed
-        status = "[已安装]" if is_installed else ""
-        
-        print(f"  {idx:<4} {name:<20} {size:<10} {desc:<30} {status}")
+
+        size_gb = parse_size_to_gb(size)
+        if is_installed:
+            recommend = "[已安装]"
+        elif size == "未知":
+            recommend = "[未知]"
+        else:
+            is_fit = size_gb < avail_gb * 0.85
+            recommend = "[适合]" if is_fit else "[过大]"
+
+        print(f"  {idx:<4} {ljust_cjk(name, 22)} {ljust_cjk(size, 8)} {ljust_cjk(desc, 34)} {ljust_cjk(recommend, 10)}")
         model_names[str(idx)] = name
         idx += 1
-    
-    print("-" * 80)
+
+    print("-" * 96)
     print("  或直接输入模型名称 (如: llama3.2)")
-    print("-" * 80)
-    
+    print("-" * 96)
+
     return model_names
 
 def main():

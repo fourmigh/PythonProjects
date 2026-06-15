@@ -12,6 +12,7 @@ from gui.renderer import GomokuCanvas, InfoPanel, ReplayBar
 from games import GAME_REGISTRY, import_rules
 from ai.random_ai import RandomAI
 from ai.heuristic_ai import HeuristicAI
+from ai.llm_ai import LLMAI, LLMConfig
 
 
 def _resolve_player(ai_type: str, color: PlayerColor) -> Player:
@@ -19,6 +20,14 @@ def _resolve_player(ai_type: str, color: PlayerColor) -> Player:
     if t == "random":
         return RandomAI(color, f"Random-{color.name}")
     parts = t.split(":")
+    if parts[0] == "ollama":
+        model = parts[1] if len(parts) > 1 else "qwen2.5:1.5b"
+        cfg = LLMConfig(provider="ollama", model=model)
+        return LLMAI(color, f"Ollama-{model.split(':')[0]}-{color.name}", config=cfg)
+    if parts[0] == "openai":
+        model = parts[1] if len(parts) > 1 else "gpt-4o-mini"
+        cfg = LLMConfig(provider="openai", model=model)
+        return LLMAI(color, f"OpenAI-{model}-{color.name}", config=cfg)
     depth = 2
     if len(parts) > 1:
         try:

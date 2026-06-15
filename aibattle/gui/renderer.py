@@ -179,7 +179,11 @@ class InfoPanel(ttk.Frame):
         self.hide_choice()
         self.hide_result()
 
-        AI_CHOICES = ["random", "heuristic:1", "heuristic:2", "heuristic:3"]
+        AI_CHOICES = [
+            "random", "heuristic:1", "heuristic:2", "heuristic:3",
+            "ollama:qwen2.5:1.5b", "ollama:qwen2.5:7b", "ollama:phi",
+            "ollama:llama3.2:3b", "openai:gpt-4o-mini", "openai:gpt-4o",
+        ]
 
         self._choice_sep = tk.Frame(self, bg="#555", height=1)
         self._choice_sep.pack(fill="x", padx=10, pady=(5, 3))

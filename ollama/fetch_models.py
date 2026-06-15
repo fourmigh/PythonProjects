@@ -5,12 +5,11 @@
 import re
 import json
 import time
+import requests
 from typing import List, Dict, Any
 
 def fetch_models_from_html() -> List[Dict[str, Any]]:
     """从 Ollama 官网 HTML 中提取模型信息"""
-    
-    import requests
     
     url = "https://ollama.com/search?c=vision"
     headers = {
@@ -164,39 +163,64 @@ def get_fallback_models() -> List[Dict[str, Any]]:
     ]
 
 
+def fetch_model_sizes_from_registry(models: List[Dict[str, Any]]) -> Dict[str, str]:
+    """通过 Ollama Registry API 获取模型真实大小"""
+    print("[INFO] 正在从 Registry API 获取模型大小...")
+    sizes = {}
+    total = len(models)
+    for idx, model in enumerate(models, 1):
+        name = model.get('name', '').split(':')[0]
+        if not name or name.startswith('#'):
+            continue
+        url = f'https://registry.ollama.ai/v2/library/{name}/manifests/latest'
+        try:
+            r = requests.get(url, timeout=15)
+            if r.status_code == 200:
+                data = r.json()
+                total_bytes = sum(l.get('size', 0) for l in data.get('layers', []))
+                config_size = data.get('config', {}).get('size', 0)
+                total_bytes += config_size
+                if total_bytes > 1024**3:
+                    sizes[name] = f'{total_bytes / (1024**3):.1f}GB'
+                else:
+                    sizes[name] = f'{total_bytes / (1024**2):.0f}MB'
+                print(f"  [{idx}/{total}] {name:25s} -> {sizes[name]}")
+            else:
+                print(f"  [{idx}/{total}] {name:25s} -> 404 (未在 Registry 找到)")
+        except Exception as e:
+            print(f"  [{idx}/{total}] {name:25s} -> Error: {e}")
+        time.sleep(0.3)
+    return sizes
+
+
 def update_model_list(models: List[Dict[str, Any]], output_file: str = "model_list.py"):
     """更新 model_list.py 文件"""
     
-    # 预定义的大小信息
-    MODEL_SIZES = {
-        'llama3.2-vision': '7.9GB',
-        'llava': '4.5GB',
-        'llava-llama3': '5.5GB',
-        'llava-phi3': '2.8GB',
-        'moondream': '829MB',
-        'bakllava': '5.0GB',
-        'minicpm-v': '5.8GB',
-        'granite3.2-vision': '4.9GB',
-        'phi3-vision': '2.8GB',
-        'glm-4v': '6.0GB',
-        'qwen2.5-vl': '5.5GB',
-        'cogvlm': '8.0GB',
-        'gemma-2-vision': '5.5GB',
-        'kimi-k2.6': '未知',
-    }
+    # 从 Registry API 获取大小
+    registry_sizes = fetch_model_sizes_from_registry(models)
     
-    # 模型描述
-    MODEL_DESCS = {
-        'llama3.2-vision': 'Meta官方视觉模型，11B参数',
-        'llava': '经典视觉模型，7B参数',
-        'llava-llama3': 'LLaVA升级版，8B参数',
-        'llava-phi3': '微软Phi-3视觉版，轻量级',
-        'moondream': '边缘设备友好，1.4B参数',
-        'bakllava': '高清支持，7B参数',
-        'minicpm-v': '面壁智能，8B参数',
-        'granite3.2-vision': 'IBM文档理解优化',
-        'phi3-vision': '微软Phi-3视觉版',
-        'kimi-k2.6': '原生多模态智能体模型',
+    # 模型描述和参数信息
+    MODEL_INFO = {
+        'qwen3.6': {'desc': 'Qwen3.6B 视觉语言模型', 'params': '3.6B'},
+        'kimi-k2.6': {'desc': 'Moonshot Kimi 多模态模型'},
+        'medgemma': {'desc': '医学领域 Gemma 模型', 'params': '2B'},
+        'medgemma1.5': {'desc': '医学领域 Gemma 1.5B', 'params': '1.5B'},
+        'gemma4': {'desc': 'Google Gemma4 视觉模型'},
+        'qwen3.5': {'desc': 'Qwen3.5 视觉语言模型'},
+        'translategemma': {'desc': '翻译专用 Gemma 模型'},
+        'ministral-3': {'desc': 'Mistral 轻量级 3B 模型', 'params': '3B'},
+        'devstral-small-2': {'desc': 'DevStral 小型模型'},
+        'glm-ocr': {'desc': 'GLM OCR 文字识别模型'},
+        'kimi-k2.5': {'desc': 'Moonshot Kimi 多模态模型'},
+        'deepseek-ocr': {'desc': 'DeepSeek 文字识别模型'},
+        'gemini-3-flash-preview': {'desc': 'Google Gemini 3 Flash'},
+        'mistral-large-3': {'desc': 'Mistral 大语言模型'},
+        'qwen3-vl': {'desc': 'Qwen3 视觉语言模型'},
+        'mistral-small3.2': {'desc': 'Mistral Small 3.2', 'params': '24B'},
+        'qwen2.5vl': {'desc': 'Qwen2.5 视觉语言模型 7B', 'params': '7B'},
+        'gemma3': {'desc': 'Google Gemma3 视觉模型'},
+        'llava': {'desc': '经典视觉模型，7B参数', 'params': '7B'},
+        'llama3.2-vision': {'desc': 'Meta官方视觉模型，11B参数', 'params': '11B'},
     }
     
     # 生成 Python 代码
@@ -212,22 +236,21 @@ def update_model_list(models: List[Dict[str, Any]], output_file: str = "model_li
         name = model.get('name', '').split(':')[0]
         if not name or name.startswith('#'):
             continue
-            
-        size = MODEL_SIZES.get(name, "未知")
-        desc = MODEL_DESCS.get(name, model.get('description', '视觉语言模型')[:50])
+        
+        size = registry_sizes.get(name, "未知")
+        info = MODEL_INFO.get(name, {})
+        desc = info.get('desc', model.get('description', '视觉语言模型')[:50])
         
         lines.append(f"    {{")
         lines.append(f'        "name": "{name}",')
         lines.append(f'        "size": "{size}",')
         lines.append(f'        "desc": "{desc}",')
         lines.append(f'        "tags": ["vision"],')
-        recommended_value = name in ["llama3.2-vision"]
-        lines.append(f'        "recommended": {recommended_value}')
+        lines.append(f'        "recommended": False,')
         lines.append(f"    }},")
     
     lines.append("]")
     
-    # 写入文件
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
     

@@ -1,146 +1,146 @@
 # model_list.py
 # 自动生成于 Ollama 官网
-# 更新日期: 2026-04-28 13:16:08
+# 更新日期: 2026-06-15 15:39:56
 
 VLM_MODELS = [
     {
-        "name": "qwen3.6",
+        "name": "kimi-k2.7-code",
         "size": "未知",
         "desc": "",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
-        "name": "kimi-k2.6",
-        "size": "未知",
-        "desc": "原生多模态智能体模型",
-        "tags": ["vision"],
-        "recommended": False
-    },
-    {
-        "name": "medgemma",
+        "name": "minimax-m3",
         "size": "未知",
         "desc": "",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
-        "name": "medgemma1.5",
-        "size": "未知",
+        "name": "minicpm-v4.6",
+        "size": "1.5GB",
         "desc": "",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
+    },
+    {
+        "name": "minicpm-v4.5",
+        "size": "5.7GB",
+        "desc": "",
+        "tags": ["vision"],
+        "recommended": False,
     },
     {
         "name": "gemma4",
-        "size": "未知",
-        "desc": "",
+        "size": "8.9GB",
+        "desc": "Google Gemma4 视觉模型",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
         "name": "qwen3.5",
-        "size": "未知",
-        "desc": "",
+        "size": "6.1GB",
+        "desc": "Qwen3.5 视觉语言模型",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
-        "name": "translategemma",
-        "size": "未知",
-        "desc": "",
+        "name": "qwen3.6",
+        "size": "22.3GB",
+        "desc": "Qwen3.6B 视觉语言模型",
         "tags": ["vision"],
-        "recommended": False
-    },
-    {
-        "name": "ministral-3",
-        "size": "未知",
-        "desc": "",
-        "tags": ["vision"],
-        "recommended": False
-    },
-    {
-        "name": "devstral-small-2",
-        "size": "未知",
-        "desc": "",
-        "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
         "name": "glm-ocr",
-        "size": "未知",
-        "desc": "",
+        "size": "2.1GB",
+        "desc": "GLM OCR 文字识别模型",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
-        "name": "kimi-k2.5",
+        "name": "nemotron3",
         "size": "未知",
         "desc": "",
         "tags": ["vision"],
-        "recommended": False
-    },
-    {
-        "name": "deepseek-ocr",
-        "size": "未知",
-        "desc": "",
-        "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
         "name": "gemini-3-flash-preview",
         "size": "未知",
-        "desc": "",
+        "desc": "Google Gemini 3 Flash",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
-        "name": "mistral-large-3",
+        "name": "translategemma",
+        "size": "3.1GB",
+        "desc": "翻译专用 Gemma 模型",
+        "tags": ["vision"],
+        "recommended": False,
+    },
+    {
+        "name": "kimi-k2.6",
         "size": "未知",
+        "desc": "Moonshot Kimi 多模态模型",
+        "tags": ["vision"],
+        "recommended": False,
+    },
+    {
+        "name": "kimi-k2.5",
+        "size": "未知",
+        "desc": "Moonshot Kimi 多模态模型",
+        "tags": ["vision"],
+        "recommended": False,
+    },
+    {
+        "name": "medgemma",
+        "size": "3.1GB",
+        "desc": "医学领域 Gemma 模型",
+        "tags": ["vision"],
+        "recommended": False,
+    },
+    {
+        "name": "mistral-medium-3.5",
+        "size": "74.7GB",
         "desc": "",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
+    },
+    {
+        "name": "medgemma1.5",
+        "size": "3.1GB",
+        "desc": "医学领域 Gemma 1.5B",
+        "tags": ["vision"],
+        "recommended": False,
     },
     {
         "name": "qwen3-vl",
-        "size": "未知",
-        "desc": "",
+        "size": "5.7GB",
+        "desc": "Qwen3 视觉语言模型",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
+    },
+    {
+        "name": "ministral-3",
+        "size": "5.6GB",
+        "desc": "Mistral 轻量级 3B 模型",
+        "tags": ["vision"],
+        "recommended": False,
     },
     {
         "name": "mistral-small3.2",
-        "size": "未知",
-        "desc": "",
+        "size": "14.1GB",
+        "desc": "Mistral Small 3.2",
         "tags": ["vision"],
-        "recommended": False
+        "recommended": False,
     },
     {
-        "name": "qwen2.5vl",
-        "size": "未知",
-        "desc": "",
+        "name": "devstral-small-2",
+        "size": "14.1GB",
+        "desc": "DevStral 小型模型",
         "tags": ["vision"],
-        "recommended": False
-    },
-    {
-        "name": "gemma3",
-        "size": "未知",
-        "desc": "",
-        "tags": ["vision"],
-        "recommended": False
-    },
-    {
-        "name": "llava",
-        "size": "4.5GB",
-        "desc": "经典视觉模型，7B参数",
-        "tags": ["vision"],
-        "recommended": False
-    },
-    {
-        "name": "llama3.2-vision",
-        "size": "7.9GB",
-        "desc": "Meta官方视觉模型，11B参数",
-        "tags": ["vision"],
-        "recommended": True
+        "recommended": False,
     },
 ]

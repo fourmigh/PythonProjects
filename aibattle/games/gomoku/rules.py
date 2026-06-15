@@ -15,36 +15,25 @@ class GomokuRules(Rules[PlayerColor]):
     def legal_moves(self, board: Board[PlayerColor], player: PlayerColor) -> list[Position]:
         return board.empty_positions()
 
-    def candidate_moves(self, board: Board[PlayerColor], radius: int = 2, max_moves: int = 30) -> list[Position]:
-        has_stones = False
-        candidates = set()
+    def candidate_moves(self, board: Board[PlayerColor], radius: int = 2, max_moves: int = 60) -> list[Position]:
+        candidates: dict[tuple[int, int], int] = {}
         for r in range(self.size):
             for c in range(self.size):
                 if board.get(Position(r, c)) is not None:
-                    has_stones = True
                     for dr in range(-radius, radius + 1):
                         for dc in range(-radius, radius + 1):
                             nr, nc = r + dr, c + dc
                             pos = Position(nr, nc)
                             if board.in_bounds(pos) and board.get(pos) is None:
-                                candidates.add((nr, nc))
-                            if len(candidates) >= max_moves * 3:
-                                break
-                    if len(candidates) >= max_moves * 3:
-                        break
-            if len(candidates) >= max_moves * 3:
-                break
+                                key = (nr, nc)
+                                candidates[key] = candidates.get(key, 0) + 1
 
-        if not has_stones:
+        if not candidates:
             center = self.size // 2
             return [Position(center, center)]
 
-        result = [Position(r, c) for r, c in candidates]
-        if len(result) > max_moves:
-            import random
-            random.shuffle(result)
-            result = result[:max_moves]
-        return result
+        result = [Position(r, c) for (r, c), _ in sorted(candidates.items(), key=lambda x: -x[1])]
+        return result[:max_moves]
 
     def find_winning_line(self, board: Board[PlayerColor], last_move: Position, player: PlayerColor) -> list[Position]:
         for dr, dc in self.directions:
@@ -82,7 +71,7 @@ class GomokuRules(Rules[PlayerColor]):
         score = 0.0
         for dr, dc in self.directions:
             score += self._eval_lines(board, dr, dc, player)
-        return score if player == PlayerColor.BLACK else -score
+        return score
 
     def _eval_lines(self, board: Board[PlayerColor], dr: int, dc: int, player: PlayerColor) -> float:
         opponent = player.opponent()
