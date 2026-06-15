@@ -1,0 +1,5 @@
+# AI Battle - Dependencies
+# tkinter is included with Python, no separate install needed
+# pygame (optional) can be used as alternative GUI backend
+# To use LLM AI, install requests:
+# pip install requests

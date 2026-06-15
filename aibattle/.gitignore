@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Output files
+results.csv
+results.json
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
