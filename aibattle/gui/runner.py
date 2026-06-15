@@ -9,6 +9,23 @@ from core.player import Player, MoveInfo
 from core.game import GameEngine, GameRecord
 from core.stats import MatchStats
 from gui.renderer import GomokuCanvas, InfoPanel, ReplayBar
+from games import GAME_REGISTRY, import_rules
+from ai.random_ai import RandomAI
+from ai.heuristic_ai import HeuristicAI
+
+
+def _resolve_player(ai_type: str, color: PlayerColor) -> Player:
+    t = ai_type.strip().lower()
+    if t == "random":
+        return RandomAI(color, f"Random-{color.name}")
+    parts = t.split(":")
+    depth = 2
+    if len(parts) > 1:
+        try:
+            depth = int(parts[1])
+        except ValueError:
+            pass
+    return HeuristicAI(color, f"Heuristic(d={depth})-{color.name}", max_depth=depth)
 
 
 class GameState:
@@ -32,23 +49,24 @@ class GameState:
 class GuiRunner:
     def __init__(
         self,
-        rules: Rules,
-        black_player_factory: Callable[[PlayerColor], Player],
-        white_player_factory: Callable[[PlayerColor], Player],
-        board_size: int = 15,
+        initial_game: str = "gomoku",
+        default_black: str = "heuristic:2",
+        default_white: str = "random",
         cell_size: int = 38,
     ):
-        self.rules = rules
-        self.board_size = board_size
-        self.black_player_factory = black_player_factory
-        self.white_player_factory = white_player_factory
+        self._cell_size = cell_size
+        self._initial_game = initial_game
+        self._default_black = default_black
+        self._default_white = default_white
+        self.rules: Optional[Rules] = None
+        self.board_size = 15
         self.state = GameState()
         self.match_stats = MatchStats(black_name="", white_name="")
         self.record: Optional[GameRecord] = None
         self.replay_index = 0
 
         self.root = tk.Tk()
-        self.root.title("AI Battle - Gomoku")
+        self.root.title("AI Battle")
         self.root.configure(bg="#2a2a2a")
 
         style = ttk.Style()
@@ -62,18 +80,14 @@ class GuiRunner:
         control_frame = tk.Frame(self.root, bg="#444", height=40)
         control_frame.pack(fill="x", padx=5, pady=2)
 
-        main_frame = tk.Frame(self.root, bg="#2a2a2a")
-        main_frame.pack(fill="both", expand=True, padx=5, pady=2)
+        self._main_frame = tk.Frame(self.root, bg="#2a2a2a")
+        self._main_frame.pack(fill="both", expand=True, padx=5, pady=2)
 
-        board_pixel = (board_size - 1) * cell_size + 2 * 35
-        self.canvas = GomokuCanvas(main_frame, board_size, cell_size, width=board_pixel, height=board_pixel)
-        self.canvas.pack(side="left", padx=(0, 10))
-
-        self.panel = InfoPanel(main_frame, width=260)
-        self.panel.pack(side="left", fill="y", expand=True)
-
-        self.replay_bar = ReplayBar(self.root)
-        self.replay_bar.pack(fill="x", padx=5, pady=2)
+        self.canvas: Optional[GomokuCanvas] = None
+        self.panel: Optional[InfoPanel] = None
+        self.replay_bar: Optional[ReplayBar] = None
+        self._replay_bar_frame = tk.Frame(self.root, bg="#2a2a2a")
+        self._replay_bar_frame.pack(fill="x", padx=5, pady=2)
 
         self._build_controls(control_frame)
 
@@ -81,28 +95,68 @@ class GuiRunner:
                                 font=("Consolas", 9), fg="#888", bg="#2a2a2a")
         bottom_label.pack(fill="x", padx=10, pady=(0, 5))
 
-        self.canvas.draw_board()
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
         self.root.bind("<Key>", self._on_key)
         self._engine: Optional[GameEngine] = None
 
+        self._create_board_widgets(15)
+        self.canvas.draw_board()
+
+    def _create_board_widgets(self, board_size: int):
+        if self.canvas:
+            self.canvas.destroy()
+        if self.replay_bar:
+            self.replay_bar.destroy()
+
+        self.board_size = board_size
+        cs = self._cell_size
+        bp = (board_size - 1) * cs + 2 * 35
+        self.canvas = GomokuCanvas(self._main_frame, board_size, cs, width=bp, height=bp)
+        pack_kw = {"side": "left", "padx": (0, 10)}
+        if self.panel:
+            pack_kw["before"] = self.panel
+        self.canvas.pack(**pack_kw)
+
+        if not self.panel:
+            self.panel = InfoPanel(self._main_frame, width=260)
+            self.panel.pack(side="left", fill="y", expand=True)
+
+        self.replay_bar = ReplayBar(self._replay_bar_frame)
+        self.replay_bar.pack(fill="x")
+
+    def _setup_game(self, game_key: str, black_ai: str, white_ai: str):
+        rules, board_size = import_rules(game_key)
+        self.rules = rules
+        self.board_size = board_size
+        self.canvas.destroy()
+        self._create_board_widgets(board_size)
+        self.canvas.draw_board()
+        self.panel.hide_result()
+
+        self._black_player = _resolve_player(black_ai, PlayerColor.BLACK)
+        self._white_player = _resolve_player(white_ai, PlayerColor.WHITE)
+        self.root.title(f"AI Battle - {GAME_REGISTRY[game_key]['name']}")
+
+    def _show_game_choice_and_start(self):
+        self.panel.show_choice(callback=self._on_game_chosen)
+
+    def _on_game_chosen(self, game_key: str, black_ai: str, white_ai: str):
+        self._setup_game(game_key, black_ai, white_ai)
+        self._start_game(auto_start=True)
+
     def _build_controls(self, parent: tk.Frame):
         buttons = [
-            ("Start", self._on_start, 0),
-            ("Pause", self._on_pause, 1),
-            ("Step", self._on_step, 2),
-            ("End", self._on_end, 3),
-            ("Speed+", self._on_speed_up, 4),
-            ("Speed-", self._on_speed_down, 5),
+            ("Pause", self._on_pause, 0),
+            ("Step", self._on_step, 1),
+            ("End", self._on_end, 2),
+            ("Speed+", self._on_speed_up, 3),
+            ("Speed-", self._on_speed_down, 4),
         ]
         for text, cmd, col in buttons:
             btn = tk.Button(parent, text=text, command=cmd, bg="#555", fg="white",
                             font=("Consolas", 10), padx=8, pady=2, bd=0)
             btn.pack(side="left", padx=3, pady=3)
             setattr(self, f"_btn_{text.lower().replace('+','p').replace('-','m')}", btn)
-
-    def _on_start(self):
-        self.state.paused = False
 
     def _on_pause(self):
         self.state.paused = not self.state.paused
@@ -155,8 +209,8 @@ class GuiRunner:
         self.root.destroy()
 
     def _make_engine(self) -> GameEngine:
-        black = self.black_player_factory(PlayerColor.BLACK)
-        white = self.white_player_factory(PlayerColor.WHITE)
+        black = self._black_player
+        white = self._white_player
         self.match_stats.black_name = black.name
         self.match_stats.white_name = white.name
 
@@ -284,22 +338,54 @@ class GuiRunner:
         self.state.replay_mode = False
         self.state.winning_positions = []
         self.replay_index = 0
+        self.panel.hide_result()
 
         self._engine.running = True
         self._game_loop()
 
-    def _on_game_finished(self):
+    def _get_record(self):
         if self._engine and self._engine.get_record() and self._engine.get_record().moves:
             self.record = self._engine.get_record()
             self.match_stats.add_game(self.record, self.match_stats.black_name, self.match_stats.white_name)
 
+    def _calc_times(self) -> tuple[int, int]:
+        bt = wt = 0
+        if self.record:
+            for m in self.record.moves:
+                if m.metadata.get("player") == PlayerColor.BLACK:
+                    bt += m.think_time_ms
+                else:
+                    wt += m.think_time_ms
+        return bt, wt
+
+    def _restart_game(self):
+        self._show_game_choice_and_start()
+
+    def _restart_match(self):
+        self.match_stats = MatchStats(
+            black_name=self.match_stats.black_name,
+            white_name=self.match_stats.white_name,
+        )
+        self.state.match_remaining = self.state.total_match_games
+        self._next_match_game()
+
+    def _on_game_finished(self):
+        self._get_record()
         self._update_display()
         if self.state.match_mode:
             self.state.match_remaining -= 1
-            if self.state.match_remaining > 0 and self.state.running:
-                return
-        self.state.replay_mode = True
-        self.root.after(2000, self._auto_replay)
+
+        bt, wt = self._calc_times()
+        self.panel.show_result(
+            self.state.game_result[0], self.state.game_result[1],
+            self.match_stats.black_name, self.match_stats.white_name,
+            self.state.move_count, bt, wt,
+            self.state.match_mode, self.state.match_remaining,
+            on_restart=self._restart_game,
+            on_next=self._next_match_game if self.state.match_remaining > 0 else self._restart_match,
+            on_replay=self._enter_replay_mode,
+            on_exit=self._on_close,
+        )
 
     def _next_match_game(self):
         game_num = self.state.total_match_games - self.state.match_remaining
@@ -307,12 +393,18 @@ class GuiRunner:
         self._start_game(auto_start=True)
 
     def run_match(self, num_games: int):
+        match_games = num_games
+        self.panel.show_choice(callback=lambda gk, ba, wa: self._start_match(gk, ba, wa, match_games))
+
+    def _start_match(self, game_key: str, black_ai: str, white_ai: str, num_games: int):
+        if self.rules is None:
+            self._setup_game(game_key, black_ai, white_ai)
         self.state.match_mode = True
         self.state.total_match_games = num_games
         self.state.match_remaining = num_games
         self.match_stats = MatchStats(
-            black_name=self.black_player_factory(PlayerColor.BLACK).name,
-            white_name=self.white_player_factory(PlayerColor.WHITE).name,
+            black_name=_resolve_player(black_ai, PlayerColor.BLACK).name,
+            white_name=_resolve_player(white_ai, PlayerColor.WHITE).name,
         )
         self._next_match_game()
 
@@ -337,7 +429,7 @@ class GuiRunner:
         if match_games > 0:
             self.root.after(100, lambda: self.run_match(match_games))
         else:
-            self.root.after(100, lambda: self._start_game(auto_start=False))
+            self.root.after(100, self._show_game_choice_and_start)
 
         self.root.mainloop()
         return self.match_stats if match_games > 0 else self.record

@@ -82,15 +82,12 @@ def run_gui(
 ):
     from gui.runner import GuiRunner
 
-    rules = GomokuRules(board_size)
-
-    def black_factory(color: PlayerColor) -> Player:
-        return resolve_player(black_type, color, label=resolve_player(black_type, color).name)
-
-    def white_factory(color: PlayerColor) -> Player:
-        return resolve_player(white_type, color, label=resolve_player(white_type, color).name)
-
-    runner = GuiRunner(rules, black_factory, white_factory, board_size, cell_size)
+    runner = GuiRunner(
+        initial_game="gomoku",
+        default_black=black_type,
+        default_white=white_type,
+        cell_size=cell_size,
+    )
     result = runner.run(match_games=match_games)
 
     if match_games > 0 and isinstance(result, object):

@@ -4,6 +4,7 @@ from typing import Optional, Callable
 from core.board import Board, Position, PlayerColor
 from core.game import GameRecord
 from core.stats import MatchStats
+from games import GAME_REGISTRY
 
 
 class GomokuCanvas(tk.Canvas):
@@ -142,7 +143,7 @@ class InfoPanel(ttk.Frame):
         if "game_info" in self._labels:
             self._labels["game_info"].config(text=f"Moves: {move_count}")
         if "timers" in self._labels:
-            self._labels["timers"].config(text=f"Time: {black_time_ms//1000}s / {white_time_ms//1000}s")
+            self._labels["timers"].config(text=f"Time: {black_time_ms}ms / {white_time_ms}ms")
 
         if match_stats and match_stats.total_games > 0:
             if "match_title" in self._labels:
@@ -156,6 +157,119 @@ class InfoPanel(ttk.Frame):
                         f"Avg: {match_stats.avg_game_length:.0f} moves"
                     )
                 )
+
+
+    def hide_result(self):
+        for attr in ("_result_sep", "_result_title", "_result_stat", "_result_btns", "_result_stat_extra"):
+            w = getattr(self, attr, None)
+            if w:
+                w.destroy()
+                setattr(self, attr, None)
+
+    def hide_choice(self):
+        for attr in ("_choice_sep", "_choice_game_label", "_choice_game",
+                     "_choice_black_label", "_choice_black",
+                     "_choice_white_label", "_choice_white", "_choice_btn"):
+            w = getattr(self, attr, None)
+            if w:
+                w.destroy()
+                setattr(self, attr, None)
+
+    def show_choice(self, callback: Callable):
+        self.hide_choice()
+        self.hide_result()
+
+        AI_CHOICES = ["random", "heuristic:1", "heuristic:2", "heuristic:3"]
+
+        self._choice_sep = tk.Frame(self, bg="#555", height=1)
+        self._choice_sep.pack(fill="x", padx=10, pady=(5, 3))
+
+        game_names = [v["name"] for v in GAME_REGISTRY.values()]
+        game_keys = list(GAME_REGISTRY.keys())
+
+        self._choice_game_label = tk.Label(self, text="Game:", font=("Consolas", 9), fg="#ddd", bg="#333", anchor="w")
+        self._choice_game_label.pack(fill="x", padx=10)
+        self._choice_game = ttk.Combobox(self, values=game_names, state="readonly",
+                                          font=("Consolas", 9), width=22)
+        self._choice_game.set(game_names[0])
+        self._choice_game.pack(fill="x", padx=10, pady=(0, 3))
+        self._choice_game_keys = game_keys
+
+        self._choice_black_label = tk.Label(self, text="Black AI:", font=("Consolas", 9), fg="#ddd", bg="#333", anchor="w")
+        self._choice_black_label.pack(fill="x", padx=10)
+        self._choice_black = ttk.Combobox(self, values=AI_CHOICES, state="readonly",
+                                          font=("Consolas", 9), width=22)
+        self._choice_black.set("heuristic:2")
+        self._choice_black.pack(fill="x", padx=10, pady=(0, 3))
+
+        self._choice_white_label = tk.Label(self, text="White AI:", font=("Consolas", 9), fg="#ddd", bg="#333", anchor="w")
+        self._choice_white_label.pack(fill="x", padx=10)
+        self._choice_white = ttk.Combobox(self, values=AI_CHOICES, state="readonly",
+                                          font=("Consolas", 9), width=22)
+        self._choice_white.set("random")
+        self._choice_white.pack(fill="x", padx=10, pady=(0, 5))
+
+        self._choice_btn = tk.Button(self, text="Start", font=("Consolas", 11, "bold"),
+                                     command=lambda: self._choice_confirm(callback, game_keys),
+                                     bg="#5a8", fg="white", padx=10, pady=3, bd=0)
+        self._choice_btn.pack(padx=10, pady=(0, 8), fill="x")
+
+    def _choice_confirm(self, callback: Callable, game_keys: list):
+        name = self._choice_game.get()
+        game_key = next(k for k, v in GAME_REGISTRY.items() if v["name"] == name)
+        black_ai = self._choice_black.get()
+        white_ai = self._choice_white.get()
+        self.hide_choice()
+        self.master.after_idle(callback, game_key, black_ai, white_ai)
+
+    def show_result(self, winner: Optional[PlayerColor], reason: str, black_name: str, white_name: str,
+                    move_count: int, black_time_ms: int, white_time_ms: int,
+                    match_mode: bool, match_remaining: int,
+                    on_restart: Callable, on_next: Callable, on_replay: Callable, on_exit: Callable):
+        self.hide_result()
+
+        self._result_sep = tk.Frame(self, bg="#555", height=1)
+        self._result_sep.pack(fill="x", padx=10, pady=(5, 3))
+
+        win_text = f"{winner.name} WINS!" if winner else "DRAW"
+        fg_color = "#FFD700"
+        self._result_title = tk.Label(self, text=win_text, font=("Microsoft YaHei", 14, "bold"),
+                                      fg=fg_color, bg="#333")
+        self._result_title.pack(fill="x", padx=10, pady=1)
+
+        if reason:
+            self._result_stat = tk.Label(self, text=reason, font=("Consolas", 9),
+                                         fg="#aaa", bg="#333")
+            self._result_stat.pack(fill="x", padx=10, pady=(0, 2))
+
+        stat_text = (
+            f"Black: {black_time_ms}ms  |  White: {white_time_ms}ms\n"
+            f"Moves: {move_count}"
+        )
+        if self._result_stat is None or not reason:
+            self._result_stat = tk.Label(self, text=stat_text, font=("Consolas", 9),
+                                         fg="#ccc", bg="#333", justify="center")
+            self._result_stat.pack(fill="x", padx=10, pady=(0, 2))
+        else:
+            extra = tk.Label(self, text=stat_text, font=("Consolas", 9),
+                             fg="#ccc", bg="#333", justify="center")
+            extra.pack(fill="x", padx=10, pady=(0, 2))
+            self._result_stat_extra = extra
+
+        self._result_btns = tk.Frame(self, bg="#333")
+        self._result_btns.pack(fill="x", padx=10, pady=(3, 8))
+
+        if match_mode and match_remaining > 0:
+            pairs = [("Next Game", on_next), ("Replay", on_replay), ("Exit", on_exit)]
+        elif match_mode and match_remaining == 0:
+            pairs = [("Rematch", on_restart), ("Replay", on_replay), ("Exit", on_exit)]
+        else:
+            pairs = [("Restart", on_restart), ("Replay", on_replay), ("Exit", on_exit)]
+
+        for text, cmd in pairs:
+            btn = tk.Button(self._result_btns, text=text, font=("Consolas", 10),
+                            command=cmd, bg="#555", fg="white", padx=10, pady=2, bd=0)
+            btn.pack(side="left", padx=3)
 
 
 class ReplayBar(ttk.Frame):
@@ -180,39 +294,6 @@ class ReplayBar(ttk.Frame):
             self.progress["value"] = 0
 
 
-class WinnerOverlay:
-    def __init__(self, parent: tk.Tk, winner: Optional[PlayerColor], reason: str, on_replay: Callable, on_exit: Callable):
-        self.top = tk.Toplevel(parent)
-        self.top.overrideredirect(True)
-        self.top.attributes("-alpha", 0.85)
-        self.top.configure(bg="black")
 
-        w, h = parent.winfo_width(), parent.winfo_height()
-        x, y = parent.winfo_rootx(), parent.winfo_rooty()
-        self.top.geometry(f"{w}x{h}+{x}+{y}")
 
-        frame = tk.Frame(self.top, bg="#111", bd=2, relief="raised")
-        frame.place(relx=0.5, rely=0.5, anchor="center")
 
-        win_text = f"{winner.name} WINS!" if winner else "DRAW"
-        title_lbl = tk.Label(frame, text=win_text, font=("Microsoft YaHei", 24, "bold"),
-                             fg="#FFD700", bg="#111")
-        title_lbl.pack(padx=40, pady=(20, 5))
-
-        if reason:
-            reason_lbl = tk.Label(frame, text=reason, font=("Consolas", 12),
-                                  fg="#aaa", bg="#111")
-            reason_lbl.pack(padx=40, pady=(0, 15))
-
-        btn_frame = tk.Frame(frame, bg="#111")
-        btn_frame.pack(pady=(5, 20))
-
-        replay_btn = tk.Button(btn_frame, text="Replay (SPACE)", font=("Consolas", 11),
-                               command=lambda: [self.top.destroy(), on_replay()],
-                               bg="#444", fg="white", padx=15, pady=5)
-        replay_btn.pack(side="left", padx=5)
-
-        exit_btn = tk.Button(btn_frame, text="Exit (ESC)", font=("Consolas", 11),
-                             command=lambda: [self.top.destroy(), on_exit()],
-                             bg="#444", fg="white", padx=15, pady=5)
-        exit_btn.pack(side="left", padx=5)
