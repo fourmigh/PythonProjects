@@ -1,10 +1,27 @@
 import tkinter as tk
 from tkinter import ttk, font
 from typing import Optional, Callable
+import urllib.request
+import json
 from core.board import Board, Position, PlayerColor
 from core.game import GameRecord
 from core.stats import MatchStats
 from games import GAME_REGISTRY
+
+
+_OLLAMA_CACHE = None
+
+def _fetch_ollama_models():
+    global _OLLAMA_CACHE
+    if _OLLAMA_CACHE is not None:
+        return _OLLAMA_CACHE
+    try:
+        resp = urllib.request.urlopen("http://localhost:11434/api/tags", timeout=2)
+        data = json.loads(resp.read())
+        _OLLAMA_CACHE = sorted(f"ollama:{m['name']}" for m in data.get("models", []))
+    except Exception:
+        _OLLAMA_CACHE = []
+    return _OLLAMA_CACHE
 
 
 class GomokuCanvas(tk.Canvas):
@@ -179,11 +196,10 @@ class InfoPanel(ttk.Frame):
         self.hide_choice()
         self.hide_result()
 
-        AI_CHOICES = [
-            "random", "heuristic:1", "heuristic:2", "heuristic:3",
-            "ollama:qwen2.5:1.5b", "ollama:qwen2.5:7b", "ollama:phi",
-            "ollama:llama3.2:3b", "openai:gpt-4o-mini", "openai:gpt-4o",
-        ]
+        base_choices = ["random", "heuristic:1", "heuristic:2", "heuristic:3",
+                        "openai:gpt-4o-mini", "openai:gpt-4o"]
+        ollama_models = _fetch_ollama_models()
+        AI_CHOICES = base_choices + ollama_models
 
         self._choice_sep = tk.Frame(self, bg="#555", height=1)
         self._choice_sep.pack(fill="x", padx=10, pady=(5, 3))

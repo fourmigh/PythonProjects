@@ -207,9 +207,9 @@ class OllamaManager:
                     break
             if term_cmd:
                 if term_cmd == "gnome-terminal":
-                    subprocess.Popen(f'{term_cmd} -- bash -c "{self.ollama_cmd} run {model_name}; exec bash"', shell=True)
+                    subprocess.Popen(f'{term_cmd} -- bash -c "{self.ollama_cmd} run {model_name}; exec bash"', shell=True, stderr=subprocess.DEVNULL)
                 else:
-                    subprocess.Popen(f'{term_cmd} -e bash -c "{self.ollama_cmd} run {model_name}; exec bash"', shell=True)
+                    subprocess.Popen(f'{term_cmd} -e bash -c "{self.ollama_cmd} run {model_name}; exec bash"', shell=True, stderr=subprocess.DEVNULL)
             else:
                 subprocess.Popen(f'nohup {self.ollama_cmd} run {model_name} > /dev/null 2>&1 &', shell=True)
         print(f"[OK] 模型 {model_name} 已在新窗口启动")
