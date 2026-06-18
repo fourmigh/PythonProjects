@@ -53,6 +53,9 @@ class Board(ABC, Generic[T]):
     def empty_positions(self) -> list[Position]:
         return [Position(r, c) for r in range(self.size) for c in range(self.size) if self._grid[r][c] is None]
 
+    def is_empty(self) -> bool:
+        return all(self._grid[r][c] is None for r in range(self.size) for c in range(self.size))
+
     def is_full(self) -> bool:
         return all(self._grid[r][c] is not None for r in range(self.size) for c in range(self.size))
 

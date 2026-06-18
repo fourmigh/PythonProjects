@@ -107,6 +107,9 @@ class GuiRunner:
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
         self.root.bind("<Key>", self._on_key)
         self._engine: Optional[GameEngine] = None
+        self._llm_thread: Optional[threading.Thread] = None
+        self._llm_result: Optional[MoveInfo] = None
+        self._step_once = False
 
         self._create_board_widgets(15)
         self.canvas.draw_board()
@@ -175,8 +178,8 @@ class GuiRunner:
             self._replay_step(1)
         elif self._engine and self.state.running:
             self.state.paused = True
-            self._engine.step()
-            self._update_display()
+            self._step_once = True
+            self._game_loop()
 
     def _on_end(self):
         self.state.running = False
@@ -349,6 +352,9 @@ class GuiRunner:
         self.replay_index = 0
         self.panel.hide_result()
 
+        self._llm_thread = None
+        self._llm_result = None
+        self._step_once = False
         self._engine.running = True
         self._game_loop()
 
@@ -417,19 +423,72 @@ class GuiRunner:
         )
         self._next_match_game()
 
+    def _run_llm_query(self, player: Player, board: Board, rules: Rules):
+        try:
+            self._llm_result = player._do_query(board, rules)
+        except Exception:
+            legal = rules.legal_moves(board, player.color)
+            if legal:
+                center = board.size // 2
+                pos = min(legal, key=lambda p: abs(p.row - center) + abs(p.col - center))
+            else:
+                pos = Position(0, 0)
+            self._llm_result = MoveInfo(
+                position=pos, think_time_ms=0,
+                metadata={"player": player.color, "error": "exception"}
+            )
+
     def _game_loop(self):
         if not self.state.running or not self._engine:
             return
-        if not self.state.finished and not self.state.paused and self._engine.running:
-            self.root.update_idletasks()
-            self._engine.step()
-            self._update_display()
-        elif self.state.finished:
+
+        if self.state.finished:
             self._update_display()
             self._on_game_finished()
             return
 
-        delay = max(1, 200 - self.state.speed * 15) if not self.state.paused else 100
+        if self.state.paused and not self._step_once and not self._llm_thread:
+            self._after_id = self.root.after(100, self._game_loop)
+            return
+
+        # LLM thread pending — poll for completion
+        if self._llm_thread:
+            if self._llm_thread.is_alive():
+                self._after_id = self.root.after(100, self._game_loop)
+                return
+            self._llm_thread = None
+            if self._llm_result is not None:
+                self._engine.apply_move(self._llm_result)
+                self._update_display()
+            self._llm_result = None
+            self._step_once = False
+            self.root.title("AI Battle")
+            if not self.state.finished:
+                delay = 100 if self.state.paused else max(1, 200 - self.state.speed * 15)
+                self._after_id = self.root.after(delay, self._game_loop)
+            return
+
+        # Current player is LLM — start async thread
+        curr_player_obj = self._engine.players.get(self._engine.current_player)
+        if isinstance(curr_player_obj, LLMAI):
+            self._llm_thread = threading.Thread(
+                target=self._run_llm_query,
+                args=(curr_player_obj, self._engine.board.copy(), self._engine.rules),
+                daemon=True,
+            )
+            self._llm_thread.start()
+            self.root.title(f"AI Battle - {self._engine.current_player.name} thinking...")
+            self._after_id = self.root.after(100, self._game_loop)
+            return
+
+        # Non-LLM player — synchronous step
+        if self._engine.running and not self.state.finished:
+            self.root.update_idletasks()
+            self._engine.step()
+            self._update_display()
+            self._step_once = False
+
+        delay = 100 if self.state.paused else max(1, 200 - self.state.speed * 15)
         self._after_id = self.root.after(delay, self._game_loop)
 
     def run(self, match_games: int = 0):

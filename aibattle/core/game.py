@@ -107,5 +107,34 @@ class GameEngine(Generic[T]):
         if self.on_game_end:
             self.on_game_end(result)
 
+    def apply_move(self, move_info: MoveInfo) -> bool:
+        if not self.running:
+            return False
+
+        if not self.rules.make_move(self.board, self.current_player, move_info.position):
+            move_info.metadata["invalid"] = True
+            self.record.add_move(move_info, self.board, self.current_player)
+            result = GameResult(
+                winner=self.current_player.opponent(),
+                is_draw=False,
+                reason=f"Invalid move by {self.current_player.name}"
+            )
+            self._end_game(result)
+            return False
+
+        self.last_move = move_info.position
+        self.record.add_move(move_info, self.board, self.current_player)
+
+        if self.on_move:
+            self.on_move(self.current_player, move_info, self.board)
+
+        result = self.rules.get_result(self.board, self.last_move, self.current_player)
+        if result.winner is not None or result.is_draw:
+            self._end_game(result)
+            return False
+
+        self.current_player = self.current_player.opponent()
+        return True
+
     def get_record(self) -> GameRecord:
         return self.record
