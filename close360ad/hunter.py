@@ -93,7 +93,7 @@ def _is_ad(hwnd):
     is_360 = any(p in exe.lower() for p in AD_MODULE_PATTERNS) if exe else False
 
     if title:
-        if any(k in title for k in AD_TITLE_KEYWORDS):
+        if is_360 and any(k in title for k in AD_TITLE_KEYWORDS):
             return True
         if is_360 and class_name in AD_CLASS_NAMES:
             return True
@@ -178,7 +178,7 @@ def find_and_close_ads():
             exe = _exe_name(hwnd)
             try:
                 _try_close(hwnd)
-                if not win32gui.IsWindow(hwnd):
+                if not win32gui.IsWindow(hwnd) or not win32gui.IsWindowVisible(hwnd):
                     if _close_callback:
                         _close_callback(title, class_name, exe)
             except:
