@@ -1,0 +1,27 @@
+# Build output
+dist/
+build/
+*.spec
+
+# Icon cache
+icon.ico
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual environment
+venv/
+.env
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
