@@ -11,6 +11,7 @@ import winerror
 from config import SCAN_INTERVAL
 from hunter import find_and_close_ads, set_close_callback, get_memory_mb, list_windows
 from tray import run_tray, notify, set_tooltip, set_show_stats_callback
+import dialog
 
 MUTEX_NAME = 'Global\\Close360Ad_SingleInstance'
 
@@ -58,21 +59,12 @@ def _update_tooltip():
 
 
 def _show_stats():
-    threading.Thread(target=_show_stats_impl, daemon=True).start()
-
-def _show_stats_impl():
-    import os
-    elapsed = int(time.time() - start_time)
-    mins = elapsed // 60
-    secs = elapsed % 60
-    count = len(closed_list)
-    lines = [f'运行 {mins}分{secs}秒，共关闭 {count} 个广告窗口\n']
-    for t, title, cls, exe in closed_list:
-        lines.append(f'[{t}] {title or "(无标题)"}  |  {cls}  |  {exe}')
-    path = os.path.join(os.environ['TEMP'], 'Close360Ad_stats.txt')
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(lines))
-    os.startfile(path)
+    def _run():
+        try:
+            dialog.show_stats(list(closed_list))
+        except Exception as e:
+            notify('Close360Ad', f'\u7edf\u8ba1\u7a97\u53e3\u6253\u5f00\u5931\u8d25: {e}')
+    threading.Thread(target=_run, daemon=True).start()
 
 
 def _init_console():

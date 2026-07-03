@@ -6,6 +6,7 @@ import win32con
 import win32api
 import win32process
 from config import AD_TITLE_KEYWORDS, AD_CLASS_NAMES, AD_MODULE_PATTERNS, EXCLUDE_TITLE_KEYWORDS, KILL_AD_PROCESS
+import whitelist
 
 
 _close_callback = None
@@ -90,6 +91,10 @@ def _is_ad(hwnd):
     exe = _exe_path(hwnd)
     if exe and 'close360ad' in exe.lower():
         return False
+
+    if whitelist.is_whitelisted(title, _exe_name(hwnd), class_name):
+        return False
+
     is_360 = any(p in exe.lower() for p in AD_MODULE_PATTERNS) if exe else False
 
     if title:
