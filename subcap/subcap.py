@@ -91,38 +91,6 @@ def _is_subtitle_ad(text):
     return False
 
 
-_DEBUG_EVERY = 30
-_DEBUG_COUNTER = 0
-
-
-def _save_debug_frame(frame, debug_dir, subtitle_roi=None,
-                     wm_x1=0.65, wm_y1=0.88, wm_x2=1.0, wm_y2=1.0):
-    global _DEBUG_COUNTER
-    _DEBUG_COUNTER += 1
-    if _DEBUG_COUNTER % _DEBUG_EVERY != 0:
-        return
-    os.makedirs(debug_dir, exist_ok=True)
-    vis = frame.copy()
-    h, w = frame.shape[:2]
-
-    if subtitle_roi is not None:
-        sx1, sy1, sx2, sy2 = subtitle_roi
-        cv2.rectangle(vis, (sx1, sy1), (sx2, sy2), (0, 0, 255), 2)
-        cv2.putText(vis, "subtitle", (sx1 + 3, sy1 + 15),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-
-    wx1 = int(w * wm_x1)
-    wy1 = int(h * wm_y1)
-    wx2 = int(w * wm_x2)
-    wy2 = int(h * wm_y2)
-    cv2.rectangle(vis, (wx1, wy1), (wx2, wy2), (255, 0, 0), 1)
-    cv2.putText(vis, "wm-right", (wx1 + 3, wy1 + 15),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 0, 0), 1)
-
-    out_path = os.path.join(debug_dir, "debug_{:06d}.jpg".format(_DEBUG_COUNTER))
-    cv2.imwrite(out_path, vis, [cv2.IMWRITE_JPEG_QUALITY, 85])
-
-
 def ms_to_timestr(ms):
     """毫秒转 HH:MM:SS.mmm 格式"""
     seconds, ms = divmod(int(ms), 1000)
@@ -263,7 +231,7 @@ def save_best_frame(text, frames, output_dir, ws, idx, start_ms, end_ms,
 
 
 def extract_best_frames(video_path, output_dir, excel_path,
-                        similarity_threshold=0.7,
+                        similarity_threshold=0.6,
                         min_text_length=4,
                         skip_frames=2):
     """
@@ -283,6 +251,8 @@ def extract_best_frames(video_path, output_dir, excel_path,
         with open(config_path) as f:
             roi_cfg = json.load(f)
 
+    sx1 = roi_cfg.get("subtitle_x1", 0.0)
+    sx2 = roi_cfg.get("subtitle_x2", 1.0)
     sy1 = roi_cfg.get("subtitle_y1", 0.65)
     sy2 = roi_cfg.get("subtitle_y2", 0.95)
     wm_x1 = roi_cfg.get("wm_x1", 0.65)
@@ -310,10 +280,6 @@ def extract_best_frames(video_path, output_dir, excel_path,
 
     _init_face_detector()
 
-    global _DEBUG_COUNTER
-    _DEBUG_COUNTER = 0
-    debug_dir = output_dir.rsplit("_screenshots", 1)[0] + "_debug"
-
     frame_count = 0
     current_text = ""
     current_frames = []
@@ -338,13 +304,9 @@ def extract_best_frames(video_path, output_dir, excel_path,
         timestamp_ms = cap.get(cv2.CAP_PROP_POS_MSEC)
 
         height, width = frame.shape[:2]
-        subtitle_roi = (0, int(height * sy1), width, int(height * sy2))
-        _save_debug_frame(frame, debug_dir=debug_dir,
-                          subtitle_roi=subtitle_roi,
-                          wm_x1=wm_x1, wm_y1=wm_y1,
-                          wm_x2=wm_x2, wm_y2=wm_y2)
 
-        roi = frame[int(height * sy1):int(height * sy2), :]
+        roi = frame[int(height * sy1):int(height * sy2),
+                    int(width * sx1):int(width * sx2)]
 
         gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         gray_roi = cv2.convertScaleAbs(gray_roi, alpha=1.5, beta=0)
@@ -373,7 +335,8 @@ def extract_best_frames(video_path, output_dir, excel_path,
                 continue
 
         if current_text:
-            similarity = SequenceMatcher(None, text, current_text).ratio()
+            current_clean = re.sub(r'[^a-zA-Z\u4e00-\u9fa5]', '', current_text)
+            similarity = SequenceMatcher(None, clean_text, current_clean).ratio()
             if similarity > similarity_threshold:
                 current_frames.append(frame)
                 current_end_ms = timestamp_ms
