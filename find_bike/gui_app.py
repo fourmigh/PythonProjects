@@ -72,6 +72,13 @@ TEXTS = {
         'wsl_intro': '提示: 如果在WSL中配置了Key, 可复制过来直接使用',
         'key_from_env': 'API Key 已从 Windows 环境变量自动读取',
         'key_from_wsl': 'API Key 已从 WSL 环境变量自动读取',
+        'log_model': '模型',
+        'log_image': '图片',
+        'log_calling_api': '开始调用 API...',
+        'log_api_success': 'API 调用成功',
+        'log_api_fail': 'API 调用失败',
+        'log_exception': '异常',
+        'log_chars': '字',
     },
     'en': {
         'title': 'Bicycle License Plate Detector',
@@ -113,6 +120,13 @@ TEXTS = {
         'wsl_intro': 'Tip: If configured in WSL, copy the key here',
         'key_from_env': 'API Key loaded from Windows environment variable',
         'key_from_wsl': 'API Key loaded from WSL environment variable',
+        'log_model': 'Model',
+        'log_image': 'Image',
+        'log_calling_api': 'Calling API...',
+        'log_api_success': 'API call succeeded',
+        'log_api_fail': 'API call failed',
+        'log_exception': 'Exception',
+        'log_chars': 'chars',
     },
     'de': {
         'title': 'Fahrradkennzeichenerkennung',
@@ -154,6 +168,13 @@ TEXTS = {
         'wsl_intro': 'Tipp: Kopieren Sie den Schlüssel aus WSL hierher',
         'key_from_env': 'API-Schlüssel aus Windows-Umgebungsvariable geladen',
         'key_from_wsl': 'API-Schlüssel aus WSL-Umgebungsvariable geladen',
+        'log_model': 'Modell',
+        'log_image': 'Bild',
+        'log_calling_api': 'Rufe API auf...',
+        'log_api_success': 'API-Aufruf erfolgreich',
+        'log_api_fail': 'API-Aufruf fehlgeschlagen',
+        'log_exception': 'Ausnahme',
+        'log_chars': 'Zeichen',
     }
 }
 
@@ -724,6 +745,15 @@ class BikeDetectorApp:
                 pass
         self.root.after(0, _append)
 
+    def _log_tr(self, key, *args):
+        parts = []
+        for lang in ('zh', 'en', 'de'):
+            text = TEXTS[lang].get(key, key)
+            if args:
+                text = text.format(*args)
+            parts.append(text)
+        self._log(' | '.join(parts))
+
     # ============================================================
     # 识别逻辑
     # ============================================================
@@ -750,12 +780,23 @@ class BikeDetectorApp:
 
         def _run():
             self._log("=" * 50)
-            self._log(f"  模型: {model_name}")
+            # 多语: 模型 / Model / Modell
+            self._log(f"  {TEXTS['zh']['log_model']}: {model_name} | "
+                      f"{TEXTS['en']['log_model']}: {model_name} | "
+                      f"{TEXTS['de']['log_model']}: {model_name}")
             self._log(f"  API Key: {self._mask_key(api_key)}")
-            self._log(f"  图片: {os.path.basename(image_path)}")
-            self._log(f"  系统提示词: {system_prompt[:60]}...")
-            self._log(f"  用户提示词: {user_prompt}")
-            self._log(f"  开始调用 API...")
+            fname = os.path.basename(image_path)
+            self._log(f"  {TEXTS['zh']['log_image']}: {fname} | "
+                      f"{TEXTS['en']['log_image']}: {fname} | "
+                      f"{TEXTS['de']['log_image']}: {fname}")
+            sys_text = system_prompt[:60]
+            self._log(f"  {TEXTS['zh']['system_prompt']}: {sys_text}... | "
+                      f"{TEXTS['en']['system_prompt']}: {sys_text}... | "
+                      f"{TEXTS['de']['system_prompt']}: {sys_text}...")
+            self._log(f"  {TEXTS['zh']['user_prompt']}: {user_prompt} | "
+                      f"{TEXTS['en']['user_prompt']}: {user_prompt} | "
+                      f"{TEXTS['de']['user_prompt']}: {user_prompt}")
+            self._log_tr('log_calling_api')
 
             start_time = time.time()
             try:
@@ -766,27 +807,53 @@ class BikeDetectorApp:
 
                 if not success:
                     err_msg = reasoning if reasoning else answer
-                    self._log(f"  API 调用失败, 耗时 {elapsed:.2f}s")
-                    self._log(f"  错误: {err_msg}")
+                    self._log_tr('log_api_fail')
+                    self._log(f"  {TEXTS['zh']['elapsed']}: {elapsed:.2f}s | "
+                              f"{TEXTS['en']['elapsed']}: {elapsed:.2f}s | "
+                              f"{TEXTS['de']['elapsed']}: {elapsed:.2f}s")
+                    self._log_tr('api_error')
+                    self._log(f"  {err_msg}")
                     self.root.after(0, lambda: self._finish_recognition(
                         error=err_msg, elapsed=elapsed))
                     return
 
-                self._log(f"  API 调用成功, 耗时 {elapsed:.2f}s")
-                self._log(f"  原始回答 ({len(answer)}字): {answer[:300]}")
+                self._log_tr('log_api_success')
+                self._log(f"  {TEXTS['zh']['elapsed']}: {elapsed:.2f}s | "
+                          f"{TEXTS['en']['elapsed']}: {elapsed:.2f}s | "
+                          f"{TEXTS['de']['elapsed']}: {elapsed:.2f}s")
+                chars_zh = TEXTS['zh']['log_chars']
+                chars_en = TEXTS['en']['log_chars']
+                chars_de = TEXTS['de']['log_chars']
+                raw_zh = TEXTS['zh']['raw_answer']
+                raw_en = TEXTS['en']['raw_answer']
+                raw_de = TEXTS['de']['raw_answer']
+                self._log(f"  {raw_zh} ({len(answer)}{chars_zh}): {answer[:300]} | "
+                          f"{raw_en} ({len(answer)} {chars_en}): {answer[:300]} | "
+                          f"{raw_de} ({len(answer)} {chars_de}): {answer[:300]}")
 
                 if self.current_model_key == 'ocr':
                     is_allowed, reasoning_text = parse_ocr_result(answer)
                 else:
                     is_allowed, reasoning_text = parse_bicycle_response(answer)
 
-                self._log(f"  解析结果: {'允许' if is_allowed else '不允许'}")
+                allowed_key = 'allowed' if is_allowed else 'denied'
+                self._log_tr('parse_result')
+                self._log_tr(allowed_key)
 
                 expected = get_expected_from_filename(self.selected_image.name)
                 if expected is not None:
-                    exp_str = '允许' if expected else '不允许'
-                    match = '匹配' if is_allowed == expected else '不匹配'
-                    self._log(f"  期望: {exp_str} -> {match}")
+                    exp_key = 'allowed' if expected else 'denied'
+                    match_key = 'match' if is_allowed == expected else 'mismatch'
+                    exp_zh = TEXTS['zh'].get(exp_key)
+                    exp_en = TEXTS['en'].get(exp_key)
+                    exp_de = TEXTS['de'].get(exp_key)
+                    match_zh = TEXTS['zh'].get(match_key)
+                    match_en = TEXTS['en'].get(match_key)
+                    match_de = TEXTS['de'].get(match_key)
+                    self._log_tr('expected')
+                    self._log(f"  {exp_zh} -> {match_zh} | "
+                              f"{exp_en} -> {match_en} | "
+                              f"{exp_de} -> {match_de}")
 
                 self.root.after(0, lambda: self._finish_recognition(
                     answer=answer, is_allowed=is_allowed,
@@ -794,8 +861,12 @@ class BikeDetectorApp:
             except Exception as e:
                 elapsed = time.time() - start_time
                 tb = traceback.format_exc()
-                self._log(f"  异常, 耗时 {elapsed:.2f}s")
-                self._log(f"  错误: {e}")
+                self._log_tr('log_exception')
+                self._log(f"  {TEXTS['zh']['elapsed']}: {elapsed:.2f}s | "
+                          f"{TEXTS['en']['elapsed']}: {elapsed:.2f}s | "
+                          f"{TEXTS['de']['elapsed']}: {elapsed:.2f}s")
+                self._log_tr('api_error')
+                self._log(f"  {e}")
                 self.root.after(0, lambda: self._finish_recognition(
                     error=str(e), elapsed=elapsed, traceback_text=tb))
 
@@ -805,42 +876,61 @@ class BikeDetectorApp:
                             expected=None, error=None, traceback_text=None):
         self.btn_start.config(state=tk.NORMAL)
         self.btn_clear.config(state=tk.NORMAL)
-        self.lbl_status.config(
-            text=f"{self.tr('elapsed')}: {elapsed:.2f}{self.tr('seconds')}",
-            foreground='black')
+
+        secs_zh = f"{TEXTS['zh']['elapsed']}: {elapsed:.2f}{TEXTS['zh']['seconds']}"
+        secs_en = f"{TEXTS['en']['elapsed']}: {elapsed:.2f}{TEXTS['en']['seconds']}"
+        secs_de = f"{TEXTS['de']['elapsed']}: {elapsed:.2f}{TEXTS['de']['seconds']}"
+        self.lbl_status.config(text=f"{secs_zh} | {secs_en} | {secs_de}", foreground='black')
 
         self.result_text.config(state=tk.NORMAL)
         self.result_text.delete('1.0', tk.END)
 
         if error:
-            self.result_text.insert(tk.END, f"[{self.tr('api_error')}] {error}\n",
-                                    'error')
+            err_zh = TEXTS['zh']['api_error']
+            err_en = TEXTS['en']['api_error']
+            err_de = TEXTS['de']['api_error']
+            self.result_text.insert(tk.END,
+                f"[{err_zh} | {err_en} | {err_de}] {error}\n", 'error')
             self.result_text.tag_config('error', foreground='red')
             if traceback_text:
                 self.result_text.insert(tk.END, f"\n{traceback_text}\n")
             self.result_text.config(state=tk.DISABLED)
             return
 
-        self.result_text.insert(tk.END,
-            f"{self.tr('elapsed')}: {elapsed:.2f} {self.tr('seconds')}\n\n")
+        self.result_text.insert(tk.END, f"{secs_zh} | {secs_en} | {secs_de}\n\n")
 
+        raw_zh = TEXTS['zh']['raw_answer']
+        raw_en = TEXTS['en']['raw_answer']
+        raw_de = TEXTS['de']['raw_answer']
         self.result_text.insert(tk.END,
-            f"━━━ {self.tr('raw_answer')} ━━━\n")
+            f"━━━ {raw_zh} | {raw_en} | {raw_de} ━━━\n")
         self.result_text.insert(tk.END, f"{answer}\n\n")
 
-        result_str = self.tr('allowed') if is_allowed else self.tr('denied')
-        result_color = 'green' if is_allowed else 'red'
+        res_zh = TEXTS['zh']['parse_result']
+        res_en = TEXTS['en']['parse_result']
+        res_de = TEXTS['de']['parse_result']
         self.result_text.insert(tk.END,
-            f"━━━ {self.tr('parse_result')} ━━━\n", 'header')
-        self.result_text.insert(tk.END, f"{result_str}\n", result_color)
+            f"━━━ {res_zh} | {res_en} | {res_de} ━━━\n", 'header')
+
+        allowed_key = 'allowed' if is_allowed else 'denied'
+        val_zh = TEXTS['zh'][allowed_key]
+        val_en = TEXTS['en'][allowed_key]
+        val_de = TEXTS['de'][allowed_key]
+        result_color = 'green' if is_allowed else 'red'
+        self.result_text.insert(tk.END, f"{val_zh} | {val_en} | {val_de}\n", result_color)
+
         self.result_text.tag_config('header', font=('Consolas', 9, 'bold'))
         self.result_text.tag_config('green', foreground='green')
         self.result_text.tag_config('red', foreground='red')
 
         if expected is not None:
-            match_str = self.tr('match') if is_allowed == expected else self.tr('mismatch')
+            match_key = 'match' if is_allowed == expected else 'mismatch'
+            match_zh = TEXTS['zh'][match_key]
+            match_en = TEXTS['en'][match_key]
+            match_de = TEXTS['de'][match_key]
             match_color = 'green' if is_allowed == expected else 'red'
-            self.result_text.insert(tk.END, f"\n{match_str}\n", match_color)
+            self.result_text.insert(tk.END,
+                f"\n{match_zh} | {match_en} | {match_de}\n", match_color)
 
         self.result_text.config(state=tk.DISABLED)
 
