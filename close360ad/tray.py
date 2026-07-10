@@ -4,11 +4,17 @@ from PIL import Image, ImageDraw
 
 _icon = None
 _show_stats_cb = None
+_show_procs_cb = None
 
 
 def set_show_stats_callback(cb):
     global _show_stats_cb
     _show_stats_cb = cb
+
+
+def set_show_procs_callback(cb):
+    global _show_procs_cb
+    _show_procs_cb = cb
 
 
 def notify(title, message):
@@ -50,6 +56,10 @@ def run_tray(stop_event, pause_event):
         if _show_stats_cb:
             _show_stats_cb()
 
+    def on_procs(icon, item):
+        if _show_procs_cb:
+            _show_procs_cb()
+
     def on_exit(icon, item):
         stop_event.set()
         icon.stop()
@@ -58,6 +68,7 @@ def run_tray(stop_event, pause_event):
     menu = pystray.Menu(
         pystray.MenuItem('立即扫描', on_scan),
         pystray.MenuItem('显示统计', on_stats),
+        pystray.MenuItem('进程列表', on_procs),
         pystray.Menu.SEPARATOR,
         pystray.MenuItem(
             lambda _: '⏸ 暂停监控' if not pause_event.is_set() else '▶ 继续监控',

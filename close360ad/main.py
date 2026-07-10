@@ -9,13 +9,14 @@ import win32api
 import winerror
 
 from config import SCAN_INTERVAL
-from hunter import find_and_close_ads, set_close_callback, get_memory_mb, list_windows
-from tray import run_tray, notify, set_tooltip, set_show_stats_callback
+from hunter import find_and_close_ads, set_close_callback, get_memory_mb, list_windows, kill_blacklisted
+from tray import run_tray, notify, set_tooltip, set_show_stats_callback, set_show_procs_callback
 import dialog
 
 MUTEX_NAME = 'Global\\Close360Ad_SingleInstance'
 
 closed_list = []
+_last_closed_key = (None, None)
 start_time = time.time()
 
 
@@ -36,15 +37,25 @@ def _scan_loop(stop_event, pause_event):
                 find_and_close_ads()
             except Exception:
                 pass
+            try:
+                killed = kill_blacklisted()
+                if killed:
+                    _on_closed('(黑名单)', '—', killed[0])
+            except Exception:
+                pass
         stop_event.wait(SCAN_INTERVAL)
 
 
 def _on_closed(title, class_name, exe):
+    global _last_closed_key
     t = time.strftime('%H:%M:%S')
     closed_list.append((t, title, class_name, exe))
     count = len(closed_list)
-    disp = title if title else '(无标题)'
-    notify('Close360Ad', f'已关闭广告窗口 (第{count}个)\n[{t}] {disp}')
+    key = (title, exe)
+    if key != _last_closed_key:
+        disp = title if title else '(无标题)'
+        notify('Close360Ad', f'已关闭广告窗口 (第{count}个)\n[{t}] {disp}')
+    _last_closed_key = key
     _update_tooltip()
 
 
@@ -64,6 +75,15 @@ def _show_stats():
             dialog.show_stats(list(closed_list))
         except Exception as e:
             notify('Close360Ad', f'\u7edf\u8ba1\u7a97\u53e3\u6253\u5f00\u5931\u8d25: {e}')
+    threading.Thread(target=_run, daemon=True).start()
+
+
+def _show_processes():
+    def _run():
+        try:
+            dialog.show_processes()
+        except Exception as e:
+            notify('Close360Ad', f'\u8fdb\u7a0b\u5217\u8868\u6253\u5f00\u5931\u8d25: {e}')
     threading.Thread(target=_run, daemon=True).start()
 
 
@@ -92,6 +112,7 @@ def main():
 
     set_close_callback(_on_closed)
     set_show_stats_callback(_show_stats)
+    set_show_procs_callback(_show_processes)
 
     global _pause_event
     _pause_event = threading.Event()

@@ -1,13 +1,12 @@
 import subprocess
 import sys
-import shutil
 import urllib.request
 
 
 def check_and_install_deps():
     pkg_map = {
         'opencv-python': 'cv2',
-        'pytesseract': 'pytesseract',
+        'rapidocr-onnxruntime': 'rapidocr_onnxruntime',
         'openpyxl': 'openpyxl',
         'numpy': 'numpy',
     }
@@ -21,46 +20,45 @@ def check_and_install_deps():
         print(f"Installing Python packages: {' '.join(missing)}")
         subprocess.check_call([sys.executable, '-m', 'pip', 'install'] + missing)
 
-    if shutil.which('tesseract') is None:
-        print("System dependency missing. Install manually:")
-        print("  sudo apt install tesseract-ocr tesseract-ocr-chi-sim")
-
 
 check_and_install_deps()
 
 
 import cv2
-import pytesseract
 import openpyxl
 from openpyxl.drawing.image import Image as XLImage
 import os
 import re
-from datetime import timedelta
 import numpy as np
+from rapidocr_onnxruntime import RapidOCR
 from difflib import SequenceMatcher
 
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-_DNN_PROTO_URL = "https://raw.githubusercontent.com/opencv/opencv/master/samples/dnn/face_detector/deploy.prototxt"
-_DNN_MODEL_URL = "https://github.com/opencv/opencv_3rdparty/raw/dnn_samples_face_detector_20180205_fp16/res10_300x300_ssd_iter_140000_fp16.caffemodel"
+_YUNET_URL = "https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
 _face_net = None
+_ocr = None
 
 
 def _init_face_detector():
     global _face_net
     if _face_net is not None:
         return
-    proto_path = os.path.join(_SCRIPT_DIR, "deploy.prototxt")
-    model_path = os.path.join(_SCRIPT_DIR, "res10_300x300_ssd.caffemodel")
-    for path, url, name in [
-        (proto_path, _DNN_PROTO_URL, "proto"),
-        (model_path, _DNN_MODEL_URL, "model"),
-    ]:
-        if not os.path.exists(path):
-            print("[INFO] Downloading face detector {}...".format(name))
-            urllib.request.urlretrieve(url, path)
-    _face_net = cv2.dnn.readNetFromCaffe(proto_path, model_path)
-    print("[INFO] Face detector ready (OpenCV DNN)")
+    model_path = os.path.join(_SCRIPT_DIR, "face_detection_yunet_2023mar.onnx")
+    if not os.path.exists(model_path):
+        print("[INFO] Downloading YuNet face detector...")
+        urllib.request.urlretrieve(_YUNET_URL, model_path)
+    _face_net = cv2.FaceDetectorYN.create(model_path, "", (320, 320))
+    print("[INFO] Face detector ready (YuNet ONNX)")
+
+
+def _init_ocr():
+    global _ocr
+    if _ocr is not None:
+        return
+    print("[INFO] Initializing RapidOCR...")
+    _ocr = RapidOCR(use_text_det=False, print_verbose=False)
+    print("[INFO] RapidOCR ready")
 
 
 
@@ -88,6 +86,26 @@ def _is_subtitle_ad(text):
     if hits >= 3 and hits / len(chinese) >= 0.5:
         return True
 
+    return False
+
+
+_WATERMARK_AD_CHARS = {'广', '告', '广 告'}
+
+
+def _has_ad_watermark(frame, height, width, x1, y1, x2, y2):
+    wm_roi = frame[int(height * y1):int(height * y2),
+                   int(width * x1):int(width * x2)]
+    if wm_roi.size == 0:
+        return False
+    try:
+        result, _ = _ocr(wm_roi)
+        if result and len(result) > 0:
+            wm_text = result[0][1].strip()
+            for c in _WATERMARK_AD_CHARS:
+                if c in wm_text:
+                    return True
+    except Exception:
+        pass
     return False
 
 
@@ -122,19 +140,15 @@ def score_frame_quality(frame):
     # 2. 人脸检测与质量评分
     face_score = 0
     if _face_net is not None:
-        blob = cv2.dnn.blobFromImage(frame, 1.0, (300, 300), [104, 117, 123])
-        _face_net.setInput(blob)
-        detections = _face_net.forward()
+        _face_net.setInputSize((width, height))
+        _, faces = _face_net.detect(frame)
 
         valid_faces = []
-        for i in range(detections.shape[2]):
-            confidence = detections[0, 0, i, 2]
-            if confidence > 0.5:
-                x1 = int(detections[0, 0, i, 3] * width)
-                y1 = int(detections[0, 0, i, 4] * height)
-                x2 = int(detections[0, 0, i, 5] * width)
-                y2 = int(detections[0, 0, i, 6] * height)
-                valid_faces.append((x1, y1, x2 - x1, y2 - y1))
+        if faces is not None:
+            for i in range(faces.shape[0]):
+                x1, y1, w, h, confidence = faces[i, :5]
+                if confidence > 0.5:
+                    valid_faces.append((int(x1), int(y1), int(w), int(h)))
 
         if valid_faces:
             num_faces = len(valid_faces)
@@ -279,6 +293,7 @@ def extract_best_frames(video_path, output_dir, excel_path,
     print("Collecting subtitle frames...\n")
 
     _init_face_detector()
+    _init_ocr()
 
     frame_count = 0
     current_text = ""
@@ -308,17 +323,19 @@ def extract_best_frames(video_path, output_dir, excel_path,
         roi = frame[int(height * sy1):int(height * sy2),
                     int(width * sx1):int(width * sx2)]
 
-        gray_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-        gray_roi = cv2.convertScaleAbs(gray_roi, alpha=1.5, beta=0)
-        _, binary = cv2.threshold(gray_roi, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
         try:
-            text = pytesseract.image_to_string(binary, lang='chi_sim+eng').strip()
-            text = re.sub(r'\s+', ' ', text).strip()
+            result, _ = _ocr(roi)
+            if result and len(result) > 0:
+                text = result[0][1].strip()
+            else:
+                continue
         except Exception:
             continue
 
         if _is_subtitle_ad(text):
+            continue
+
+        if _has_ad_watermark(frame, height, width, wm_x1, wm_y1, wm_x2, wm_y2):
             continue
 
         clean_text = re.sub(r'[^a-zA-Z\u4e00-\u9fa5]', '', text)

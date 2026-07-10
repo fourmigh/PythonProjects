@@ -7,6 +7,7 @@ import win32api
 import win32process
 from config import AD_TITLE_KEYWORDS, AD_CLASS_NAMES, AD_MODULE_PATTERNS, EXCLUDE_TITLE_KEYWORDS, KILL_AD_PROCESS
 import whitelist
+import processes
 
 
 _close_callback = None
@@ -142,6 +143,25 @@ def _try_kill_process(hwnd):
     return False
 
 
+def _close_offsets(hwnd):
+    try:
+        rect = win32gui.GetWindowRect(hwnd)
+    except:
+        return []
+    w = rect[2] - rect[0]
+    # Right-to-left offsets from top-right corner
+    dx_list = [20, 30, 40, 50, 60]
+    dy_list = [8, 12, 15, 18, 22]
+    pts = []
+    for dx in dx_list:
+        for dy in dy_list:
+            x = rect[2] - dx
+            y = rect[1] + dy
+            if 0 <= x - rect[0] < w:
+                pts.append((x, y))
+    return pts
+
+
 def _try_close(hwnd):
     win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)
     if not win32gui.IsWindow(hwnd):
@@ -168,6 +188,26 @@ def _try_close(hwnd):
             pass
     if not win32gui.IsWindow(hwnd):
         return
+
+    for cx, cy in _close_offsets(hwnd):
+        pt = win32gui.ScreenToClient(hwnd, (cx, cy))
+        lparam = (pt[1] << 16) | (pt[0] & 0xFFFF)
+        win32gui.SendMessage(hwnd, win32con.WM_LBUTTONDOWN, 0, lparam)
+        win32gui.SendMessage(hwnd, win32con.WM_LBUTTONUP, 0, lparam)
+        if not win32gui.IsWindow(hwnd):
+            return
+
+        target = win32gui.WindowFromPoint((cx, cy))
+        if target and target != hwnd:
+            try:
+                sc = win32gui.ScreenToClient(target, (cx, cy))
+                slp = (sc[1] << 16) | (sc[0] & 0xFFFF)
+                win32gui.SendMessage(target, win32con.WM_LBUTTONDOWN, 0, slp)
+                win32gui.SendMessage(target, win32con.WM_LBUTTONUP, 0, slp)
+            except:
+                pass
+        if not win32gui.IsWindow(hwnd):
+            return
 
     win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
 
@@ -249,6 +289,10 @@ def list_windows(show_all=False):
             continue
         ad_flag = 'Y' if is_ad else '.'
         ex_flag = 'Y' if exc else '.'
-        disp_title = title if title else '—'
-        short_exe = exe.split('\\')[-1] if exe else '—'
+        disp_title = title if title else '\u2014'
+        short_exe = exe.split('\\')[-1] if exe else '\u2014'
         print(f'0x{hwnd:08X} | {ad_flag:>2} | {ex_flag:>2} | {disp_title:<40s} | {cls:<25s} | {short_exe:<18s} | {styles}')
+
+
+def kill_blacklisted():
+    return processes.kill_blacklisted()

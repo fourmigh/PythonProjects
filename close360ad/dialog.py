@@ -3,6 +3,7 @@ import win32con
 import win32api
 
 import whitelist
+import processes
 
 ID_LIST = 101
 ID_BTN_ADD = 102
@@ -14,11 +15,18 @@ ID_EDIT_CLASS = 203
 ID_BTN_OK = 204
 ID_BTN_CANCEL = 205
 
+ID_PROC_LIST = 301
+ID_PROC_KILL = 302
+ID_PROC_BLACKLIST = 303
+ID_PROC_CLOSE = 304
+
 STATS_CLASS = 'Close360AdStatsDlg'
 WL_CLASS = 'Close360AdWlDlg'
+PROC_CLASS = 'Close360AdProcDlg'
 
 _stats_dlg_map = {}
 _wl_dlg_map = {}
+_proc_dlg_map = {}
 
 
 def _pump():
@@ -284,4 +292,204 @@ class SubDialog:
 
 def show_stats(entries):
     dlg = StatsDialog(entries)
+    dlg.run()
+
+
+def _proc_wndproc(hwnd, msg, wparam, lparam):
+    dlg = _proc_dlg_map.get(hwnd)
+
+    if msg == win32con.WM_COMMAND:
+        if wparam == ID_PROC_CLOSE:
+            win32gui.DestroyWindow(hwnd)
+        elif wparam == ID_PROC_KILL and dlg:
+            dlg._on_kill()
+        elif wparam == ID_PROC_BLACKLIST and dlg:
+            dlg._on_blacklist_kill()
+        elif wparam == ID_PROC_LIST:
+            hi = (wparam >> 16) & 0xFFFF
+            if hi == win32con.LBN_DBLCLK and dlg:
+                dlg._on_blacklist_kill()
+    elif msg == win32con.WM_SIZE and dlg:
+        dlg._on_size()
+    elif msg == win32con.WM_CLOSE:
+        win32gui.DestroyWindow(hwnd)
+    elif msg == win32con.WM_DESTROY:
+        _proc_dlg_map.pop(hwnd, None)
+        win32gui.PostQuitMessage(0)
+
+    return win32gui.DefWindowProc(hwnd, msg, wparam, lparam)
+
+
+class ProcessListDialog:
+    def __init__(self):
+        self.procs = []
+        self.hwnd = 0
+        self.listbox = 0
+        self.btn_kill = 0
+        self.btn_blacklist = 0
+        self.btn_close = 0
+
+    def run(self):
+        self._register()
+        hinst = win32api.GetModuleHandle(None)
+
+        self.hwnd = win32gui.CreateWindow(
+            PROC_CLASS, 'Close360Ad - \u8fdb\u7a0b\u5217\u8868',
+            win32con.WS_OVERLAPPEDWINDOW & ~0x00030000,
+            200, 200, 720, 460,
+            0, 0, hinst, None,
+        )
+        _proc_dlg_map[self.hwnd] = self
+        self._create_controls()
+        win32gui.ShowWindow(self.hwnd, win32con.SW_SHOW)
+        _pump()
+
+    def _register(self):
+        try:
+            wc = win32gui.WNDCLASS()
+            wc.lpfnWndProc = _proc_wndproc
+            wc.hInstance = win32api.GetModuleHandle(None)
+            wc.hbrBackground = win32con.COLOR_BTNFACE + 1
+            wc.hCursor = win32gui.LoadCursor(0, win32con.IDC_ARROW)
+            wc.lpszClassName = PROC_CLASS
+            win32gui.RegisterClass(wc)
+        except win32gui.error:
+            pass
+
+    def _create_controls(self):
+        rect = win32gui.GetClientRect(self.hwnd)
+        cw, ch = rect[2], rect[3]
+
+        self.listbox = win32gui.CreateWindowEx(
+            0, 'LISTBOX', '',
+            win32con.WS_CHILD | win32con.WS_VISIBLE | win32con.WS_VSCROLL |
+            win32con.WS_BORDER | win32con.LBS_NOTIFY,
+            10, 10, cw - 20, ch - 50,
+            self.hwnd, ID_PROC_LIST, win32api.GetModuleHandle(None), None,
+        )
+
+        font = win32gui.SendMessage(self.hwnd, win32con.WM_GETFONT, 0, 0)
+        if font:
+            win32gui.SendMessage(self.listbox, win32con.WM_SETFONT, font, 1)
+
+        self.procs = processes.enum_visible_processes()
+        blacklisted = processes.load_blacklist().get('exe_names', [])
+
+        for i, p in enumerate(self.procs):
+            is_bl = p['exe_name'].lower() in blacklisted
+            tag = ' [\u9ed1\u540d\u5355]' if is_bl else ''
+            text = (
+                f'{p["exe_name"]:<25s} PID:{p["pid"]:<6d}  '
+                f'{p["window_count"]:>2d}\u7a97\u53e3  {p["sample_title"]}{tag}'
+            )
+            win32gui.SendMessage(self.listbox, win32con.LB_ADDSTRING, 0, text)
+            win32gui.SendMessage(self.listbox, win32con.LB_SETITEMDATA, i, i)
+
+        if not self.procs:
+            win32gui.SendMessage(
+                self.listbox, win32con.LB_ADDSTRING, 0,
+                '\u65e0\u53ef\u89c1\u7a97\u53e3\u8fdb\u7a0b',
+            )
+
+        bw = 130
+        self.btn_kill = win32gui.CreateWindowEx(
+            0, 'BUTTON', '\u7ec8\u6b62\u8fdb\u7a0b',
+            win32con.WS_CHILD | win32con.WS_VISIBLE | win32con.BS_PUSHBUTTON,
+            cw - 3 * bw - 15, ch - 35, bw, 25,
+            self.hwnd, ID_PROC_KILL, win32api.GetModuleHandle(None), None,
+        )
+        self.btn_blacklist = win32gui.CreateWindowEx(
+            0, 'BUTTON', '\u52a0\u5165\u9ed1\u540d\u5355\u5e76\u7ec8\u6b62',
+            win32con.WS_CHILD | win32con.WS_VISIBLE | win32con.BS_PUSHBUTTON,
+            cw - 2 * bw - 10, ch - 35, bw, 25,
+            self.hwnd, ID_PROC_BLACKLIST, win32api.GetModuleHandle(None), None,
+        )
+        self.btn_close = win32gui.CreateWindowEx(
+            0, 'BUTTON', '\u5173\u95ed',
+            win32con.WS_CHILD | win32con.WS_VISIBLE | win32con.BS_PUSHBUTTON,
+            cw - bw - 5, ch - 35, bw - 40, 25,
+            self.hwnd, ID_PROC_CLOSE, win32api.GetModuleHandle(None), None,
+        )
+
+    def _on_size(self):
+        if not win32gui.IsWindow(self.listbox):
+            return
+        rect = win32gui.GetClientRect(self.hwnd)
+        cw, ch = rect[2], rect[3]
+        bw = 130
+        win32gui.SetWindowPos(
+            self.listbox, 0, 10, 10, cw - 20, ch - 50,
+            win32con.SWP_NOZORDER,
+        )
+        win32gui.SetWindowPos(
+            self.btn_kill, 0,
+            cw - 3 * bw - 15, ch - 35, bw, 25,
+            win32con.SWP_NOZORDER,
+        )
+        win32gui.SetWindowPos(
+            self.btn_blacklist, 0,
+            cw - 2 * bw - 10, ch - 35, bw, 25,
+            win32con.SWP_NOZORDER,
+        )
+        win32gui.SetWindowPos(
+            self.btn_close, 0,
+            cw - bw - 5, ch - 35, bw - 40, 25,
+            win32con.SWP_NOZORDER,
+        )
+
+    def _get_selected(self):
+        idx = win32gui.SendMessage(self.listbox, win32con.LB_GETCURSEL, 0, 0)
+        if idx == win32con.LB_ERR:
+            return None
+        data = win32gui.SendMessage(self.listbox, win32con.LB_GETITEMDATA, idx, 0)
+        if data == win32con.LB_ERR:
+            return None
+        if 0 <= data < len(self.procs):
+            return self.procs[data]
+        return None
+
+    def _do_kill(self, proc):
+        if processes.kill_process(proc['pid']):
+            win32gui.MessageBox(
+                self.hwnd,
+                f'\u5df2\u7ec8\u6b62: {proc["exe_name"]} (PID: {proc["pid"]})',
+                '\u63d0\u793a',
+                win32con.MB_OK | win32con.MB_ICONINFORMATION,
+            )
+        else:
+            win32gui.MessageBox(
+                self.hwnd,
+                f'\u65e0\u6cd5\u7ec8\u6b62: {proc["exe_name"]} (PID: {proc["pid"]})',
+                '\u9519\u8bef',
+                win32con.MB_OK | win32con.MB_ICONERROR,
+            )
+
+    def _on_kill(self):
+        proc = self._get_selected()
+        if not proc:
+            win32gui.MessageBox(
+                self.hwnd,
+                '\u8bf7\u5148\u9009\u62e9\u4e00\u4e2a\u8fdb\u7a0b',
+                '\u63d0\u793a',
+                win32con.MB_OK | win32con.MB_ICONINFORMATION,
+            )
+            return
+        self._do_kill(proc)
+
+    def _on_blacklist_kill(self):
+        proc = self._get_selected()
+        if not proc:
+            win32gui.MessageBox(
+                self.hwnd,
+                '\u8bf7\u5148\u9009\u62e9\u4e00\u4e2a\u8fdb\u7a0b',
+                '\u63d0\u793a',
+                win32con.MB_OK | win32con.MB_ICONINFORMATION,
+            )
+            return
+        processes.add_to_blacklist(proc['exe_name'])
+        self._do_kill(proc)
+
+
+def show_processes():
+    dlg = ProcessListDialog()
     dlg.run()
