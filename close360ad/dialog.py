@@ -4,6 +4,7 @@ import win32api
 
 import whitelist
 import processes
+import hunter
 
 ID_LIST = 101
 ID_BTN_ADD = 102
@@ -456,12 +457,21 @@ class ProcessListDialog:
                 '\u63d0\u793a',
                 win32con.MB_OK | win32con.MB_ICONINFORMATION,
             )
-        else:
+            return
+
+        ret = win32gui.MessageBox(
+            self.hwnd,
+            f'\u65e0\u6cd5\u7ec8\u6b62: {proc["exe_name"]} (PID: {proc["pid"]})\n\n\u662f\u5426\u5c1d\u8bd5\u9690\u85cf\u8be5\u8fdb\u7a0b\u7684\u6240\u6709\u7a97\u53e3\uff1f',
+            '\u7ec8\u6b62\u5931\u8d25',
+            win32con.MB_YESNO | win32con.MB_ICONQUESTION,
+        )
+        if ret == win32con.IDYES:
+            n = hunter.hide_process_windows(proc['pid'])
             win32gui.MessageBox(
                 self.hwnd,
-                f'\u65e0\u6cd5\u7ec8\u6b62: {proc["exe_name"]} (PID: {proc["pid"]})',
-                '\u9519\u8bef',
-                win32con.MB_OK | win32con.MB_ICONERROR,
+                f'\u5df2\u9690\u85cf {proc["exe_name"]} \u7684 {n} \u4e2a\u7a97\u53e3',
+                '\u63d0\u793a',
+                win32con.MB_OK | win32con.MB_ICONINFORMATION,
             )
 
     def _on_kill(self):

@@ -1,0 +1,20 @@
+      HWND | Ad | Ex | Title                                    | Class                     | Exe                | Styles
+------------------------------------------------------------------------------------------------------------------------------------------------------
+0x0002008A |  . |  . | —                                        | Shell_TrayWnd             | explorer.exe       | POPUP|TOOL|TOPMOST
+0x00040130 |  . |  . | —                                        | Shell_SecondaryTrayWnd    | explorer.exe       | POPUP|TOOL|TOPMOST
+0x000405DE |  . |  . | WeMail                                   | Qt51517QWindowToolSaveBits | WeMail.exe         | POPUP|TOOL|TOPMOST|LAYERED
+0x0007075C |  . |  . | OpenCode                                 | Chrome_WidgetWin_1        | OpenCode.exe       | CAPTION|DLGFRAME|THICK|MIN|MAX
+0x00030274 |  . |  Y | close360ad                               | CabinetWClass             | explorer.exe       | CAPTION|DLGFRAME|THICK|SYSMENU|MIN|MAX
+0x0001096C |  . |  . | login-overlay.component.ts - bike-tower [WSL: Ubuntu-22.04] - Visual Studio Code [管理员] | Chrome_WidgetWin_1        | Code.exe           | CAPTION|DLGFRAME|THICK|MIN|MAX
+0x00030562 |  . |  . | root@JadeCao: ~/projects                 | ConsoleWindowClass        | wsl.exe            | CAPTION|DLGFRAME|THICK|SYSMENU|MIN|MAX|LAYERED
+0x000609A6 |  . |  . | F:\Github\PythonProjects\stopsleep\stopsleep.py - Notepad++ [Administrator] | Notepad++                 | notepad++.exe      | CAPTION|DLGFRAME|THICK|SYSMENU|MIN|MAX
+0x00010792 |  . |  . | 远程桌面                                     | #32770                    | msrdc.exe          | POPUP|CAPTION|DLGFRAME|SYSMENU
+0x00010586 |  . |  . | —                                        | Tencent.WXWork.WedocHostWindow | WXWork.exe         | POPUP|TOOL|NOACT|LAYERED
+0x00010528 |  . |  . | —                                        | FLUTTER_RUNNER_WIN32_WINDOW | FlutterPlugins.exe | POPUP|TOOL
+0x000101E8 |  . |  . | —                                        | DummyDWMListenerWindow    | explorer.exe       | POPUP|TOOL|NOACT
+0x000101DE |  . |  . | —                                        | EdgeUiInputTopWndClass    | explorer.exe       | POPUP|TOOL|NOACT
+0x000101CC |  . |  . | —                                        | EdgeUiInputTopWndClass    | explorer.exe       | POPUP|TOOL|NOACT
+0x000101A8 |  . |  . | —                                        | DummyDWMListenerWindow    | explorer.exe       | POPUP|TOOL|NOACT
+0x000101A6 |  . |  . | —                                        | DummyDWMListenerWindow    | explorer.exe       | POPUP|TOOL|NOACT
+0x00010316 |  . |  . | Microsoft Text Input Application         | Windows.UI.Core.CoreWindow | TextInputHost.exe  | POPUP
+0x00010176 |  . |  . | Program Manager                          | Progman                   | explorer.exe       | POPUP|TOOL

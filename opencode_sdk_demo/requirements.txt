@@ -1,0 +1,7 @@
+# opencode Python SDK
+# 安装命令: pip install --pre opencode-ai
+opencode-ai>=0.1.0a4
+
+# 桌面版 (PySide6)
+# 仅运行桌面版时需要: pip install PySide6
+pyside6>=6.6

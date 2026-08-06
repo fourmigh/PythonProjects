@@ -1,10 +1,12 @@
 import json
 import os
+import subprocess
 
 import win32gui
 import win32process
 import win32api
 import win32con
+import win32security
 
 
 BLACKLIST_FILE = os.path.join(
@@ -43,6 +45,18 @@ def is_blacklisted(exe_name):
     return exe_name.lower().strip() in data['exe_names']
 
 
+def _enable_debug_privilege():
+    try:
+        token = win32security.OpenProcessToken(
+            win32api.GetCurrentProcess(),
+            win32con.TOKEN_ADJUST_PRIVILEGES | win32con.TOKEN_QUERY,
+        )
+        luid = win32security.LookupPrivilegeValue(None, win32security.SE_DEBUG_NAME)
+        win32security.AdjustTokenPrivileges(token, False, [(luid, win32con.SE_PRIVILEGE_ENABLED)])
+    except:
+        pass
+
+
 def kill_process(pid):
     try:
         handle = win32api.OpenProcess(win32con.PROCESS_TERMINATE, 0, pid)
@@ -54,6 +68,31 @@ def kill_process(pid):
                 win32api.CloseHandle(handle)
     except:
         pass
+
+    _enable_debug_privilege()
+    try:
+        handle = win32api.OpenProcess(win32con.PROCESS_TERMINATE, 0, pid)
+        if handle:
+            try:
+                win32api.TerminateProcess(handle, 0)
+                return True
+            finally:
+                win32api.CloseHandle(handle)
+    except:
+        pass
+
+    try:
+        subprocess.run(['taskkill', '/f', '/pid', str(pid)],
+                       capture_output=True, timeout=5, creationflags=subprocess.CREATE_NO_WINDOW)
+        try:
+            h = win32api.OpenProcess(win32con.PROCESS_QUERY_INFORMATION, 0, pid)
+            if h:
+                win32api.CloseHandle(h)
+        except:
+            return True
+    except:
+        pass
+
     return False
 
 

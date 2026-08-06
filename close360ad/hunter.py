@@ -11,6 +11,7 @@ import processes
 
 
 _close_callback = None
+_stubborn_windows = set()
 
 
 def set_close_callback(cb):
@@ -46,7 +47,68 @@ def _exe_path(hwnd):
                 win32api.CloseHandle(handle)
     except:
         pass
+
+    try:
+        pid = win32process.GetWindowThreadProcessId(hwnd)[1]
+        handle = win32api.OpenProcess(
+            win32con.PROCESS_QUERY_LIMITED_INFORMATION, 0, pid
+        )
+        if handle:
+            try:
+                buf = ctypes.create_unicode_buffer(260)
+                size = ctypes.c_uint32(260)
+                if ctypes.windll.kernel32.QueryFullProcessImageNameW(
+                    handle, 0, buf, ctypes.byref(size)
+                ):
+                    return buf.value
+            finally:
+                win32api.CloseHandle(handle)
+    except:
+        pass
+
+    try:
+        pid = win32process.GetWindowThreadProcessId(hwnd)[1]
+        name = _process_name_by_pid(pid)
+        if name:
+            return name
+    except:
+        pass
+
     return ''
+
+
+def _process_name_by_pid(pid):
+    try:
+        snapshot = ctypes.windll.kernel32.CreateToolhelp32Snapshot(0x00000002, 0)
+        if snapshot == -1:
+            return None
+        try:
+            class PROCESSENTRY32W(ctypes.Structure):
+                _fields_ = [
+                    ('dwSize', ctypes.c_uint32),
+                    ('cntUsage', ctypes.c_uint32),
+                    ('th32ProcessID', ctypes.c_uint32),
+                    ('th32DefaultHeapID', ctypes.POINTER(ctypes.c_uint32)),
+                    ('th32ModuleID', ctypes.c_uint32),
+                    ('cntThreads', ctypes.c_uint32),
+                    ('th32ParentProcessID', ctypes.c_uint32),
+                    ('pcPriClassBase', ctypes.c_uint32),
+                    ('dwFlags', ctypes.c_uint32),
+                    ('szExeFile', ctypes.c_wchar * 260),
+                ]
+            pe = PROCESSENTRY32W()
+            pe.dwSize = ctypes.sizeof(pe)
+            if ctypes.windll.kernel32.Process32FirstW(snapshot, ctypes.byref(pe)):
+                while True:
+                    if pe.th32ProcessID == pid:
+                        return pe.szExeFile
+                    if not ctypes.windll.kernel32.Process32NextW(snapshot, ctypes.byref(pe)):
+                        break
+        finally:
+            ctypes.windll.kernel32.CloseHandle(snapshot)
+    except:
+        pass
+    return None
 
 
 def _exe_name(hwnd):
@@ -109,9 +171,6 @@ def _is_ad(hwnd):
             if style & win32con.WS_POPUP:
                 return True
         return False
-
-    if is_360 and class_name in AD_CLASS_NAMES:
-        return True
 
     return False
 
@@ -215,7 +274,39 @@ def _try_close(hwnd):
         _try_kill_process(hwnd)
 
 
+def hide_process_windows(pid):
+    count = 0
+    def cb(hwnd, _):
+        nonlocal count
+        if not win32gui.IsWindowVisible(hwnd):
+            return True
+        try:
+            tid, wpid = win32process.GetWindowThreadProcessId(hwnd)
+            if wpid == pid:
+                win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
+                _stubborn_windows.add(hwnd)
+                count += 1
+        except:
+            pass
+        return True
+    try:
+        win32gui.EnumWindows(cb, None)
+    except:
+        pass
+    return count
+
+
 def find_and_close_ads():
+    global _stubborn_windows
+    _stubborn_windows = {hwnd for hwnd in _stubborn_windows if win32gui.IsWindow(hwnd)}
+
+    for hwnd in _stubborn_windows:
+        try:
+            if win32gui.IsWindowVisible(hwnd):
+                win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
+        except:
+            pass
+
     def cb(hwnd, _):
         if _is_ad(hwnd):
             title = _text(hwnd)
@@ -224,8 +315,11 @@ def find_and_close_ads():
             try:
                 _try_close(hwnd)
                 if not win32gui.IsWindow(hwnd) or not win32gui.IsWindowVisible(hwnd):
+                    _stubborn_windows.discard(hwnd)
                     if _close_callback:
                         _close_callback(title, class_name, exe)
+                else:
+                    _stubborn_windows.add(hwnd)
             except:
                 pass
         return True

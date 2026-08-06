@@ -1,6 +1,7 @@
 import argparse
 import ctypes
 import msvcrt
+import sys
 import threading
 import time
 
@@ -93,8 +94,6 @@ def _init_console():
 
 
 def main():
-    import sys
-
     parser = argparse.ArgumentParser(description='Close360Ad - 关闭360广告弹窗')
     parser.add_argument('--list', action='store_true', help='列出可见窗口（含标题）')
     parser.add_argument('--listall', action='store_true', help='列出所有窗口（含无标题）')
