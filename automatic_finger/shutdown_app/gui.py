@@ -28,19 +28,22 @@ if getattr(sys, "frozen", False):
 else:
     BASE_DIR = Path(__file__).parent.parent
 
-LOG_PATH = BASE_DIR / "关机助手.log"
+LOG_PATH = BASE_DIR / "电源助手.log"
 
 COUNTDOWN_SECONDS = 5
 
+TARGET_OPTIONS = ["睡眠", "关机", "重启"]
+
 
 class ShutdownApp:
-    def __init__(self, root, auto_dry=False):
+    def __init__(self, root, auto_dry=False, target="关机"):
         self.root = root
         self.log_queue = queue.Queue()
         self.running = False
         self.countdown_active = False
         self.countdown_value = 0
         self.countdown_after = None
+        self.target_var = tk.StringVar(value=target)
         self.env = detect_env()
         self.anchors = compute_anchors(self.env)
         self.build_ui()
@@ -51,9 +54,9 @@ class ShutdownApp:
 
     def build_ui(self):
         root = self.root
-        root.title("关机助手")
+        root.title("电源助手")
         root.resizable(False, False)
-        self.center_window(560, 560)
+        self.center_window(560, 600)
 
         info = tk.Frame(root)
         info.pack(fill=tk.X, padx=12, pady=6)
@@ -71,12 +74,19 @@ class ShutdownApp:
         )
         self.status_label.pack(anchor="w", pady=(2, 0))
 
+        tgt = tk.Frame(root)
+        tgt.pack(fill=tk.X, padx=12, pady=6)
+        tk.Label(tgt, text="目标操作:", font=("Microsoft YaHei UI", 11)).pack(side=tk.LEFT)
+        for name in TARGET_OPTIONS:
+            tk.Radiobutton(tgt, text=name, variable=self.target_var, value=name,
+                           font=("Microsoft YaHei UI", 11)).pack(side=tk.LEFT, padx=6)
+
         ops = tk.Frame(root)
         ops.pack(fill=tk.X, padx=12, pady=6)
         self.btn_dry = tk.Button(ops, text="干跑测试", command=lambda: self.start_countdown("dry"),
                                  width=14, font=("Microsoft YaHei UI", 11))
         self.btn_dry.pack(side=tk.LEFT, padx=6)
-        self.btn_run = tk.Button(ops, text="开始自动关机", command=lambda: self.start_countdown("real"),
+        self.btn_run = tk.Button(ops, text="开始执行", command=lambda: self.start_countdown("real"),
                                  width=18, bg="#ff4444", fg="white",
                                  font=("Microsoft YaHei UI", 11, "bold"))
         self.btn_run.pack(side=tk.LEFT, padx=6)
@@ -111,7 +121,8 @@ class ShutdownApp:
         self.kind = kind
         self.countdown_active = True
         self.countdown_value = COUNTDOWN_SECONDS
-        self._log(f"{'开始关机前' if kind == 'real' else '干跑测试前'}倒计时 {COUNTDOWN_SECONDS} 秒")
+        self._log(f"{'开始执行前' if kind == 'real' else '干跑测试前'}倒计时 {COUNTDOWN_SECONDS} 秒"
+                  f"（目标：{self.target_var.get()}）")
         self.tick_countdown()
 
     def tick_countdown(self):
@@ -138,13 +149,15 @@ class ShutdownApp:
 
     def _worker(self, kind):
         try:
+            tgt = self.target_var.get()
             self._log("正在加载 OCR 识别引擎（首次约需几秒）...")
             ok = run_shutdown_flow(
                 dry_run=(kind == "dry"),
                 log=self._log,
                 params=dict(DEFAULT_PARAMS),
+                target=tgt,
             )
-            self._log("流程结束：" + ("干跑完成，未点击关机。" if kind == "dry" else "已点击关机。"))
+            self._log("流程结束：" + (f"干跑完成，未点击{tgt}。" if kind == "dry" else f"已点击{tgt}。"))
         except pyautogui.FailSafeException:
             self._log("已触发急停(左上角)，操作取消。")
         except Exception as e:
@@ -187,14 +200,16 @@ class ShutdownApp:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="关机助手 (GUI)")
+    parser = argparse.ArgumentParser(description="电源助手 (GUI)")
     parser.add_argument("--auto-dry", action="store_true",
                         help="启动后自动执行一次干跑测试（用于自动化验证）")
+    parser.add_argument("--target", choices=["睡眠", "关机", "重启"], default="关机",
+                        help="目标操作（默认关机；--auto-dry 时使用该目标）")
     args = parser.parse_args()
     if ensure_elevated():
         sys.exit(0)
     root = tk.Tk()
-    app = ShutdownApp(root, auto_dry=args.auto_dry)
+    app = ShutdownApp(root, auto_dry=args.auto_dry, target=args.target)
 
     def on_callback_error(exc, val, tb):
         import traceback

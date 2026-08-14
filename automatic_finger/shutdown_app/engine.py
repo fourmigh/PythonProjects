@@ -336,9 +336,9 @@ def ensure_elevated(prompt=True):
     if prompt:
         ctypes.windll.user32.MessageBoxW(
             0,
-            "本程序需要管理员权限才能点击开始菜单/关机。\n"
+            "本程序需要管理员权限才能点击开始菜单/电源菜单。\n"
             "即将请求管理员权限，请在 UAC 弹窗中点击“是”。",
-            "关机助手 - 请求管理员权限",
+            "电源助手 - 请求管理员权限",
             0x40,
         )
     try:
@@ -366,22 +366,35 @@ def flyout_roi(env):
     return (max(0, l - 580), max(0, b - 340), 560, 320)
 
 
-def find_shutdown_item(ocr, env, log):
-    """在弹框区域找“关机/睡眠/重启”，返回 (关机中心点, 找到的所有项) 或 (None, [])。"""
+def _row_center(target, items):
+    """计算目标菜单项的行中心（屏幕绝对坐标）。关机为中间项，用相邻两项中点抗 OCR 抖动。"""
+    tgt = [it for it in items if target in it["text"]]
+    if not tgt:
+        return None
+    if target == "关机":
+        s = next((it for it in items if "睡眠" in it["text"]), None)
+        r = next((it for it in items if "重启" in it["text"]), None)
+        if s and r:
+            return (int((s["center"][0] + r["center"][0]) / 2),
+                    int((s["center"][1] + r["center"][1]) / 2))
+    return tgt[0]["center"]
+
+
+def find_target_item(ocr, env, target, log):
+    """在弹框区域定位目标（睡眠/关机/重启）。返回 (目标行中心, 找到的所有项) 或 (None, [])。"""
     rx, ry, rw, rh = flyout_roi(env)
     img = capture.crop(rx, ry, rw, rh)
     items = ocr.find(img, ["睡眠", "关机", "重启"], min_score=0.45, origin=(rx, ry))
     log(f"OCR 弹框区域结果: " +
         ("；".join(f"{it['text']}@{it['center']}({it['score']:.2f})" for it in items) if items else "无"))
-    shut = [it for it in items if "关机" in it["text"]]
-    siblings = [it for it in items if "睡眠" in it["text"] or "重启" in it["text"]]
-    if shut and (siblings or shut[0]["score"] >= 0.65):
-        return shut[0]["center"], items
-    return None, items
+    center = _row_center(target, items)
+    if center is None:
+        return None, items
+    return center, items
 
 
-def open_start_and_power(ocr, env, anchors, p, log, max_attempts=5):
-    """循环：点开始→点电源→OCR 校验弹框。返回关机中心点或 None。"""
+def open_start_and_power(ocr, env, anchors, p, log, target="关机", max_attempts=5):
+    """循环：点开始→点电源→OCR 校验弹框。返回目标中心点或 None。"""
     start = tuple(int(v) for v in anchors["start"])
     power = tuple(int(v) for v in anchors["power"])
     log(f"开始按钮锚点 {start}，电源按钮锚点 {power}")
@@ -392,16 +405,17 @@ def open_start_and_power(ocr, env, anchors, p, log, max_attempts=5):
         log("点击 电源按钮")
         human_click(*power, p, log)
         time.sleep(random.uniform(*p["step_wait"]) + 1.0)
-        center, items = find_shutdown_item(ocr, env, log)
+        center, items = find_target_item(ocr, env, target, log)
         if center:
-            log(f"OCR 定位到 关机 {center}")
+            log(f"OCR 定位到 {target} {center}")
             return center, items
         log("弹框未出现，重试（可能是菜单状态切换导致，属正常兜底）")
     return None, []
 
 
-def run_shutdown_flow(dry_run=False, log=None, params=None):
-    """执行关机流程。dry_run 时移动鼠标到“关机”行后停下（不点击）。返回是否执行到关机点击。"""
+def run_shutdown_flow(dry_run=False, log=None, params=None, target="关机"):
+    """执行目标操作（睡眠/关机/重启）。dry_run 时移动鼠标到目标行后停下（不点击）。
+    返回是否执行到目标点击。"""
     if log is None:
         log = print
     p = params or DEFAULT_PARAMS
@@ -412,41 +426,33 @@ def run_shutdown_flow(dry_run=False, log=None, params=None):
     ocr = OcrEngine()
     log("OCR 就绪")
 
-    center, items = open_start_and_power(ocr, env, anchors, p, log)
+    center, items = open_start_and_power(ocr, env, anchors, p, log, target=target)
     if not center:
-        log("未定位到“关机”，安全中止（未点击任何关机入口）。")
+        log(f"未定位到“{target}”，安全中止（未点击任何电源入口）。")
         return False
 
-    # 用“睡眠/重启”行的中点作为“关机”行中心，降低 OCR 抖动导致的偏移
-    sleep_item = next((it for it in items if "睡眠" in it["text"]), None)
-    restart_item = next((it for it in items if "重启" in it["text"]), None)
-    if sleep_item and restart_item:
-        tx = int((sleep_item["center"][0] + restart_item["center"][0]) / 2)
-        ty = int((sleep_item["center"][1] + restart_item["center"][1]) / 2)
-    else:
-        tx, ty = int(center[0]), int(center[1])
-
-    log(f"移动鼠标到 关机 行 {(tx, ty)}")
+    tx, ty = int(center[0]), int(center[1])
+    log(f"移动鼠标到 {target} 行 {(tx, ty)}")
     human_move(tx, ty, p, log)
 
     if dry_run:
-        log(f"干跑：鼠标已移动到 关机 行 {(tx, ty)}，未点击，到此停止。")
+        log(f"干跑：鼠标已移动到 {target} 行 {(tx, ty)}，未点击，到此停止。")
         return False
 
-    # 点击 + 校验：点击后重新 OCR，弹框仍开则视为未点中，用“关机”行内偏移重试（不会点到睡眠/重启）
+    # 点击 + 校验：点击后重新 OCR，弹框仍开则视为未点中，在目标行内偏移重试（不会误点其它行）
     for attempt, dy in enumerate([0, 8, -8, 16, -16], 1):
         cy = ty + dy
-        log(f"[点击 {attempt}/5] 点击 关机 (x={tx}, y={cy})")
+        log(f"[点击 {attempt}/5] 点击 {target} (x={tx}, y={cy})")
         human_move(tx, cy, p, log)
         human_click(tx, cy, p, log)
         time.sleep(2.0)
-        recheck, _ = find_shutdown_item(ocr, env, log)
+        recheck, _ = find_target_item(ocr, env, target, log)
         if not recheck:
             brightness = float(capture.grab().mean())
-            log(f"点击已生效：弹框已关闭，系统正在关机...（屏幕亮度 {brightness:.0f}）")
+            log(f"点击已生效：弹框已关闭，已触发{target}（屏幕亮度 {brightness:.0f}）")
             return True
         log(f"弹框仍存在（可能未点中），偏移 y {dy:+d}px 重试")
-    log("多次点击后弹框仍未关闭，安全中止（未使用其他方式关机）。")
+    log(f"多次点击后弹框仍未关闭，安全中止（未触发{target}）。")
     _save_debug_screenshot(log)
     return False
 
