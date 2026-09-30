@@ -1,0 +1,3876 @@
+{
+  "building": {
+    "kind": "residential",
+    "resident_share": 0.9,
+    "occupancy_rate": 0.85,
+    "units_per_floor": 4,
+    "occupants_per_unit": [
+      2,
+      4
+    ],
+    "people_mix": {
+      "male": 0.45,
+      "female": 0.45,
+      "child": 0.07,
+      "wheelchair": 0.03
+    },
+    "wheelchair_patience": 1.5,
+    "child_min_companions": 2,
+    "child_patience": 0.6
+  },
+  "profiles": [
+    {
+      "pid": "P001",
+      "name": "张伟",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#3d7ff5",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 485,
+          "target_floor": 1,
+          "stay_min": 570
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 1.0,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 60.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P002",
+      "name": "李静",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 465,
+          "target_floor": 1,
+          "stay_min": 315
+        },
+        {
+          "time_min": 780,
+          "target_floor": 11,
+          "stay_min": 60
+        },
+        {
+          "time_min": 840,
+          "target_floor": 1,
+          "stay_min": 200
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.95,
+      "jitter_min": 5,
+      "companions": 1,
+      "abandon_sec": 45.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P003",
+      "name": "王强",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 6,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 540,
+          "target_floor": 1,
+          "stay_min": 480
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.9,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 75.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P004",
+      "name": "刘洋",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#e05c8a",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 510,
+          "target_floor": 1,
+          "stay_min": 600
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "attendance": 1.0,
+      "jitter_min": 6,
+      "companions": 2,
+      "abandon_sec": 60.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P005",
+      "name": "陈晨",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#9b6dff",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 480,
+          "target_floor": 1,
+          "stay_min": 240
+        },
+        {
+          "time_min": 720,
+          "target_floor": 5,
+          "stay_min": 180
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.85,
+      "jitter_min": 10,
+      "companions": 1,
+      "abandon_sec": 50.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P006",
+      "name": "赵敏",
+      "kind": "resident",
+      "gender": "wheelchair",
+      "color": "#ff7043",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 440,
+          "target_floor": 1,
+          "stay_min": 630
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.92,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 55.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P007",
+      "name": "访客-客户",
+      "kind": "visitor",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": null,
+      "main_floor": 10,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 1.0,
+      "jitter_min": 5,
+      "companions": 2,
+      "abandon_sec": 40.0,
+      "visitor_arrive": 630,
+      "visitor_stay": 90,
+      "needs_meet": true
+    },
+    {
+      "pid": "P008",
+      "name": "访客-面试官",
+      "kind": "visitor",
+      "gender": "female",
+      "color": "#8bc34a",
+      "home_floor": null,
+      "main_floor": 4,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.9,
+      "jitter_min": 3,
+      "companions": 1,
+      "abandon_sec": 45.0,
+      "visitor_arrive": 840,
+      "visitor_stay": 60,
+      "needs_meet": false
+    },
+    {
+      "pid": "P009",
+      "name": "访客-供应商",
+      "kind": "visitor",
+      "gender": "child",
+      "color": "#4ec9a5",
+      "home_floor": null,
+      "main_floor": 8,
+      "legs": [],
+      "weekdays": [
+        2,
+        4
+      ],
+      "attendance": 1.0,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 35.0,
+      "visitor_arrive": 960,
+      "visitor_stay": 45,
+      "needs_meet": false
+    },
+    {
+      "pid": "P010",
+      "name": "住客001",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#4ec9a5",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 518,
+          "target_floor": 1,
+          "stay_min": 568
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.9,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 35.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P011",
+      "name": "住客002",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": 2,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 453,
+          "target_floor": 1,
+          "stay_min": 599
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.84,
+      "jitter_min": 10,
+      "companions": 1,
+      "abandon_sec": 52.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P012",
+      "name": "住客003",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#9b6dff",
+      "home_floor": 2,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 428,
+          "target_floor": 1,
+          "stay_min": 496
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.96,
+      "jitter_min": 14,
+      "companions": 1,
+      "abandon_sec": 65.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P013",
+      "name": "住客004",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#ff7043",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 435,
+          "target_floor": 1,
+          "stay_min": 502
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.7,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 74.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P014",
+      "name": "住客005",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#5bc0de",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 440,
+          "target_floor": 1,
+          "stay_min": 514
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.71,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 34.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P015",
+      "name": "住客006",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#8bc34a",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 519,
+          "target_floor": 1,
+          "stay_min": 643
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.7,
+      "jitter_min": 1,
+      "companions": 2,
+      "abandon_sec": 40.2,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P016",
+      "name": "住客007",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 435,
+          "target_floor": 1,
+          "stay_min": 647
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.86,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 68.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P017",
+      "name": "住客008",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 478,
+          "target_floor": 1,
+          "stay_min": 555
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.84,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 53.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P018",
+      "name": "住客009",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#4ec9a5",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 520,
+          "target_floor": 1,
+          "stay_min": 552
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.93,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 45.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P019",
+      "name": "住客010",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 518,
+          "target_floor": 1,
+          "stay_min": 593
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.74,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 66.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P020",
+      "name": "住客011",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 535,
+          "target_floor": 1,
+          "stay_min": 541
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.83,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 89.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P021",
+      "name": "住客012",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#ff7043",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 481,
+          "target_floor": 1,
+          "stay_min": 529
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 1.0,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 56.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P022",
+      "name": "住客013",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 432,
+          "target_floor": 1,
+          "stay_min": 527
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.91,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 36.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P023",
+      "name": "住客014",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#8bc34a",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 483,
+          "target_floor": 1,
+          "stay_min": 610
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.81,
+      "jitter_min": 0,
+      "companions": 1,
+      "abandon_sec": 30.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P024",
+      "name": "住客015",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 524,
+          "target_floor": 1,
+          "stay_min": 655
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.72,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 30.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P025",
+      "name": "住客016",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#f5a623",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 509,
+          "target_floor": 1,
+          "stay_min": 649
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.76,
+      "jitter_min": 14,
+      "companions": 2,
+      "abandon_sec": 26.4,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P026",
+      "name": "住客017",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 6,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 476,
+          "target_floor": 1,
+          "stay_min": 513
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.9,
+      "jitter_min": 15,
+      "companions": 1,
+      "abandon_sec": 55.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P027",
+      "name": "住客018",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 487,
+          "target_floor": 1,
+          "stay_min": 594
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.95,
+      "jitter_min": 3,
+      "companions": 1,
+      "abandon_sec": 35.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P028",
+      "name": "住客019",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 2,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 538,
+          "target_floor": 1,
+          "stay_min": 615
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.77,
+      "jitter_min": 10,
+      "companions": 1,
+      "abandon_sec": 70.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P029",
+      "name": "住客020",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#ff7043",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 447,
+          "target_floor": 1,
+          "stay_min": 623
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.75,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 78.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P030",
+      "name": "住客021",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#5bc0de",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 528,
+          "target_floor": 1,
+          "stay_min": 650
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.83,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 75.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P031",
+      "name": "住客022",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#8bc34a",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 508,
+          "target_floor": 1,
+          "stay_min": 520
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 1.0,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 45.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P032",
+      "name": "住客023",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#3d7ff5",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 475,
+          "target_floor": 1,
+          "stay_min": 494
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.8,
+      "jitter_min": 10,
+      "companions": 1,
+      "abandon_sec": 77.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P033",
+      "name": "住客024",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 540,
+          "target_floor": 1,
+          "stay_min": 552
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.79,
+      "jitter_min": 3,
+      "companions": 1,
+      "abandon_sec": 33.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P034",
+      "name": "住客025",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 429,
+          "target_floor": 1,
+          "stay_min": 492
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.83,
+      "jitter_min": 3,
+      "companions": 1,
+      "abandon_sec": 83.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P035",
+      "name": "住客026",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 523,
+          "target_floor": 1,
+          "stay_min": 618
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 1.0,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 73.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P036",
+      "name": "住客027",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 10,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 471,
+          "target_floor": 1,
+          "stay_min": 530
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.89,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 67.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P037",
+      "name": "住客028",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#ff7043",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 474,
+          "target_floor": 1,
+          "stay_min": 649
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.86,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 85.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P038",
+      "name": "住客029",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 492,
+          "target_floor": 1,
+          "stay_min": 541
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.79,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 71.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P039",
+      "name": "住客030",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#8bc34a",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 470,
+          "target_floor": 1,
+          "stay_min": 526
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.89,
+      "jitter_min": 7,
+      "companions": 2,
+      "abandon_sec": 52.2,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P040",
+      "name": "住客031",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#3d7ff5",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 486,
+          "target_floor": 1,
+          "stay_min": 519
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.73,
+      "jitter_min": 9,
+      "companions": 1,
+      "abandon_sec": 75.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P041",
+      "name": "住客032",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 477,
+          "target_floor": 1,
+          "stay_min": 557
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.95,
+      "jitter_min": 0,
+      "companions": 1,
+      "abandon_sec": 75.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P042",
+      "name": "住客033",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 501,
+          "target_floor": 1,
+          "stay_min": 574
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.74,
+      "jitter_min": 6,
+      "companions": 1,
+      "abandon_sec": 52.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P043",
+      "name": "住客034",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 462,
+          "target_floor": 1,
+          "stay_min": 536
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.84,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 58.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P044",
+      "name": "住客035",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 10,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 527,
+          "target_floor": 1,
+          "stay_min": 551
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.8,
+      "jitter_min": 0,
+      "companions": 1,
+      "abandon_sec": 81.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P045",
+      "name": "住客036",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#ff7043",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 428,
+          "target_floor": 1,
+          "stay_min": 529
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.84,
+      "jitter_min": 9,
+      "companions": 1,
+      "abandon_sec": 87.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P046",
+      "name": "住客037",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 533,
+          "target_floor": 1,
+          "stay_min": 500
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.74,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 69.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P047",
+      "name": "住客038",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#8bc34a",
+      "home_floor": 2,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 493,
+          "target_floor": 1,
+          "stay_min": 659
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.91,
+      "jitter_min": 14,
+      "companions": 1,
+      "abandon_sec": 43.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P048",
+      "name": "住客039",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 486,
+          "target_floor": 1,
+          "stay_min": 480
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.96,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 77.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P049",
+      "name": "住客040",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#f5a623",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 486,
+          "target_floor": 1,
+          "stay_min": 591
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.81,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 55.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P050",
+      "name": "住客041",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 431,
+          "target_floor": 1,
+          "stay_min": 602
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.79,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 58.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P051",
+      "name": "住客042",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 6,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 528,
+          "target_floor": 1,
+          "stay_min": 504
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.71,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 39.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P052",
+      "name": "住客043",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#9b6dff",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 507,
+          "target_floor": 1,
+          "stay_min": 645
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.8,
+      "jitter_min": 1,
+      "companions": 2,
+      "abandon_sec": 44.4,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P053",
+      "name": "住客044",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#ff7043",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 438,
+          "target_floor": 1,
+          "stay_min": 576
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.74,
+      "jitter_min": 15,
+      "companions": 1,
+      "abandon_sec": 64.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P054",
+      "name": "住客045",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#5bc0de",
+      "home_floor": 6,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 522,
+          "target_floor": 1,
+          "stay_min": 499
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.82,
+      "jitter_min": 9,
+      "companions": 1,
+      "abandon_sec": 52.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P055",
+      "name": "住客046",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#8bc34a",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 450,
+          "target_floor": 1,
+          "stay_min": 551
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.95,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 74.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P056",
+      "name": "住客047",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#3d7ff5",
+      "home_floor": 10,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 456,
+          "target_floor": 1,
+          "stay_min": 498
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.88,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 73.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P057",
+      "name": "住客048",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 486,
+          "target_floor": 1,
+          "stay_min": 568
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.85,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 40.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P058",
+      "name": "住客049",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 455,
+          "target_floor": 1,
+          "stay_min": 518
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.89,
+      "jitter_min": 7,
+      "companions": 1,
+      "abandon_sec": 35.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P059",
+      "name": "住客050",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 447,
+          "target_floor": 1,
+          "stay_min": 536
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.97,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 44.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P060",
+      "name": "住客051",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#9b6dff",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 497,
+          "target_floor": 1,
+          "stay_min": 657
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.91,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 48.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P061",
+      "name": "住客052",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#ff7043",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 436,
+          "target_floor": 1,
+          "stay_min": 640
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.98,
+      "jitter_min": 7,
+      "companions": 1,
+      "abandon_sec": 36.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P062",
+      "name": "住客053",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#5bc0de",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 426,
+          "target_floor": 1,
+          "stay_min": 618
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.71,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 37.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P063",
+      "name": "住客054",
+      "kind": "resident",
+      "gender": "wheelchair",
+      "color": "#8bc34a",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 532,
+          "target_floor": 1,
+          "stay_min": 528
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.72,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 66.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P064",
+      "name": "住客055",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 6,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 516,
+          "target_floor": 1,
+          "stay_min": 641
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.91,
+      "jitter_min": 5,
+      "companions": 1,
+      "abandon_sec": 67.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P065",
+      "name": "住客056",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 2,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 476,
+          "target_floor": 1,
+          "stay_min": 619
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.83,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 67.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P066",
+      "name": "住客057",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 536,
+          "target_floor": 1,
+          "stay_min": 525
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.99,
+      "jitter_min": 7,
+      "companions": 1,
+      "abandon_sec": 51.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P067",
+      "name": "住客058",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 424,
+          "target_floor": 1,
+          "stay_min": 546
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.79,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 79.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P068",
+      "name": "住客059",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#9b6dff",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 478,
+          "target_floor": 1,
+          "stay_min": 489
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.7,
+      "jitter_min": 9,
+      "companions": 1,
+      "abandon_sec": 61.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P069",
+      "name": "住客060",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#ff7043",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 471,
+          "target_floor": 1,
+          "stay_min": 557
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.74,
+      "jitter_min": 15,
+      "companions": 1,
+      "abandon_sec": 61.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P070",
+      "name": "住客061",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#5bc0de",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 533,
+          "target_floor": 1,
+          "stay_min": 498
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.79,
+      "jitter_min": 5,
+      "companions": 2,
+      "abandon_sec": 24.6,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P071",
+      "name": "住客062",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#8bc34a",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 481,
+          "target_floor": 1,
+          "stay_min": 488
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.81,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 66.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P072",
+      "name": "住客063",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#3d7ff5",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 482,
+          "target_floor": 1,
+          "stay_min": 518
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.96,
+      "jitter_min": 7,
+      "companions": 1,
+      "abandon_sec": 87.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P073",
+      "name": "住客064",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 444,
+          "target_floor": 1,
+          "stay_min": 582
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.77,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 79.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P074",
+      "name": "住客065",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 10,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 505,
+          "target_floor": 1,
+          "stay_min": 612
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.71,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 66.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P075",
+      "name": "住客066",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 471,
+          "target_floor": 1,
+          "stay_min": 567
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.73,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 88.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P076",
+      "name": "住客067",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 460,
+          "target_floor": 1,
+          "stay_min": 534
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.86,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 31.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P077",
+      "name": "住客068",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#ff7043",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 497,
+          "target_floor": 1,
+          "stay_min": 613
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.72,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 88.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P078",
+      "name": "住客069",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 455,
+          "target_floor": 1,
+          "stay_min": 563
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.85,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 88.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P079",
+      "name": "住客070",
+      "kind": "resident",
+      "gender": "wheelchair",
+      "color": "#8bc34a",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 423,
+          "target_floor": 1,
+          "stay_min": 654
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.77,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 129.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P080",
+      "name": "住客071",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 10,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 519,
+          "target_floor": 1,
+          "stay_min": 623
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.82,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 67.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P081",
+      "name": "住客072",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 500,
+          "target_floor": 1,
+          "stay_min": 504
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.91,
+      "jitter_min": 14,
+      "companions": 1,
+      "abandon_sec": 85.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P082",
+      "name": "住客073",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 518,
+          "target_floor": 1,
+          "stay_min": 654
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.98,
+      "jitter_min": 3,
+      "companions": 1,
+      "abandon_sec": 85.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P083",
+      "name": "住客074",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 460,
+          "target_floor": 1,
+          "stay_min": 617
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.93,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 53.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P084",
+      "name": "住客075",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 476,
+          "target_floor": 1,
+          "stay_min": 498
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.98,
+      "jitter_min": 5,
+      "companions": 1,
+      "abandon_sec": 32.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P085",
+      "name": "住客076",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#ff7043",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 433,
+          "target_floor": 1,
+          "stay_min": 495
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 1.0,
+      "jitter_min": 10,
+      "companions": 1,
+      "abandon_sec": 85.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P086",
+      "name": "住客077",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#5bc0de",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 453,
+          "target_floor": 1,
+          "stay_min": 539
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.79,
+      "jitter_min": 15,
+      "companions": 2,
+      "abandon_sec": 23.4,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P087",
+      "name": "住客078",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#8bc34a",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 498,
+          "target_floor": 1,
+          "stay_min": 539
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.76,
+      "jitter_min": 5,
+      "companions": 1,
+      "abandon_sec": 33.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P088",
+      "name": "住客079",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 536,
+          "target_floor": 1,
+          "stay_min": 492
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.88,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 54.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P089",
+      "name": "住客080",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 510,
+          "target_floor": 1,
+          "stay_min": 507
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.73,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 55.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P090",
+      "name": "住客081",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#4ec9a5",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 530,
+          "target_floor": 1,
+          "stay_min": 559
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.73,
+      "jitter_min": 0,
+      "companions": 1,
+      "abandon_sec": 60.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P091",
+      "name": "住客082",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 2,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 423,
+          "target_floor": 1,
+          "stay_min": 643
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.89,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 55.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P092",
+      "name": "住客083",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 451,
+          "target_floor": 1,
+          "stay_min": 572
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.96,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 65.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P093",
+      "name": "住客084",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#ff7043",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 429,
+          "target_floor": 1,
+          "stay_min": 481
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.99,
+      "jitter_min": 14,
+      "companions": 1,
+      "abandon_sec": 73.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P094",
+      "name": "住客085",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 522,
+          "target_floor": 1,
+          "stay_min": 599
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.94,
+      "jitter_min": 3,
+      "companions": 1,
+      "abandon_sec": 88.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P095",
+      "name": "住客086",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#8bc34a",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 481,
+          "target_floor": 1,
+          "stay_min": 574
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.87,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 48.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P096",
+      "name": "住客087",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 498,
+          "target_floor": 1,
+          "stay_min": 513
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.78,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 86.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P097",
+      "name": "住客088",
+      "kind": "resident",
+      "gender": "child",
+      "color": "#f5a623",
+      "home_floor": 6,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 433,
+          "target_floor": 1,
+          "stay_min": 543
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.73,
+      "jitter_min": 10,
+      "companions": 2,
+      "abandon_sec": 18.6,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P098",
+      "name": "住客089",
+      "kind": "resident",
+      "gender": "wheelchair",
+      "color": "#4ec9a5",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 436,
+          "target_floor": 1,
+          "stay_min": 549
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.83,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 121.5,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P099",
+      "name": "住客090",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 3,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 474,
+          "target_floor": 1,
+          "stay_min": 497
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.82,
+      "jitter_min": 8,
+      "companions": 1,
+      "abandon_sec": 44.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P100",
+      "name": "住客091",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#9b6dff",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 446,
+          "target_floor": 1,
+          "stay_min": 601
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.94,
+      "jitter_min": 3,
+      "companions": 1,
+      "abandon_sec": 31.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P101",
+      "name": "住客092",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#ff7043",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 464,
+          "target_floor": 1,
+          "stay_min": 493
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.76,
+      "jitter_min": 6,
+      "companions": 1,
+      "abandon_sec": 90.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P102",
+      "name": "住客093",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 425,
+          "target_floor": 1,
+          "stay_min": 620
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.9,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 72.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P103",
+      "name": "住客094",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#8bc34a",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 491,
+          "target_floor": 1,
+          "stay_min": 565
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.89,
+      "jitter_min": 10,
+      "companions": 1,
+      "abandon_sec": 85.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P104",
+      "name": "住客095",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 521,
+          "target_floor": 1,
+          "stay_min": 647
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.87,
+      "jitter_min": 5,
+      "companions": 1,
+      "abandon_sec": 87.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P105",
+      "name": "住客096",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#f5a623",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 462,
+          "target_floor": 1,
+          "stay_min": 485
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.96,
+      "jitter_min": 15,
+      "companions": 1,
+      "abandon_sec": 56.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P106",
+      "name": "住客097",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 465,
+          "target_floor": 1,
+          "stay_min": 594
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.98,
+      "jitter_min": 13,
+      "companions": 1,
+      "abandon_sec": 84.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P107",
+      "name": "住客098",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 506,
+          "target_floor": 1,
+          "stay_min": 535
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.81,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 33.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P108",
+      "name": "住客099",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#9b6dff",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 509,
+          "target_floor": 1,
+          "stay_min": 527
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.76,
+      "jitter_min": 15,
+      "companions": 1,
+      "abandon_sec": 60.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P109",
+      "name": "住客100",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#ff7043",
+      "home_floor": 8,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 463,
+          "target_floor": 1,
+          "stay_min": 520
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.93,
+      "jitter_min": 14,
+      "companions": 1,
+      "abandon_sec": 83.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P110",
+      "name": "住客101",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 7,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 507,
+          "target_floor": 1,
+          "stay_min": 588
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.77,
+      "jitter_min": 4,
+      "companions": 1,
+      "abandon_sec": 43.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P111",
+      "name": "住客102",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#8bc34a",
+      "home_floor": 9,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 434,
+          "target_floor": 1,
+          "stay_min": 518
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.91,
+      "jitter_min": 0,
+      "companions": 1,
+      "abandon_sec": 86.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P112",
+      "name": "住客103",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 510,
+          "target_floor": 1,
+          "stay_min": 626
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 1.0,
+      "jitter_min": 2,
+      "companions": 1,
+      "abandon_sec": 31.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P113",
+      "name": "住客104",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#f5a623",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 532,
+          "target_floor": 1,
+          "stay_min": 537
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.88,
+      "jitter_min": 9,
+      "companions": 1,
+      "abandon_sec": 34.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P114",
+      "name": "住客105",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": 2,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 457,
+          "target_floor": 1,
+          "stay_min": 545
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.83,
+      "jitter_min": 14,
+      "companions": 1,
+      "abandon_sec": 55.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P115",
+      "name": "住客106",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#e05c8a",
+      "home_floor": 11,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 504,
+          "target_floor": 1,
+          "stay_min": 581
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.95,
+      "jitter_min": 12,
+      "companions": 1,
+      "abandon_sec": 40.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P116",
+      "name": "住客107",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#9b6dff",
+      "home_floor": 5,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 449,
+          "target_floor": 1,
+          "stay_min": 578
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.94,
+      "jitter_min": 7,
+      "companions": 1,
+      "abandon_sec": 33.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P117",
+      "name": "住客108",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#ff7043",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 442,
+          "target_floor": 1,
+          "stay_min": 608
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.9,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 67.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P118",
+      "name": "住客109",
+      "kind": "resident",
+      "gender": "male",
+      "color": "#5bc0de",
+      "home_floor": 12,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 472,
+          "target_floor": 1,
+          "stay_min": 543
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.72,
+      "jitter_min": 11,
+      "companions": 1,
+      "abandon_sec": 72.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P119",
+      "name": "住客110",
+      "kind": "resident",
+      "gender": "female",
+      "color": "#8bc34a",
+      "home_floor": 4,
+      "main_floor": null,
+      "legs": [
+        {
+          "time_min": 455,
+          "target_floor": 1,
+          "stay_min": 650
+        }
+      ],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.99,
+      "jitter_min": 7,
+      "companions": 1,
+      "abandon_sec": 55.0,
+      "visitor_arrive": null,
+      "visitor_stay": null,
+      "needs_meet": false
+    },
+    {
+      "pid": "P120",
+      "name": "访客001",
+      "kind": "visitor",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": null,
+      "main_floor": 3,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.86,
+      "jitter_min": 5,
+      "companions": 4,
+      "abandon_sec": 31.0,
+      "visitor_arrive": 903,
+      "visitor_stay": 69,
+      "needs_meet": false
+    },
+    {
+      "pid": "P121",
+      "name": "访客002",
+      "kind": "visitor",
+      "gender": "male",
+      "color": "#f5a623",
+      "home_floor": null,
+      "main_floor": 5,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.96,
+      "jitter_min": 15,
+      "companions": 2,
+      "abandon_sec": 44.0,
+      "visitor_arrive": 750,
+      "visitor_stay": 94,
+      "needs_meet": false
+    },
+    {
+      "pid": "P122",
+      "name": "访客003",
+      "kind": "visitor",
+      "gender": "child",
+      "color": "#4ec9a5",
+      "home_floor": null,
+      "main_floor": 8,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.79,
+      "jitter_min": 1,
+      "companions": 4,
+      "abandon_sec": 19.2,
+      "visitor_arrive": 893,
+      "visitor_stay": 70,
+      "needs_meet": false
+    },
+    {
+      "pid": "P123",
+      "name": "访客004",
+      "kind": "visitor",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": null,
+      "main_floor": 3,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.85,
+      "jitter_min": 5,
+      "companions": 1,
+      "abandon_sec": 49.0,
+      "visitor_arrive": 862,
+      "visitor_stay": 30,
+      "needs_meet": false
+    },
+    {
+      "pid": "P124",
+      "name": "访客005",
+      "kind": "visitor",
+      "gender": "female",
+      "color": "#9b6dff",
+      "home_floor": null,
+      "main_floor": 9,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.85,
+      "jitter_min": 2,
+      "companions": 2,
+      "abandon_sec": 70.0,
+      "visitor_arrive": 884,
+      "visitor_stay": 54,
+      "needs_meet": false
+    },
+    {
+      "pid": "P125",
+      "name": "访客006",
+      "kind": "visitor",
+      "gender": "wheelchair",
+      "color": "#ff7043",
+      "home_floor": null,
+      "main_floor": 9,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.99,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 132.0,
+      "visitor_arrive": 738,
+      "visitor_stay": 62,
+      "needs_meet": false
+    },
+    {
+      "pid": "P126",
+      "name": "访客007",
+      "kind": "visitor",
+      "gender": "female",
+      "color": "#5bc0de",
+      "home_floor": null,
+      "main_floor": 3,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.81,
+      "jitter_min": 10,
+      "companions": 1,
+      "abandon_sec": 52.0,
+      "visitor_arrive": 545,
+      "visitor_stay": 54,
+      "needs_meet": false
+    },
+    {
+      "pid": "P127",
+      "name": "访客008",
+      "kind": "visitor",
+      "gender": "male",
+      "color": "#8bc34a",
+      "home_floor": null,
+      "main_floor": 8,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.72,
+      "jitter_min": 6,
+      "companions": 4,
+      "abandon_sec": 88.0,
+      "visitor_arrive": 806,
+      "visitor_stay": 44,
+      "needs_meet": false
+    },
+    {
+      "pid": "P128",
+      "name": "访客009",
+      "kind": "visitor",
+      "gender": "female",
+      "color": "#3d7ff5",
+      "home_floor": null,
+      "main_floor": 3,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.93,
+      "jitter_min": 1,
+      "companions": 2,
+      "abandon_sec": 65.0,
+      "visitor_arrive": 948,
+      "visitor_stay": 76,
+      "needs_meet": false
+    },
+    {
+      "pid": "P129",
+      "name": "访客010",
+      "kind": "visitor",
+      "gender": "male",
+      "color": "#f5a623",
+      "home_floor": null,
+      "main_floor": 12,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.94,
+      "jitter_min": 0,
+      "companions": 4,
+      "abandon_sec": 32.0,
+      "visitor_arrive": 615,
+      "visitor_stay": 95,
+      "needs_meet": false
+    },
+    {
+      "pid": "P130",
+      "name": "访客011",
+      "kind": "visitor",
+      "gender": "male",
+      "color": "#4ec9a5",
+      "home_floor": null,
+      "main_floor": 9,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.95,
+      "jitter_min": 4,
+      "companions": 3,
+      "abandon_sec": 43.0,
+      "visitor_arrive": 958,
+      "visitor_stay": 92,
+      "needs_meet": false
+    },
+    {
+      "pid": "P131",
+      "name": "访客012",
+      "kind": "visitor",
+      "gender": "male",
+      "color": "#e05c8a",
+      "home_floor": null,
+      "main_floor": 2,
+      "legs": [],
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "attendance": 0.95,
+      "jitter_min": 1,
+      "companions": 1,
+      "abandon_sec": 36.0,
+      "visitor_arrive": 797,
+      "visitor_stay": 35,
+      "needs_meet": false
+    }
+  ]
+}
