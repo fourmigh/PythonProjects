@@ -1,0 +1,3355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      New Aura software schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="StartupReasonEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="POWER_ON"/>
+      <xsd:enumeration value="WATCHDOG"/>
+      <xsd:enumeration value="EXCEPTION"/>
+      <xsd:enumeration value="APP_ERROR"/>
+      <xsd:enumeration value="ON_REQUEST"/>
+      <xsd:enumeration value="SAFE_MODE"/>
+      <xsd:enumeration value="BLL_LOAD"/>
+      <xsd:enumeration value="PIC_LOAD"/>
+      <xsd:enumeration value="POWER_CYCLED"/>
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="HW_WATCHDOG"/>
+      <xsd:enumeration value="LOSS_OF_CLOCK"/>
+      <xsd:enumeration value="LOW_VOLTAGE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CrashReasonEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NONE"/>
+      <xsd:enumeration value="RESET"/>
+      <xsd:enumeration value="NMI"/>
+      <xsd:enumeration value="HARDFAULT"/>
+      <xsd:enumeration value="MEMMANAGE"/>
+      <xsd:enumeration value="BUSFAULT"/>
+      <xsd:enumeration value="USAGEFAULT"/>
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="WATCHDOG"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="FlagLevelEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="I"/>
+      <xsd:enumeration value="W"/>
+      <xsd:enumeration value="E"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TransactionTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DEBIT"/>
+      <xsd:enumeration value="CREDIT"/>
+      <xsd:enumeration value="SERVICE"/>
+      <xsd:enumeration value="PENALTY_PAYMENT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="VrmSelectTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ANPR"/>
+      <xsd:enumeration value="MANUAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ConcessionEnteredTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SCANNED"/>
+      <xsd:enumeration value="MANUAL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CardSystemTypesEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="CHIP_N_PIN"/>
+      <xsd:enumeration value="BANKSYS"/>
+      <xsd:enumeration value="GPM276"/>
+      <xsd:enumeration value="METRIC_SYNC"/>
+      <xsd:enumeration value="ISO7813"/>
+      <xsd:enumeration value="UEPS_BMS"/>
+      <xsd:enumeration value="CHIPKNIP"/>
+      <xsd:enumeration value="CITYCHIP"/>
+      <xsd:enumeration value="BANKSYS_PROTON"/>
+      <xsd:enumeration value="MIFARE_CAT_SELECT"/>
+      <xsd:enumeration value="MIFARE_METRIC"/>
+      <xsd:enumeration value="ISO7816"/>
+      <xsd:enumeration value="OMPASS"/>
+      <xsd:enumeration value="CREDITCARD"/>
+      <xsd:enumeration value="CONTACTLESS"/>
+      <xsd:enumeration value="MAG_STRIPE"/>
+      <xsd:enumeration value="VISA_CONTACTLESS"/>
+      <xsd:enumeration value="CONTACTLESS_MAG_STRIPE"/>
+      <xsd:enumeration value="OFFLINE_STORE_ERROR"/>
+      <xsd:enumeration value="OFFLINE_LOAD_ERROR"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CardProcessStatusEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OK"/>
+      <xsd:enumeration value="DENIED"/>
+      <xsd:enumeration value="SWIPE_MISSED"/>
+      <xsd:enumeration value="WRITE_FAILED"/>
+      <xsd:enumeration value="HOTLISTED"/>
+      <xsd:enumeration value="ALREADY_HOTLISTED"/>
+      <xsd:enumeration value="EXPIRED"/>
+      <xsd:enumeration value="NOT_RESIDENT"/>
+      <xsd:enumeration value="CARD_DAMAGED"/>
+      <xsd:enumeration value="CARD_VALUE_CORRECTED"/>
+      <xsd:enumeration value="WITHDRAWN_CARD_TYPE"/>
+      <xsd:enumeration value="NETWORK_CONNECTION_FAILED"/>
+      <xsd:enumeration value="PAYMENT_SERVICE_FAILED"/>
+      <xsd:enumeration value="AUTHORISER_NOT_AVAILABLE"/>
+      <xsd:enumeration value="CARD_INVALID"/>
+      <xsd:enumeration value="CONFIGURATION_PROBLEM"/>
+      <xsd:enumeration value="FAILED"/>
+      <xsd:enumeration value="MODEM_CMD_FAIL"/>
+      <xsd:enumeration value="MODEM_SIM_FAIL"/>
+      <xsd:enumeration value="MODEM_REG_FAIL"/>
+      <xsd:enumeration value="MODEM_SQ_FAIL"/>
+      <xsd:enumeration value="MODEM_ATV_FAIL"/>
+      <xsd:enumeration value="MODEM_GPRS_FAIL"/>
+      <xsd:enumeration value="MODEM_DATA_FAIL"/>
+      <xsd:enumeration value="MODEM_PPP_FAIL"/>
+      <xsd:enumeration value="SETTLEMENT_FAIL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CurrencyIso4217Enum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AED"/>
+      <xsd:enumeration value="AFN"/>
+      <xsd:enumeration value="ALL"/>
+      <xsd:enumeration value="AMD"/>
+      <xsd:enumeration value="ANG"/>
+      <xsd:enumeration value="AOA"/>
+      <xsd:enumeration value="ARS"/>
+      <xsd:enumeration value="AUD"/>
+      <xsd:enumeration value="AWG"/>
+      <xsd:enumeration value="AZN"/>
+      <xsd:enumeration value="BAM"/>
+      <xsd:enumeration value="BBD"/>
+      <xsd:enumeration value="BDT"/>
+      <xsd:enumeration value="BGN"/>
+      <xsd:enumeration value="BHD"/>
+      <xsd:enumeration value="BIF"/>
+      <xsd:enumeration value="BMD"/>
+      <xsd:enumeration value="BND"/>
+      <xsd:enumeration value="BOB"/>
+      <xsd:enumeration value="BRL"/>
+      <xsd:enumeration value="BSD"/>
+      <xsd:enumeration value="BTN"/>
+      <xsd:enumeration value="BWP"/>
+      <xsd:enumeration value="BYR"/>
+      <xsd:enumeration value="BZD"/>
+      <xsd:enumeration value="CAD"/>
+      <xsd:enumeration value="CDF"/>
+      <xsd:enumeration value="CHE"/>
+      <xsd:enumeration value="CHF"/>
+      <xsd:enumeration value="CHW"/>
+      <xsd:enumeration value="CLP"/>
+      <xsd:enumeration value="CNY"/>
+      <xsd:enumeration value="COP"/>
+      <xsd:enumeration value="COU"/>
+      <xsd:enumeration value="CRC"/>
+      <xsd:enumeration value="CUP"/>
+      <xsd:enumeration value="CVE"/>
+      <xsd:enumeration value="CYP"/>
+      <xsd:enumeration value="CZK"/>
+      <xsd:enumeration value="DJF"/>
+      <xsd:enumeration value="DKK"/>
+      <xsd:enumeration value="DOP"/>
+      <xsd:enumeration value="DZD"/>
+      <xsd:enumeration value="EEK"/>
+      <xsd:enumeration value="EGP"/>
+      <xsd:enumeration value="ERN"/>
+      <xsd:enumeration value="ETB"/>
+      <xsd:enumeration value="EUR"/>
+      <xsd:enumeration value="FJD"/>
+      <xsd:enumeration value="FKP"/>
+      <xsd:enumeration value="GBP"/>
+      <xsd:enumeration value="GEL"/>
+      <xsd:enumeration value="GHS"/>
+      <xsd:enumeration value="GIP"/>
+      <xsd:enumeration value="GMD"/>
+      <xsd:enumeration value="GNF"/>
+      <xsd:enumeration value="GTQ"/>
+      <xsd:enumeration value="GYD"/>
+      <xsd:enumeration value="HKD"/>
+      <xsd:enumeration value="HNL"/>
+      <xsd:enumeration value="HRK"/>
+      <xsd:enumeration value="HTG"/>
+      <xsd:enumeration value="HUF"/>
+      <xsd:enumeration value="IDR"/>
+      <xsd:enumeration value="ILS"/>
+      <xsd:enumeration value="INR"/>
+      <xsd:enumeration value="IQD"/>
+      <xsd:enumeration value="IRR"/>
+      <xsd:enumeration value="ISK"/>
+      <xsd:enumeration value="JMD"/>
+      <xsd:enumeration value="JOD"/>
+      <xsd:enumeration value="JPY"/>
+      <xsd:enumeration value="KES"/>
+      <xsd:enumeration value="KGS"/>
+      <xsd:enumeration value="KHR"/>
+      <xsd:enumeration value="KMF"/>
+      <xsd:enumeration value="KPW"/>
+      <xsd:enumeration value="KRW"/>
+      <xsd:enumeration value="KWD"/>
+      <xsd:enumeration value="KYD"/>
+      <xsd:enumeration value="KZT"/>
+      <xsd:enumeration value="LAK"/>
+      <xsd:enumeration value="LBP"/>
+      <xsd:enumeration value="LKR"/>
+      <xsd:enumeration value="LRD"/>
+      <xsd:enumeration value="LSL"/>
+      <xsd:enumeration value="LTL"/>
+      <xsd:enumeration value="LVL"/>
+      <xsd:enumeration value="LYD"/>
+      <xsd:enumeration value="MAD"/>
+      <xsd:enumeration value="MDL"/>
+      <xsd:enumeration value="MGA"/>
+      <xsd:enumeration value="MKD"/>
+      <xsd:enumeration value="MMK"/>
+      <xsd:enumeration value="MNT"/>
+      <xsd:enumeration value="MOP"/>
+      <xsd:enumeration value="MRO"/>
+      <xsd:enumeration value="MTL"/>
+      <xsd:enumeration value="MUR"/>
+      <xsd:enumeration value="MVR"/>
+      <xsd:enumeration value="MWK"/>
+      <xsd:enumeration value="MXN"/>
+      <xsd:enumeration value="MYR"/>
+      <xsd:enumeration value="MZN"/>
+      <xsd:enumeration value="NAD"/>
+      <xsd:enumeration value="NGN"/>
+      <xsd:enumeration value="NIO"/>
+      <xsd:enumeration value="NOK"/>
+      <xsd:enumeration value="NPR"/>
+      <xsd:enumeration value="NZD"/>
+      <xsd:enumeration value="OMR"/>
+      <xsd:enumeration value="PAB"/>
+      <xsd:enumeration value="PEN"/>
+      <xsd:enumeration value="PGK"/>
+      <xsd:enumeration value="PHP"/>
+      <xsd:enumeration value="PKR"/>
+      <xsd:enumeration value="PLN"/>
+      <xsd:enumeration value="PYG"/>
+      <xsd:enumeration value="QAR"/>
+      <xsd:enumeration value="RON"/>
+      <xsd:enumeration value="RSD"/>
+      <xsd:enumeration value="RUB"/>
+      <xsd:enumeration value="RWF"/>
+      <xsd:enumeration value="SAR"/>
+      <xsd:enumeration value="SBD"/>
+      <xsd:enumeration value="SCR"/>
+      <xsd:enumeration value="SDG"/>
+      <xsd:enumeration value="SEK"/>
+      <xsd:enumeration value="SGD"/>
+      <xsd:enumeration value="SHP"/>
+      <xsd:enumeration value="SKK"/>
+      <xsd:enumeration value="SLL"/>
+      <xsd:enumeration value="SOS"/>
+      <xsd:enumeration value="SRD"/>
+      <xsd:enumeration value="STD"/>
+      <xsd:enumeration value="SYP"/>
+      <xsd:enumeration value="SZL"/>
+      <xsd:enumeration value="THB"/>
+      <xsd:enumeration value="TJS"/>
+      <xsd:enumeration value="TMM"/>
+      <xsd:enumeration value="TND"/>
+      <xsd:enumeration value="TOP"/>
+      <xsd:enumeration value="TRY"/>
+      <xsd:enumeration value="TTD"/>
+      <xsd:enumeration value="TWD"/>
+      <xsd:enumeration value="TZS"/>
+      <xsd:enumeration value="UAH"/>
+      <xsd:enumeration value="UGX"/>
+      <xsd:enumeration value="USD"/>
+      <xsd:enumeration value="UYU"/>
+      <xsd:enumeration value="UZS"/>
+      <xsd:enumeration value="VEB"/>
+      <xsd:enumeration value="VND"/>
+      <xsd:enumeration value="VUV"/>
+      <xsd:enumeration value="WST"/>
+      <xsd:enumeration value="XAF"/>
+      <xsd:enumeration value="XCD"/>
+      <xsd:enumeration value="XOF"/>
+      <xsd:enumeration value="XPF"/>
+      <xsd:enumeration value="XTS"/>
+      <xsd:enumeration value="XXX"/>
+      <xsd:enumeration value="YER"/>
+      <xsd:enumeration value="ZAR"/>
+      <xsd:enumeration value="ZMK"/>
+      <xsd:enumeration value="ZWD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="DKM_KeyTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="VAULT"/>
+      <xsd:enumeration value="LOCK"/>
+      <xsd:enumeration value="SERVICE"/>
+      <xsd:enumeration value="EXCLUDED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TicketPrinterEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="LEFT"/>
+      <xsd:enumeration value="RIGHT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="EndAuditPeriodEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ON_COMMAND"/>
+      <xsd:enumeration value="COIN_BOX_WITHDRAWAL"/>
+      <xsd:enumeration value="NOTE_BOX_WITHDRAWAL"/>
+      <xsd:enumeration value="ANY_CASH_BOX_WITHDRAWAL"/>
+      <xsd:enumeration value="CARD_COLLECTION"/>
+      <xsd:enumeration value="BACK_OFFICE_REQUEST"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="BoxTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="COIN"/>
+      <xsd:enumeration value="NOTE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TokenActionEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ERROR"/>
+      <xsd:enumeration value="DO_TEST"/>
+      <xsd:enumeration value="MAINT_CMDS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="LMC_LockTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UPPER_LOCK"/>
+      <xsd:enumeration value="VAULT_LOCK"/>
+      <xsd:enumeration value="BARRIER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="LMC_LockStatusEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="LOCK_STATUS_UNKNOWN"/>
+      <xsd:enumeration value="ULOCK_STATE_INITIALISATION"/>
+      <xsd:enumeration value="ULOCK_STATE_FAULT"/>
+      <xsd:enumeration value="ULOCK_STATE_COVERCLOSED"/>
+      <xsd:enumeration value="ULOCK_STATE_OPENINGCOVER"/>
+      <xsd:enumeration value="ULOCK_STATE_COVEROPEN"/>
+      <xsd:enumeration value="ULOCK_STATE_DOORUNLOCKED"/>
+      <xsd:enumeration value="ULOCK_STATE_DOORCLOSED"/>
+      <xsd:enumeration value="ULOCK_STATE_LOCKBARHOME"/>
+      <xsd:enumeration value="ULOCK_STATE_WAITFORLOCK"/>
+      <xsd:enumeration value="ULOCK_STATE_WAITFORKEYREMOVAL"/>
+      <xsd:enumeration value="ULOCK_STATE_CLOSINGCOVER"/>
+      <xsd:enumeration value="ULOCK_STATE_LOCKINGFAILURE"/>
+      <xsd:enumeration value="ULOCK_STATE_OPENINGCOVERFORRESET"/>
+      <xsd:enumeration value="AVAULT_STATE_INITIALISATION"/>
+      <xsd:enumeration value="AVAULT_STATE_IDLE"/>
+      <xsd:enumeration value="AVAULT_STATE_OPENINGCOSMETICDOOR"/>
+      <xsd:enumeration value="AVAULT_STATE_OPENVAULT"/>
+      <xsd:enumeration value="AVAULT_STATE_VAULTOPENRESET"/>
+      <xsd:enumeration value="AVAULT_STATE_VAULTOPEN"/>
+      <xsd:enumeration value="AVAULT_STATE_VAULTCLOSED"/>
+      <xsd:enumeration value="AVAULT_STATE_VAULTERROR"/>
+      <xsd:enumeration value="AVAULT_STATE_COSMETICDOORFAULT"/>
+      <xsd:enumeration value="MVAULT_STATE_POWERON"/>
+      <xsd:enumeration value="MVAULT_STATE_MOVETOCOMPLETED"/>
+      <xsd:enumeration value="MVAULT_STATE_INITIALISATION"/>
+      <xsd:enumeration value="MVAULT_STATE_IDLE"/>
+      <xsd:enumeration value="MVAULT_STATE_INITIATEUNLOCK"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTUNLOCKING"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTEARLYUNLOCKING"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTUNLOCKED"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTOPENING"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTOPENED"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTOPENERROR"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTOPEN"/>
+      <xsd:enumeration value="MVAULT_STATE_RELOCK"/>
+      <xsd:enumeration value="MVAULT_STATE_FAILTOHOME"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTCLOSING"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTLOCKING"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTTEST"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTERROR"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTALARM"/>
+      <xsd:enumeration value="MVAULT_STATE_VAULTTESTENABLE"/>
+      <xsd:enumeration value="V2VAULT_STATE_INITIALISATION"/>
+      <xsd:enumeration value="V2VAULT_STATE_IDLE"/>
+      <xsd:enumeration value="V2VAULT_STATE_INITIATEUNLOCK"/>
+      <xsd:enumeration value="V2VAULT_STATE_VAULTUNLOCKED"/>
+      <xsd:enumeration value="V2VAULT_STATE_INITIATEREVERSE"/>
+      <xsd:enumeration value="V2VAULT_STATE_VAULTOPEN"/>
+      <xsd:enumeration value="V2VAULT_STATE_LOCKDELAY"/>
+      <xsd:enumeration value="V2VAULT_STATE_VAULTLOCKING"/>
+      <xsd:enumeration value="V2VAULT_STATE_VAULTERROR"/>
+      <xsd:enumeration value="V2VAULT_STATE_VAULTALARM"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="AccStateEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CRIT_LOW"/>
+      <xsd:enumeration value="LOW"/>
+      <xsd:enumeration value="NORMAL"/>
+      <xsd:enumeration value="UNKNOWN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="AccChargeStateEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OFF"/>
+      <xsd:enumeration value="BURST"/>
+      <xsd:enumeration value="TRICKLE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PsuMonPicSelectEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OFF"/>
+      <xsd:enumeration value="ON"/>
+      <xsd:enumeration value="OK"/>
+      <xsd:enumeration value="LOCKOUT"/>
+      <xsd:enumeration value="UNKNOWN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PsuMonDataValidEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PSU_OK"/>
+      <xsd:enumeration value="PSU_ERROR"/>
+      <xsd:enumeration value="CRC_ERROR"/>
+      <xsd:enumeration value="PSU_UNKNOWN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PsuMonPicStatusEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DC24V_CHARGER"/>
+      <xsd:enumeration value="SOLAR_CHARGER"/>
+      <xsd:enumeration value="CHARGER_ACC1"/>
+      <xsd:enumeration value="CHARGER_ACC2"/>
+      <xsd:enumeration value="ACC1_SYSTEM"/>
+      <xsd:enumeration value="ACC2_SYSTEM"/>
+      <xsd:enumeration value="UNKNOWN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="MxdContentTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SCHEMA_DATA"/>
+      <xsd:enumeration value="BINARY"/>
+      <xsd:enumeration value="TEXT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="BackOfficeCmdEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNDEFINED"/>
+      <xsd:enumeration value="SYNC_TIME"/>
+      <xsd:enumeration value="SET_CALL_TIME"/>
+      <xsd:enumeration value="CDX_UPDATE_START"/>
+      <xsd:enumeration value="CDX_UPDATE_CONTINUE"/>
+      <xsd:enumeration value="CDX_UPDATE_END"/>
+      <xsd:enumeration value="CDX_H1314_DOWNLOAD"/>
+      <xsd:enumeration value="CDX_H1304_DOWNLOAD"/>
+      <xsd:enumeration value="CDX_T1314_UPLOAD"/>
+      <xsd:enumeration value="CDX_T1304_UPLOAD"/>
+      <xsd:enumeration value="CDX_T1300_UPLOAD"/>
+      <xsd:enumeration value="CDX_HEADER_UPLOAD"/>
+      <xsd:enumeration value="SIN_UPLOAD"/>
+      <xsd:enumeration value="ELG_START_NEW"/>
+      <xsd:enumeration value="ELG_GET_LIST"/>
+      <xsd:enumeration value="ELG_UPLOAD"/>
+      <xsd:enumeration value="ELG_DELETE"/>
+      <xsd:enumeration value="LOG_START_NEW"/>
+      <xsd:enumeration value="LOG_GET_LIST"/>
+      <xsd:enumeration value="LOG_UPLOAD"/>
+      <xsd:enumeration value="LOG_DELETE"/>
+      <xsd:enumeration value="CLT_START_NEW"/>
+      <xsd:enumeration value="CLT_GET_LIST"/>
+      <xsd:enumeration value="CLT_UPLOAD"/>
+      <xsd:enumeration value="CLT_DELETE"/>
+      <xsd:enumeration value="LUL_START_NEW"/>
+      <xsd:enumeration value="LUL_GET_LIST"/>
+      <xsd:enumeration value="LUL_UPLOAD"/>
+      <xsd:enumeration value="LUL_DELETE"/>
+      <xsd:enumeration value="AP3_GET_PENDING_LIST"/>
+      <xsd:enumeration value="AP3_DELETE_PENDING"/>
+      <xsd:enumeration value="AP3_DOWNLOAD"/>
+      <xsd:enumeration value="BL3_GET_PENDING_LIST"/>
+      <xsd:enumeration value="BL3_DELETE_PENDING"/>
+      <xsd:enumeration value="BL3_DOWNLOAD"/>
+      <xsd:enumeration value="PIC_GET_PENDING_LIST"/>
+      <xsd:enumeration value="PIC_DELETE_PENDING"/>
+      <xsd:enumeration value="PIC_DOWNLOAD"/>
+      <xsd:enumeration value="CFG_GET_ACTIVE_LIST"/>
+      <xsd:enumeration value="CFG_GET_PENDING_LIST"/>
+      <xsd:enumeration value="CFG_DELETE_PENDING"/>
+      <xsd:enumeration value="CFG_DOWNLOAD"/>
+      <xsd:enumeration value="DKL_GET_ACTIVE_LIST"/>
+      <xsd:enumeration value="DKL_GET_PENDING_LIST"/>
+      <xsd:enumeration value="DKL_DELETE_PENDING"/>
+      <xsd:enumeration value="DKL_DOWNLOAD"/>
+      <xsd:enumeration value="TRF_GET_ACTIVE_LIST"/>
+      <xsd:enumeration value="TRF_GET_PENDING_LIST"/>
+      <xsd:enumeration value="TRF_DELETE_PENDING"/>
+      <xsd:enumeration value="TRF_DOWNLOAD"/>
+      <xsd:enumeration value="HTL_GET_ACTIVE_LIST"/>
+      <xsd:enumeration value="HTL_GET_PENDING_LIST"/>
+      <xsd:enumeration value="HTL_DELETE_PENDING"/>
+      <xsd:enumeration value="HTL_DOWNLOAD"/>
+      <xsd:enumeration value="LUL_GET_ACTIVE_LIST"/>
+      <xsd:enumeration value="LUL_GET_PENDING_LIST"/>
+      <xsd:enumeration value="LUL_DELETE_PENDING"/>
+      <xsd:enumeration value="LUL_DOWNLOAD"/>
+      <xsd:enumeration value="CLT_GET_ACTIVE_LIST"/>
+      <xsd:enumeration value="CLT_GET_PENDING_LIST"/>
+      <xsd:enumeration value="CLT_DELETE_PENDING"/>
+      <xsd:enumeration value="CLT_DOWNLOAD"/>
+      <xsd:enumeration value="DKX_GET_ACTIVE_LIST"/>
+      <xsd:enumeration value="DKX_GET_PENDING_LIST"/>
+      <xsd:enumeration value="DKX_DELETE_PENDING"/>
+      <xsd:enumeration value="DKX_DOWNLOAD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="BackOfficeRespEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SUCCESS"/>
+      <xsd:enumeration value="FILE_NOT_FOUND"/>
+      <xsd:enumeration value="INVALID_CMD"/>
+      <xsd:enumeration value="HTTP_FAILURE"/>
+      <xsd:enumeration value="FILE_CREATE_FAILED"/>
+      <xsd:enumeration value="FILE_RENAME_FAILED"/>
+      <xsd:enumeration value="INVALID_FILE"/>
+      <xsd:enumeration value="COMMAND_FAILED"/>
+      <xsd:enumeration value="WRONG_FILE_EXTENSION"/>
+      <xsd:enumeration value="CADIX_BUSY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PowerModeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OFF"/>
+      <xsd:enumeration value="ON"/>
+      <xsd:enumeration value="STANDBY"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PurgedRecordTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="OFFCONCESSION"/>
+      <xsd:enumeration value="PREAUTH"/>
+      <xsd:enumeration value="PERMIT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PurgedRecordReasonEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="DB_FULL"/>
+      <xsd:enumeration value="INV_ELEMENT"/>
+      <xsd:enumeration value="VALIDATION_FAIL"/>
+      <xsd:enumeration value="UNKNOWN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="VoucherSystemTypesEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="MI_VOUCHER"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="VoucherProcessStatusEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="OK"/>
+      <xsd:enumeration value="DENIED"/>
+      <xsd:enumeration value="HOTLISTED"/>
+      <xsd:enumeration value="ALREADY_HOTLISTED"/>
+      <xsd:enumeration value="EXPIRED"/>
+      <xsd:enumeration value="NOT_VALID_YET"/>
+      <xsd:enumeration value="NOT_VALID_HERE"/>
+      <xsd:enumeration value="NETWORK_CONNECTION_FAILED"/>
+      <xsd:enumeration value="AUTHORISER_NOT_AVAILABLE"/>
+      <xsd:enumeration value="VOUCHER_INVALID"/>
+      <xsd:enumeration value="CONFIGURATION_PROBLEM"/>
+      <xsd:enumeration value="FAILED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="OfflineFileTransferResultEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SUCCESS"/>
+      <xsd:enumeration value="STORE_NOT_FOUND"/>
+      <xsd:enumeration value="ACCESS_ERROR"/>
+      <xsd:enumeration value="UNKNOWN"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="UiTxnStateEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="STARTED"/>
+      <xsd:enumeration value="REG_ENTERED"/>
+      <xsd:enumeration value="OK"/>
+      <xsd:enumeration value="CANCEL"/>
+      <xsd:enumeration value="PRINT_ERROR"/>
+      <xsd:enumeration value="ABORT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="EVENT_LOG_STARTUP">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartupReason" minOccurs="1" maxOccurs="1" type="StartupReasonEnum" default="POWER_ON">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Reason application has started up
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="AccumulatorVoltage" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_EXCEPTION_POSTMORTEM">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CrashReason" minOccurs="1" maxOccurs="1" type="CrashReasonEnum" default="NONE">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Reason for crash
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="Registers" minOccurs="0" maxOccurs="16" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            ARM registers
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Psr" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Program status register
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Task" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Task pointer
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TaskStackStart" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Task stack start address
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TaskStackEnd" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Task stack end address
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TaskName" minOccurs="1" maxOccurs="1" default="">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Task name
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="7"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_STATUS_FLAG_CHANGE">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Set" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="Dev" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Flag" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Level" minOccurs="1" maxOccurs="1" type="FlagLevelEnum" default="E">
+        </xsd:element>
+        <xsd:element name="DevDesc" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="31"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FlagDesc" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="31"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_TRANSACTION">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionType" minOccurs="1" maxOccurs="1" type="TransactionTypeEnum" default="DEBIT">
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AmountCharged" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TariffCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="9"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EndTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="RegistrationNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SpaceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ZoneId" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="VrmSelected" minOccurs="1" maxOccurs="1" type="VrmSelectTypeEnum" default="MANUAL">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Image selected from ANPR system
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="ConcessionEntered" minOccurs="1" maxOccurs="1" type="ConcessionEnteredTypeEnum" default="MANUAL">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Means of Concession entry
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="ConcessionCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="50"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="LoyaltyID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="30"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_TRANSPORT_TRANS">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AmountCharged" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EndTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="NumberOfPassengers" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TariffCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="9"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_CARD_NON_PAYMENT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CardType" minOccurs="1" maxOccurs="1" type="CardSystemTypesEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="CardNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Status" minOccurs="1" maxOccurs="1" type="CardProcessStatusEnum" default="FAILED">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_CARD_DEBIT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CardType" minOccurs="1" maxOccurs="1" type="CardSystemTypesEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="CardNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Iso4217Code" minOccurs="1" maxOccurs="1" type="CurrencyIso4217Enum" default="GBP">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            ISO 4217 code
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="AuthorisationCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="40"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Status" minOccurs="1" maxOccurs="1" type="CardProcessStatusEnum" default="FAILED">
+        </xsd:element>
+        <xsd:element name="AmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="2147483647"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Balance" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TerminalId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="LoyaltyID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="30"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_CARD_CREDIT_REFUND">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CardType" minOccurs="1" maxOccurs="1" type="CardSystemTypesEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="CardNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Iso4217Code" minOccurs="1" maxOccurs="1" type="CurrencyIso4217Enum" default="GBP">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            ISO 4217 code
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="AuthorisationCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="40"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Status" minOccurs="1" maxOccurs="1" type="CardProcessStatusEnum" default="FAILED">
+        </xsd:element>
+        <xsd:element name="AmountCredited" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="2147483647"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Balance" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TerminalId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="LoyaltyID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="30"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_CASH_TRANS">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_TOKEN_TRANS_INFO">
+    <xsd:sequence>
+        <xsd:element name="AmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TokenChannelId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_TOKEN_TRANS">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TokenInfo" minOccurs="0" maxOccurs="16" type="AUDIT_TOKEN_TRANS_INFO">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_KEY_PRESENTED">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="KeyNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-9223372036854775808"/>
+              <xsd:maxInclusive value="9223372036854775807"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="KeyType" minOccurs="1" maxOccurs="1" type="DKM_KeyTypeEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="Accepted" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="PresentationTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SerialNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Name" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="80"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_TICKET_STOCK_EVENT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Printer" minOccurs="1" maxOccurs="1" type="TicketPrinterEnum" default="LEFT">
+        </xsd:element>
+        <xsd:element name="TimeChanged" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="OldRollLength" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TicketsUsed" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="NewRollLength" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_CARD_COLLECTION">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TriggerType" minOccurs="1" maxOccurs="1" type="EndAuditPeriodEnum" default="BACK_OFFICE_REQUEST">
+        </xsd:element>
+        <xsd:element name="CardType" minOccurs="1" maxOccurs="1" type="CardSystemTypesEnum" default="UNKNOWN">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_CASH_PERIOD_ITEM">
+    <xsd:sequence>
+        <xsd:element name="Iso4217Code" minOccurs="1" maxOccurs="1" type="CurrencyIso4217Enum" default="GBP">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            ISO 4217 code
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="Denomination" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="1000000"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Count" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="UnrefundedCount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_CASH_PERIOD_GRAND_TOTAL">
+    <xsd:sequence>
+        <xsd:element name="Iso4217Code" minOccurs="1" maxOccurs="1" type="CurrencyIso4217Enum" default="GBP">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            ISO 4217 code
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="DecimalPlaces" minOccurs="1" maxOccurs="1" default="2">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="6"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="GrandTotalAtLastCashBoxPull" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="UnrefundedAtLastCashBoxPull" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_CASH_PERIOD">
+    <xsd:sequence>
+        <xsd:element name="CashboxPullNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EndTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Transactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Volume" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Value" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="nItems" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="16"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="nCurrencyGrandTotals" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="6"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Item" minOccurs="0" maxOccurs="16" type="AUDIT_CASH_PERIOD_ITEM">
+        </xsd:element>
+        <xsd:element name="CurrencyGrandTotal" minOccurs="0" maxOccurs="6" type="AUDIT_CASH_PERIOD_GRAND_TOTAL">
+        </xsd:element>
+        <xsd:element name="UnRefundedTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CumTotalTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_CASH_BOX_REMOVED">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="BoxType" minOccurs="1" maxOccurs="1" type="BoxTypeEnum" default="COIN">
+        </xsd:element>
+        <xsd:element name="Data" minOccurs="1" maxOccurs="1" type="AUDIT_CASH_PERIOD">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_CARD_SYSTEM">
+    <xsd:sequence>
+        <xsd:element name="CardType" minOccurs="1" maxOccurs="1" type="CardSystemTypesEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="DebitTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="DebitAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CreditTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CreditAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="RefundedAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="UnRefundedAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_CARD_PERIOD">
+    <xsd:sequence>
+        <xsd:element name="AuditNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EndTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CumDebitTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CumDebitAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CumCreditTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CumCreditAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CardSystem" minOccurs="0" maxOccurs="21" type="AUDIT_CARD_SYSTEM">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_CARD_PERIOD">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TriggerType" minOccurs="1" maxOccurs="1" type="EndAuditPeriodEnum" default="COIN_BOX_WITHDRAWAL">
+        </xsd:element>
+        <xsd:element name="TriggerSequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Data" minOccurs="1" maxOccurs="1" type="AUDIT_CARD_PERIOD">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_TRANSACTION_TIMEBAND_AMOUNTS2">
+    <xsd:sequence>
+        <xsd:element name="A" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="B" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="C" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_TRANSACTION_TIMEBAND_AMOUNTS">
+    <xsd:sequence>
+        <xsd:element name="NoFreeTimeInterval" minOccurs="1" maxOccurs="1" type="AUDIT_TRANSACTION_TIMEBAND_AMOUNTS2">
+        </xsd:element>
+        <xsd:element name="FreeTimeInterval" minOccurs="1" maxOccurs="1" type="AUDIT_TRANSACTION_TIMEBAND_AMOUNTS2">
+        </xsd:element>
+        <xsd:element name="TicketsValue" minOccurs="1" maxOccurs="1" type="AUDIT_TRANSACTION_TIMEBAND_AMOUNTS2">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_TRANSACTION_CATEGORY_AMOUNTS">
+    <xsd:sequence>
+        <xsd:element name="TotalAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TotalTickets" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TotalFreeTickets" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_TRANSACTION_PERIOD">
+    <xsd:sequence>
+        <xsd:element name="AuditNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EndTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="DebitTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CreditTransactions" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TimeBands" minOccurs="0" maxOccurs="24" type="AUDIT_TRANSACTION_TIMEBAND_AMOUNTS">
+        </xsd:element>
+        <xsd:element name="Categories" minOccurs="0" maxOccurs="32" type="AUDIT_TRANSACTION_CATEGORY_AMOUNTS">
+        </xsd:element>
+        <xsd:element name="TotalCreditAmount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_TRANSACTION_PERIOD">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TriggerType" minOccurs="1" maxOccurs="1" type="EndAuditPeriodEnum" default="COIN_BOX_WITHDRAWAL">
+        </xsd:element>
+        <xsd:element name="TriggerSequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Data" minOccurs="1" maxOccurs="1" type="AUDIT_TRANSACTION_PERIOD">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_SPACE_SYSTEM_ZONE">
+    <xsd:sequence>
+        <xsd:element name="ZoneId" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TotalTransaction" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TotalAmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TotalAmountCharged" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_SPACE_SYSTEM_PERIOD">
+    <xsd:sequence>
+        <xsd:element name="AuditNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EndTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="nZones" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Zones" minOccurs="0" maxOccurs="256" type="AUDIT_SPACE_SYSTEM_ZONE">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_SPACE_SYSTEM_PERIOD">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TriggerType" minOccurs="1" maxOccurs="1" type="EndAuditPeriodEnum" default="COIN_BOX_WITHDRAWAL">
+        </xsd:element>
+        <xsd:element name="TriggerSequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Data" minOccurs="1" maxOccurs="1" type="AUDIT_SPACE_SYSTEM_PERIOD">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_TMS_CALL">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CardReaderType" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StartTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Duration" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Status" minOccurs="1" maxOccurs="1" type="CardProcessStatusEnum" default="FAILED">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_RECHARGE_LIMIT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Expiry" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Quantity" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_TEST_TOKEN">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Action" minOccurs="1" maxOccurs="1" type="TokenActionEnum" default="ERROR">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Action on token inserted
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_LOCK">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="LockType" minOccurs="1" maxOccurs="1" type="LMC_LockTypeEnum" default="UPPER_LOCK">
+        </xsd:element>
+        <xsd:element name="KeyPresentationTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="KeyNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-9223372036854775808"/>
+              <xsd:maxInclusive value="9223372036854775807"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Succeeded" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="LockStatus" minOccurs="1" maxOccurs="1" type="LMC_LockStatusEnum" default="LOCK_STATUS_UNKNOWN">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="PSU_STATISTICS_AV_MIN_MAX">
+    <xsd:sequence>
+        <xsd:element name="Average" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Min" minOccurs="1" maxOccurs="1" default="32767">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Max" minOccurs="1" maxOccurs="1" default="-32768">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_PSU_ACCUMULATOR">
+    <xsd:sequence>
+        <xsd:element name="CurrentAcc" minOccurs="1" maxOccurs="1" type="PSU_STATISTICS_AV_MIN_MAX">
+        </xsd:element>
+        <xsd:element name="VoltageAcc" minOccurs="1" maxOccurs="1" type="PSU_STATISTICS_AV_MIN_MAX">
+        </xsd:element>
+        <xsd:element name="Temperature" minOccurs="1" maxOccurs="1" type="PSU_STATISTICS_AV_MIN_MAX">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_PSU_STATISTICS_EXT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SampleCount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="10080"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="MainsOnSampleCount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="10080"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SolarOnSampleCount" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="10080"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Temperature" minOccurs="1" maxOccurs="1" type="PSU_STATISTICS_AV_MIN_MAX">
+        </xsd:element>
+        <xsd:element name="Accumulator1" minOccurs="1" maxOccurs="1" type="EVENT_LOG_PSU_ACCUMULATOR">
+        </xsd:element>
+        <xsd:element name="Accumulator2" minOccurs="1" maxOccurs="1" type="EVENT_LOG_PSU_ACCUMULATOR">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TEMP_PSU_ACCUMULATOR">
+    <xsd:sequence>
+        <xsd:element name="VoltageAcc" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CurrentAcc" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Temperature" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-128"/>
+              <xsd:maxInclusive value="127"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AccState" minOccurs="1" maxOccurs="1" type="AccStateEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="ChargeState" minOccurs="1" maxOccurs="1" type="AccChargeStateEnum" default="OFF">
+        </xsd:element>
+        <xsd:element name="LastReadVoltageAcc" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="NewAccState" minOccurs="1" maxOccurs="1" type="AccStateEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="nDischargeReadings" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AccumulatorNo" minOccurs="1" maxOccurs="1" default="1">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="1"/>
+              <xsd:maxInclusive value="2"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Missing" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="VoltageAccMV" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CurrentAccMA" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TEMP_PSU_EXT">
+    <xsd:sequence>
+        <xsd:element name="PsuState" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SupplyVoltage" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SupplyCurrent" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FwVersion" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="BoardIssue" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SystemFlags" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SystemStatus" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ALT_Status_0" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Solar" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="Mains" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="Accumulator1" minOccurs="1" maxOccurs="1" type="TEMP_PSU_ACCUMULATOR">
+        </xsd:element>
+        <xsd:element name="Accumulator2" minOccurs="1" maxOccurs="1" type="TEMP_PSU_ACCUMULATOR">
+        </xsd:element>
+        <xsd:element name="SupplyVoltageMV" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SupplyCurrentMA" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ChargerState" minOccurs="1" maxOccurs="1" type="PsuMonPicSelectEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="ChargerVoltageMV" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SolarVoltageMV" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SolarCurrentMA" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SolarOCVoltageMV" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SleepCurrentMA" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SolarSCCurrentMA" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="BoardTemperature" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-128"/>
+              <xsd:maxInclusive value="127"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="BatteryMode" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PrinterOn" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="ExtraTempSensors" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="DataValid" minOccurs="1" maxOccurs="1" type="PsuMonDataValidEnum" default="PSU_UNKNOWN">
+        </xsd:element>
+        <xsd:element name="A1" minOccurs="1" maxOccurs="1" type="PsuMonPicStatusEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="B1" minOccurs="1" maxOccurs="1" type="PsuMonPicStatusEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="C1" minOccurs="1" maxOccurs="1" type="PsuMonPicStatusEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="D1" minOccurs="1" maxOccurs="1" type="PsuMonPicStatusEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="E1" minOccurs="1" maxOccurs="1" type="PsuMonPicStatusEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="F1" minOccurs="1" maxOccurs="1" type="PsuMonPicStatusEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="A2" minOccurs="1" maxOccurs="1" type="PsuMonPicSelectEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="B2" minOccurs="1" maxOccurs="1" type="PsuMonPicSelectEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="C2" minOccurs="1" maxOccurs="1" type="PsuMonPicSelectEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="D2" minOccurs="1" maxOccurs="1" type="PsuMonPicSelectEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="E2" minOccurs="1" maxOccurs="1" type="PsuMonPicSelectEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="F2" minOccurs="1" maxOccurs="1" type="PsuMonPicSelectEnum" default="UNKNOWN">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_PSU_STATUS">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Status" minOccurs="1" maxOccurs="1" type="TEMP_PSU_EXT">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TEMP_MXD_FILE">
+    <xsd:sequence>
+        <xsd:element name="FileSize" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FileCrc" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FileName" minOccurs="1" maxOccurs="1" default="-">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="40"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Customer" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CreationTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ContentType" minOccurs="1" maxOccurs="1" type="MxdContentTypeEnum" default="SCHEMA_DATA">
+        </xsd:element>
+        <xsd:element name="Version" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EncryptionType" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ValidFromTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CompatibilityLevel" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CreationTz" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-840"/>
+              <xsd:maxInclusive value="840"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ValidFromTz" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-840"/>
+              <xsd:maxInclusive value="840"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_MXD_SINGLE_FILE">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="File" minOccurs="1" maxOccurs="1" type="TEMP_MXD_FILE">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="BACK_OFFICE_CMD">
+    <xsd:sequence>
+        <xsd:element name="SerialNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Command" minOccurs="1" maxOccurs="1" type="BackOfficeCmdEnum" default="UNDEFINED">
+        </xsd:element>
+        <xsd:element name="NumberPar1" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StringPar1" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="40"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_BACK_OFFICE_CMD">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Data" minOccurs="1" maxOccurs="1" type="BACK_OFFICE_CMD">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="BACK_OFFICE_RESP">
+    <xsd:sequence>
+        <xsd:element name="SerialNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Response" minOccurs="1" maxOccurs="1" type="BackOfficeRespEnum" default="SUCCESS">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_BACK_OFFICE_RESP">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Data" minOccurs="1" maxOccurs="1" type="BACK_OFFICE_RESP">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_CALL_REASON">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SessionSerialNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ApplicationStart" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="StatusFlagChange" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="ScheduledCall" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="BackOfficeCall" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="RetryAfterBusy" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="RetryAfterFailure" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="TestCall" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="ForcedCall" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="ImmediateJob" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_JENIMEX_PENALTY_PAYMENT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AmountCharged" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TariffCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="9"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PenaltyCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="9"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_MODEM_STATUS">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PowerMode" minOccurs="1" maxOccurs="1" type="PowerModeEnum" default="OFF">
+        </xsd:element>
+        <xsd:element name="SignalCSQ" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="99"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SignaldBm" minOccurs="1" maxOccurs="1" default="-113">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-128"/>
+              <xsd:maxInclusive value="127"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_TCPIP_CONNECTION">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="User" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="16"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Duration" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TxBytes" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="RxBytes" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_ANPR_OFFL_DB_RECORD_PURGE">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="RecordType" minOccurs="1" maxOccurs="1" type="PurgedRecordTypeEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="Reason" minOccurs="1" maxOccurs="1" type="PurgedRecordReasonEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="FirstTransactionSerialNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="LastTransactionSerialNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_BARCODE">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="BarcodeID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="42"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_AUDIT_VOUCHER">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="VoucherType" minOccurs="1" maxOccurs="1" type="VoucherSystemTypesEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="VoucherNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="31"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="AuthorisationCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="40"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Status" minOccurs="1" maxOccurs="1" type="VoucherProcessStatusEnum" default="FAILED">
+        </xsd:element>
+        <xsd:element name="AmountPaid" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="2147483647"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="IsRefund" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_OFFLINE_FILE_TRANSFER_START">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_OFFLINE_FILE_TRANSFER_END">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Result" minOccurs="1" maxOccurs="1" type="OfflineFileTransferResultEnum" default="SUCCESS">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_UI_STATE_RESULT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="State" minOccurs="1" maxOccurs="1" type="UiTxnStateEnum" default="STARTED">
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StateHistory" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="500"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="RegistrationNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG_X56_PRINT_RESULT">
+    <xsd:sequence>
+        <xsd:element name="Time" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SequenceNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TransactionSerialNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PrintCmdSeqNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PrintResult" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PaperControlError" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PaperControlStatus" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PrinterStatus" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EVENT_LOG">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="Startup" minOccurs="1" maxOccurs="1" type="EVENT_LOG_STARTUP">
+        </xsd:element>
+        <xsd:element name="ExceptionPostmortem" minOccurs="1" maxOccurs="1" type="EVENT_LOG_EXCEPTION_POSTMORTEM">
+        </xsd:element>
+        <xsd:element name="StatusFlagChange" minOccurs="1" maxOccurs="1" type="EVENT_LOG_STATUS_FLAG_CHANGE">
+        </xsd:element>
+        <xsd:element name="Transaction" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_TRANSACTION">
+        </xsd:element>
+        <xsd:element name="TransportTransaction" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_TRANSPORT_TRANS">
+        </xsd:element>
+        <xsd:element name="CardNonPayment" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CARD_NON_PAYMENT">
+        </xsd:element>
+        <xsd:element name="CardDebit" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CARD_DEBIT">
+        </xsd:element>
+        <xsd:element name="CardCredit" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CARD_CREDIT_REFUND">
+        </xsd:element>
+        <xsd:element name="CardRefund" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CARD_CREDIT_REFUND">
+        </xsd:element>
+        <xsd:element name="CoinDebit" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CASH_TRANS">
+        </xsd:element>
+        <xsd:element name="NoteDebit" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CASH_TRANS">
+        </xsd:element>
+        <xsd:element name="TokenDebit" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_TOKEN_TRANS">
+        </xsd:element>
+        <xsd:element name="CoinUnrefunded" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CASH_TRANS">
+        </xsd:element>
+        <xsd:element name="NoteUnrefunded" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CASH_TRANS">
+        </xsd:element>
+        <xsd:element name="KeyPresented" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_KEY_PRESENTED">
+        </xsd:element>
+        <xsd:element name="TicketStock" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_TICKET_STOCK_EVENT">
+        </xsd:element>
+        <xsd:element name="CardCollection" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CARD_COLLECTION">
+        </xsd:element>
+        <xsd:element name="CashBoxRemoved" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CASH_BOX_REMOVED">
+        </xsd:element>
+        <xsd:element name="CardAuditPeriodEnd" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_CARD_PERIOD">
+        </xsd:element>
+        <xsd:element name="TransactionAuditPeriodEnd" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_TRANSACTION_PERIOD">
+        </xsd:element>
+        <xsd:element name="SpaceSystemAuditPeriodEnd" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_SPACE_SYSTEM_PERIOD">
+        </xsd:element>
+        <xsd:element name="TmsCall" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_TMS_CALL">
+        </xsd:element>
+        <xsd:element name="RechargeLimitChange" minOccurs="1" maxOccurs="1" type="EVENT_LOG_RECHARGE_LIMIT">
+        </xsd:element>
+        <xsd:element name="TestToken" minOccurs="1" maxOccurs="1" type="EVENT_LOG_TEST_TOKEN">
+        </xsd:element>
+        <xsd:element name="Lock" minOccurs="1" maxOccurs="1" type="EVENT_LOG_LOCK">
+        </xsd:element>
+        <xsd:element name="PsuStatistics" minOccurs="1" maxOccurs="1" type="EVENT_LOG_PSU_STATISTICS_EXT">
+        </xsd:element>
+        <xsd:element name="PsuStatus" minOccurs="1" maxOccurs="1" type="EVENT_LOG_PSU_STATUS">
+        </xsd:element>
+        <xsd:element name="APP" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="CFG" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="TRF" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="DKL" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="HTL" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="CLT" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="PIC" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="BL3" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="LUL" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="BackOfficeCmd" minOccurs="1" maxOccurs="1" type="EVENT_LOG_BACK_OFFICE_CMD">
+        </xsd:element>
+        <xsd:element name="BackOfficeResp" minOccurs="1" maxOccurs="1" type="EVENT_LOG_BACK_OFFICE_RESP">
+        </xsd:element>
+        <xsd:element name="CallReason" minOccurs="1" maxOccurs="1" type="EVENT_LOG_CALL_REASON">
+        </xsd:element>
+        <xsd:element name="PenaltyTransaction" minOccurs="1" maxOccurs="1" type="EVENT_LOG_JENIMEX_PENALTY_PAYMENT">
+        </xsd:element>
+        <xsd:element name="ModemStatus" minOccurs="1" maxOccurs="1" type="EVENT_LOG_MODEM_STATUS">
+        </xsd:element>
+        <xsd:element name="TcpIpConnection" minOccurs="1" maxOccurs="1" type="EVENT_LOG_TCPIP_CONNECTION">
+        </xsd:element>
+        <xsd:element name="AnprOfflineDbRecordPurge" minOccurs="1" maxOccurs="1" type="EVENT_LOG_ANPR_OFFL_DB_RECORD_PURGE">
+        </xsd:element>
+        <xsd:element name="BarCode" minOccurs="1" maxOccurs="1" type="EVENT_LOG_BARCODE">
+        </xsd:element>
+        <xsd:element name="Voucher" minOccurs="1" maxOccurs="1" type="EVENT_LOG_AUDIT_VOUCHER">
+        </xsd:element>
+        <xsd:element name="OfflineFileTransferStart" minOccurs="1" maxOccurs="1" type="EVENT_LOG_OFFLINE_FILE_TRANSFER_START">
+        </xsd:element>
+        <xsd:element name="OfflineFileTransferEnd" minOccurs="1" maxOccurs="1" type="EVENT_LOG_OFFLINE_FILE_TRANSFER_END">
+        </xsd:element>
+        <xsd:element name="UiStateResult" minOccurs="1" maxOccurs="1" type="EVENT_LOG_UI_STATE_RESULT">
+        </xsd:element>
+        <xsd:element name="X56PrintResult" minOccurs="1" maxOccurs="1" type="EVENT_LOG_X56_PRINT_RESULT">
+        </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:element name="MetricDataFile" type="EVENT_LOG"/>
+
+</xsd:schema>

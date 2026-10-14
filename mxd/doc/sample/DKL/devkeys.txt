@@ -1,0 +1,163 @@
+MXD decode built on May 14 2009 at 14:48:41
+
+      Tag                Length  Value
+
+0000  FILE_TYPE               3  dkl
+0005  COMPATIBILITY_LEVEL     1  0
+0008  _MAJOR_VERSION          1  0
+000b  _MINOR_VERSION          1  0
+000e  ENCRYPTION_TYPE         1  0
+0011  COMPRESSION_TYPE        1  0
+0014  PRIM_SIG_TYPE           1  1
+0017  SEC_SIG_TYPE            1  0
+001a  PIN_TYPE                1  0
+001d  CUSTOMER               16  2010-06-04 10:23
+002f  ORIGINATING_COMPUTER    6  DEV044
+0037  USER_NAME               9  a.dimmock
+0042  INITIAL_CREATION_TIME   4  04 Jun 2010 09:23:49 +0000
+0048  FINAL_MODIFICATION_TIME   4  04 Jun 2010 09:23:49 +0000
+004e  VALID_FROM_TIME         4  04 Jun 2010 09:23:49 +0000
+0054  RSA_PUBLIC_KEY        140  30 81 89 02 81 81 00 c7 0c ee 66 39 9a 8d be 4a 18 a2 3c 51 9d d8 6f f3 b4 92 f5 fc c5 3c 41 62 09 70 64 4a 1d ba 36 aa 27 29 ea 03 95 e8 f5 8d f6 71 37 ce e4 02 fb 7e 10 f0 c6 22 6e 61 bb 01 5c 78 3a 21 a2 85 91 0c b5 df 9e 6d 05 75 a1 6d bd d7 c3 58 d9 37 d0 95 fd 2a 83 5b af 4a 21 cd 18 e5 41 82 19 7a 54 b9 1a 0d 98 eb b3 fc a6 7c 0f 48 e1 cf f4 15 2d a0 32 bc b8 ea 69 94 a3 db c0 1a 09 71 11 eb 0b 02 03 01 00 01 
+00e3  END_HEADER              0  
+
+00e5  start record   0
+00e5  Rec            1  KeyGroup[...]
+00f0  end record
+00f1  start record   1
+00f1  UTF8_STRING       Name
+00f7  UTF8_STRING       Type
+00fd  Rec            2  KeyList
+0107  Rec            4  AccessTimeList
+0118  end record
+0119  start record   2
+0119  Rec            3  KeyEntry[...]
+0124  end record
+0125  start record   3
+0125  UTF8_STRING       Name
+012b  VAR_INT64         KeyID
+0132  end record
+0133  start record   4
+0133  Rec            5  AccessTime[...]
+0140  end record
+0141  start record   5
+0141  VAR_INT64         DayOfWeekMask
+0150  Rec            6  Time[...]
+0157  end record
+0158  start record   6
+0158  Rec            7  StartTime
+0164  Rec            7  EndTime
+016e  end record
+016f  start record   7
+016f  VAR_INT64         Hour
+0175  VAR_INT64         Minute
+017d  end record
+017e  start record   8
+017e  Rec            0  KeyGroupsList
+018e  end schema, 9 records, schema size 170 bytes
+
+018f  KeyGroupsList             (
+0190    KeyGroup                  (
+0190      Name                      = "Cash Collectors"
+01a0      Type                      = "VAULT"
+01a6      KeyList                   (
+01a7        KeyEntry                  (
+01a7          Name                      = "Cash Collectors - Key 1"
+01bf          KeyID                     = 97514248   0x5cff308 
+            )
+01c3        KeyEntry                  (
+01c3          Name                      = "Cash Collectors - Key 2"
+01db          KeyID                     = 60617595649 0xe1d171b01 
+            )
+01e1        KeyEntry                  (
+01e1          Name                      = "Cash Collectors - Key 3"
+01f9          KeyID                     = 69821214977 0x1041ab3101 
+            )
+01ff        KeyEntry                  (
+01ff          Name                      = "Cash Collectors - Key 4"
+0217          KeyID                     = 688410241  0x29084e81 
+            )
+021c        KeyEntry                  (
+021c          Name                      = "Cash Collectors - Key 5"
+0234          KeyID                     = 49155445761 0xb71e49401 
+            )
+          )
+023a      AccessTimeList            (
+023b        AccessTime                (
+023b          DayOfWeekMask             = 127        0x7f 
+023e          Time                      (
+023e            StartTime                 (
+023e              Hour                      = 0          0x0 
+023f              Minute                    = 0          0x0 
+                )
+0240            EndTime                   (
+0240              Hour                      = 23         0x17 
+0241              Minute                    = 59         0x3b 
+                )
+              )
+            )
+          )
+        )
+0242    KeyGroup                  (
+0242      Name                      = "Service Engineers"
+0254      Type                      = "LOCK"
+0259      KeyList                   (
+025a        KeyEntry                  (
+025a          Name                      = "Service Engineers - Key 1"
+0274          KeyID                     = 61685665281 0xe5cc08e01 
+            )
+027a        KeyEntry                  (
+027a          Name                      = "Service Engineers - Key 2"
+0294          KeyID                     = 60608222977 0xe1c881701 
+            )
+029a        KeyEntry                  (
+029a          Name                      = "Service Engineers - Key 3"
+02b4          KeyID                     = 60601461761 0xe1c20ec01 
+            )
+02ba        KeyEntry                  (
+02ba          Name                      = "Service Engineers - Key 4"
+02d4          KeyID                     = 60735981569 0xe24258801 
+            )
+          )
+02da      AccessTimeList            (
+02db        AccessTime                (
+02db          DayOfWeekMask             = 127        0x7f 
+02de          Time                      (
+02de            StartTime                 (
+02de              Hour                      = 0          0x0 
+02df              Minute                    = 0          0x0 
+                )
+02e0            EndTime                   (
+02e0              Hour                      = 23         0x17 
+02e1              Minute                    = 59         0x3b 
+                )
+              )
+            )
+          )
+        )
+02e2    KeyGroup                  (
+02e2      Name                      = "Service Keys"
+02ef      Type                      = "SERVICE"
+02f7      KeyList                   (
+02f8        KeyEntry                  (
+02f8          Name                      = "Service Key 1"
+0306          KeyID                     = 60735981579 0xe2425880b 
+            )
+          )
+030c      AccessTimeList            (
+030d        AccessTime                (
+030d          DayOfWeekMask             = 127        0x7f 
+0310          Time                      (
+0310            StartTime                 (
+0310              Hour                      = 0          0x0 
+0311              Minute                    = 0          0x0 
+                )
+0312            EndTime                   (
+0312              Hour                      = 23         0x17 
+0313              Minute                    = 59         0x3b 
+                )
+              )
+            )
+          )
+        )
+      )
+0314  133 bytes trailer data

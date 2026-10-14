@@ -1,0 +1,675 @@
+MXD decode built on Jan 30 2009 at 12:17:36
+
+      Tag                Length  Value
+
+0000  INITIAL_CREATION_TIME   4  23 Jun 2023 19:10:32 +0000
+0006  ORIGINATING_COMPUTER    4  DFSP
+000c  COMPUTER_UID            8  000000001b15374c
+0016  END_HEADER              0  
+
+0018  start record   0
+0018  BOOL              Used
+001e  UTF8_STRING       Desc
+0024  UTF8_STRING       Version
+002d  end record
+002e  start record   1
+002e  BOOL              Used
+0034  UTF8_STRING       Desc
+003a  UTF8_STRING       SerialNumber
+0048  Rec            0  SwElement[...]
+0054  end record
+0055  start record   2
+0055  VAR_UINT64        DeviceRevision
+0065  UTF8_STRING       DeviceFamily
+0073  UTF8_STRING       ProgramFlash
+0081  UTF8_STRING       FlexNVM
+008a  end record
+008b  start record   3
+008b  ENUM              Type
+0091  UTF8_STRING       ModelNumber
+009e  UTF8_STRING       TID
+00a3  UTF8_STRING       MID
+00a8  UTF8_STRING       OEMID
+00af  UTF8_STRING       StationID
+00ba  UTF8_STRING       PAA_DSS_Ver
+00c7  UTF8_STRING       Version
+00d0  UTF8_STRING       MACAddr
+00d9  Rec            1  Component[...]
+00e5  end record
+00e6  start record   4
+00e6  UTF8_STRING       FirmwareVersion
+00f7  end record
+00f8  start record   5
+00f8  UTF8_STRING       SerialNumber
+0106  end record
+0107  start record   6
+0107  BOOL              Enabled
+0110  VAR_UINT64        MaxEntries
+011c  end record
+011d  start record   7
+011d  BOOL              Enabled
+0126  VAR_UINT64        TerminalId
+0132  end record
+0133  start record   8
+0133  BOOL              Enabled
+013c  VAR_UINT64        TerminalId
+0148  end record
+0149  start record   9
+0149  VAR_UINT64        FileSize
+0153  VAR_UINT64        FileCrc
+015c  UTF8_STRING       FileName
+0166  UTF8_STRING       Customer
+0170  VAR_UINT64        CreationTime
+017e  ENUM              ContentType
+018b  UTF8_STRING       Version
+0194  VAR_UINT64        EncryptionType
+01a4  VAR_UINT64        ValidFromTime
+01b3  VAR_UINT64        CompatibilityLevel
+01c7  VAR_INT64         CreationTz
+01d3  VAR_INT64         ValidFromTz
+01e0  end record
+01e1  start record  10
+01e1  UTF8_STRING       Revision
+01eb  Rec            2  Processor
+01f7  end record
+01f8  start record  11
+01f8  UTF8_STRING       Type
+01fe  UTF8_STRING       SerialNumber1
+020d  UTF8_STRING       SerialNumber2
+021c  UTF8_STRING       SerialNumber3
+022b  UTF8_STRING       ModelNumber
+0238  UTF8_STRING       SoftwareVersion1
+024a  UTF8_STRING       SoftwareVersion2
+025c  UTF8_STRING       SoftwareVersion3
+026e  UTF8_STRING       SoftwareVersion4
+0280  UTF8_STRING       SoftwareVersion5
+0292  UTF8_STRING       TID
+0297  UTF8_STRING       MID
+029c  UTF8_STRING       OEMID
+02a3  UTF8_STRING       StationID
+02ae  UTF8_STRING       PA_DSS_Version
+02be  UTF8_STRING       MACAddress
+02ca  end record
+02cb  start record  12
+02cb  Rec            3  CardReader
+02d8  end record
+02d9  start record  13
+02d9  BOOL              Enabled
+02e2  BOOL              Present
+02eb  VAR_INT64         NumScans
+02f5  UTF8_STRING       LastScanResult
+0305  end record
+0306  start record  14
+0306  UTF8_STRING       SoftwareVersion
+0317  end record
+0318  start record  15
+0318  UTF8_STRING       TerminalId
+0324  UTF8_STRING       TrmSwVersion
+0332  UTF8_STRING       VcsSwVersion
+0340  UTF8_STRING       TerminalSn
+034c  UTF8_STRING       ContactReaderSn
+035d  UTF8_STRING       ClessReaderSn
+036c  end record
+036d  start record  16
+036d  Rec            5  SerialNumber[...]
+037c  Rec            4  FirmwareVersion[...]
+038e  UTF8_STRING       TerminalId
+039a  end record
+039b  start record  17
+039b  UTF8_STRING       FwId
+03a1  UTF8_STRING       FwVersion
+03ac  end record
+03ad  start record  18
+03ad  UTF8_STRING       ListVersion
+03ba  VAR_UINT64        FolderNumber
+03c8  end record
+03c9  start record  19
+03c9  VAR_UINT64        VersionMajor
+03d7  VAR_UINT64        VersionMinor
+03e5  VAR_UINT64        IMXVersionMajor
+03f6  VAR_UINT64        IMXVersionMinor
+0407  end record
+0408  start record  20
+0408  VAR_UINT64        TermId
+0410  UTF8_STRING       FirmwareVersion
+0421  BOOL              Enabled276
+042d  BOOL              EnabledCash
+043a  end record
+043b  start record  21
+043b  UTF8_STRING       ManufacturerCode
+044d  UTF8_STRING       SerialNumber
+045b  UTF8_STRING       ModelNumber
+0468  VAR_UINT64        SoftwareVersion
+0479  end record
+047a  start record  22
+047a  UTF8_STRING       FirmwareVersion
+048b  UTF8_STRING       KeyPadName
+0497  end record
+0498  start record  23
+0498  BOOL              Enabled
+04a1  Rec            8  CardEase
+04ac  Rec            7  Base
+04b3  Rec            6  StoreForward
+04c2  end record
+04c3  start record  24
+04c3  UTF8_STRING       SoftwareVersion
+04d4  UTF8_STRING       SoftwarePackage
+04e5  UTF8_STRING       SixTerminalId
+04f4  UTF8_STRING       MACAddress
+0500  end record
+0501  start record  25
+0501  VAR_INT64         SerialNo
+050b  UTF8_STRING       Release
+0514  UTF8_STRING       Ux300SerialNumber
+0527  UTF8_STRING       Ux300SoftwareVersion
+053d  UTF8_STRING       Ux100SerialNumber
+0550  UTF8_STRING       Ux100SoftwareVersion
+0566  end record
+0567  start record  26
+0567  UTF8_STRING       FwId
+056d  UTF8_STRING       FwVersion
+0578  end record
+0579  start record  27
+0579  UTF8_STRING       Name
+057f  ENUM              Class
+0586  BOOL              Voice
+058d  BOOL              UseDhcp
+0596  VAR_UINT64        No
+059a  UTF8_STRING       ATI2Resp
+05a4  UTF8_STRING       ATCGMMResp
+05b0  UTF8_STRING       ATCGMIResp
+05bc  UTF8_STRING       ATCGMRResp
+05c8  UTF8_STRING       ATCGSNResp
+05d4  UTF8_STRING       ATiRP0Resp
+05e0  UTF8_STRING       ATiRP5Resp
+05ec  UTF8_STRING       ATiRP1Resp
+05f8  UTF8_STRING       ATiMACAResp
+0605  UTF8_STRING       ATICCIDResp
+0612  VAR_UINT64        SignalCSQ
+061d  VAR_INT64         SignaldBm
+0628  VAR_UINT64        Signalpct
+0633  ENUM              NetReg
+063b  UTF8_STRING       NwCarrier
+0646  UTF8_STRING       NwTechnology
+0654  UTF8_STRING       WizVersion
+0660  UTF8_STRING       WizMacAddr
+066c  UTF8_STRING       WizType
+0675  end record
+0676  start record  28
+0676  ENUM              Type
+067c  UTF8_STRING       FwVersion
+0687  UTF8_STRING       RejFile
+0690  UTF8_STRING       Validator
+069b  end record
+069c  start record  29
+069c  BOOL              ReportWhenMainsOff
+06b0  BOOL              ReportWhenSolarOff
+06c4  VAR_UINT64        FwVersion
+06cf  VAR_UINT64        BoardIssue
+06db  end record
+06dc  start record  30
+06dc  ENUM              VaultType
+06e7  VAR_UINT64        VaultFwVersion
+06f7  UTF8_STRING       VaultFwVersionStr
+070a  end record
+070b  start record  31
+070b  ENUM              UpperLockType
+071a  UTF8_STRING       UpperLockFwVersion
+072e  end record
+072f  start record  32
+072f  UTF8_STRING       DesignRef
+073a  UTF8_STRING       Version
+0743  end record
+0744  start record  33
+0744  ENUM              Type
+074a  VAR_UINT64        FwVersion
+0755  UTF8_STRING       FwVersionStr
+0763  end record
+0764  start record  34
+0764  VAR_UINT64        No
+0768  ENUM              Iso4217Code
+0775  VAR_UINT64        ExchangeRate
+0783  end record
+0784  start record  35
+0784  VAR_UINT64        No
+0788  UTF8_STRING       Id
+078c  BOOL              User
+0792  BOOL              Maint
+0799  end record
+079a  start record  36
+079a  UTF8_STRING       Version
+07a3  end record
+07a4  start record  37
+07a4  Rec            9  File
+07ab  end record
+07ac  start record  38
+07ac  UTF8_STRING       SysVer
+07b4  VAR_UINT64        SsVer[...]
+07bb  VAR_UINT64        SsCRC[...]
+07c2  end record
+07c3  start record  39
+07c3  UTF8_STRING       Name
+07c9  UTF8_STRING       Location
+07d3  UTF8_STRING       LocationId
+07df  UTF8_STRING       SerialNoStr
+07ec  end record
+07ed  start record  40
+07ed  start choice
+07ee  Rec           39  NameLocation
+07fd  Rec           38  PciVersion
+080a  Rec           37  MxdFile
+0814  Rec           36  Boot
+081b  Rec           35  Locale
+0824  Rec           34  Currency
+082f  Rec           33  Printer
+0839  Rec           32  CPLD
+0840  Rec           31  UpperLock
+084c  Rec           30  VaultLock
+0858  Rec           29  PSU
+085e  Rec           28  Coin
+0865  Rec           28  Note
+086c  Rec           27  Modem
+0874  Rec           26  Cadix
+087c  Rec           25  Csc
+0882  Rec           24  Atos
+0889  Rec           23  Authman
+0893  Rec           22  FrontPanel
+08a0  Rec           21  ChipnPin
+08ab  Rec           20  SwissCash
+08b7  Rec           19  Display
+08c1  Rec           18  Lul
+08c7  Rec           17  ContactCard
+08d5  Rec           16  GlobalCom
+08e1  Rec           15  Ingenico
+08ec  Rec           14  Gecr
+08f3  Rec           13  Voucher
+08fd  Rec           12  GenericCardReader
+0911  Rec           11  CardReader
+091e  Rec           10  CPUBoard
+0929  end choice
+092a  end schema, 41 records, schema size 2323 bytes
+
+092c  NameLocation              (
+092c    Name                      = "DFSP"
+0931    Location                  = ""
+0932    LocationId                = ""
+0933    SerialNoStr               = "IHT29999"
+      )
+093d  MxdFile                   (
+093d    File                      (
+093d      FileSize                  = 0          0x0 
+093e      FileCrc                   = 0          0x0 
+093f      FileName                  = "DF8151_B.AP3"
+094c      Customer                  = "SDH Test app"
+0959      CreationTime              = 1687515531 0x6495718b 23 Jun 2023 22:18:51
+095e      ContentType               = SCHEMA_DATA
+096a      Version                   = "SOUP HEAD"
+0974      EncryptionType            = 0          0x0 
+0975      ValidFromTime             = 0          0x0 
+0976      CompatibilityLevel        = 0          0x0 
+0977      CreationTz                = 0          0x0 
+0978      ValidFromTz               = 0          0x0 
+        )
+      )
+097a  MxdFile                   (
+097a    File                      (
+097a      FileSize                  = 8161       0x1fe1 
+097c      FileCrc                   = 3883285856 0xe7763d60 20 Jan 2093 23:30:56
+0981      FileName                  = "DFSYS_4.CFG"
+098d      Customer                  = ""
+098e      CreationTime              = 1686226130 0x6481c4d2 09 Jun 2023 00:08:50
+0993      ContentType               = SCHEMA_DATA
+099f      Version                   = ""
+09a0      EncryptionType            = 0          0x0 
+09a1      ValidFromTime             = 1686577026 0x64871f82 13 Jun 2023 01:37:06
+09a6      CompatibilityLevel        = 0          0x0 
+09a7      CreationTz                = 100        0x64 
+09a9      ValidFromTz               = 60         0x3c 
+        )
+      )
+09ab  PciVersion                (
+09ab    SysVer                    = "INVALID"
+09b4    SsVer                     = 0          0x0 
+09b5    SsVer                     = 0          0x0 
+09b6    SsVer                     = 5          0x5 
+09b7    SsVer                     = 11         0xb 
+09b8    SsVer                     = 3          0x3 
+09b9    SsVer                     = 0          0x0 
+09ba    SsVer                     = 13         0xd 
+09bb    SsVer                     = 3          0x3 
+09bc    SsVer                     = 4          0x4 
+09be    SsCRC                     = 4143744593 0xf6fc8651 24 Apr 2101 12:09:53
+09c3    SsCRC                     = 39783757   0x25f0d4d 
+09c7    SsCRC                     = 2334355727 0x8b23710f 22 Dec 2043 13:08:47
+09cc    SsCRC                     = 582894021  0x22be41c5 
+09d1    SsCRC                     = 384938831  0x16f1b34f 
+09d6    SsCRC                     = 2579951362 0x99c6ef02 04 Oct 2051 02:09:22
+09db    SsCRC                     = 3526700746 0xd2352eca 03 Oct 2081 20:05:46
+09e0    SsCRC                     = 2996431051 0xb299e8cb 14 Dec 2064 10:57:31
+09e5    SsCRC                     = 1054319014 0x3ed7a1a6 
+      )
+09eb  MxdFile                   (
+09eb    File                      (
+09eb      FileSize                  = 980        0x3d4 
+09ed      FileCrc                   = 589622275  0x2324ec03 
+09f2      FileName                  = "TARIFF.TRF"
+09fd      Customer                  = "2008-05-07 16:32"
+0a0e      CreationTime              = 1210177936 0x4821d990 08 May 2008 04:32:16
+0a13      ContentType               = SCHEMA_DATA
+0a1f      Version                   = ""
+0a20      EncryptionType            = 0          0x0 
+0a21      ValidFromTime             = 1210177936 0x4821d990 08 May 2008 04:32:16
+0a26      CompatibilityLevel        = 0          0x0 
+0a27      CreationTz                = 0          0x0 
+0a28      ValidFromTz               = 0          0x0 
+        )
+      )
+0a2a  MxdFile                   (
+0a2a    File                      (
+0a2a      FileSize                  = 0          0x0 
+0a2b      FileCrc                   = 0          0x0 
+0a2c      FileName                  = "-"
+0a2e      Customer                  = ""
+0a2f      CreationTime              = 0          0x0 
+0a30      ContentType               = SCHEMA_DATA
+0a3c      Version                   = ""
+0a3d      EncryptionType            = 0          0x0 
+0a3e      ValidFromTime             = 0          0x0 
+0a3f      CompatibilityLevel        = 0          0x0 
+0a40      CreationTz                = 0          0x0 
+0a41      ValidFromTz               = 0          0x0 
+        )
+      )
+0a43  MxdFile                   (
+0a43    File                      (
+0a43      FileSize                  = 0          0x0 
+0a44      FileCrc                   = 0          0x0 
+0a45      FileName                  = "-"
+0a47      Customer                  = ""
+0a48      CreationTime              = 0          0x0 
+0a49      ContentType               = SCHEMA_DATA
+0a55      Version                   = ""
+0a56      EncryptionType            = 0          0x0 
+0a57      ValidFromTime             = 0          0x0 
+0a58      CompatibilityLevel        = 0          0x0 
+0a59      CreationTz                = 0          0x0 
+0a5a      ValidFromTz               = 0          0x0 
+        )
+      )
+0a5c  Currency                  (
+0a5c    No                        = 0          0x0 
+0a5d    Iso4217Code               = USD
+0a61    ExchangeRate              = 1000       0x3e8 
+      )
+0a64  GenericCardReader         (
+0a64    CardReader                (
+0a64      Type                      = CADIX
+0a6a      ModelNumber               = ""
+0a6b      TID                       = ""
+0a6c      MID                       = ""
+0a6d      OEMID                     = ""
+0a6e      StationID                 = ""
+0a6f      PAA_DSS_Ver               = ""
+0a70      Version                   = ""
+0a71      MACAddr                   = ""
+0a73      Component                 (
+0a73        Used                      = 1          0x1 
+0a74        Desc                      = "1"
+0a76        SerialNumber              = "---"
+0a7b        SwElement                 (
+0a7b          Used                      = 1          0x1 
+0a7c          Desc                      = "BSK71-ML01"
+0a87          Version                   = "V04.05"
+            )
+0a8e        SwElement                 (
+0a8e          Used                      = 0          0x0 
+0a8f          Desc                      = "---"
+0a93          Version                   = "---"
+            )
+0a97        SwElement                 (
+0a97          Used                      = 0          0x0 
+0a98          Desc                      = "---"
+0a9c          Version                   = "---"
+            )
+          )
+0aa0      Component                 (
+0aa0        Used                      = 0          0x0 
+0aa1        Desc                      = "---"
+0aa5        SerialNumber              = "---"
+0aaa        SwElement                 (
+0aaa          Used                      = 0          0x0 
+0aab          Desc                      = "---"
+0aaf          Version                   = "---"
+            )
+0ab3        SwElement                 (
+0ab3          Used                      = 0          0x0 
+0ab4          Desc                      = "---"
+0ab8          Version                   = "---"
+            )
+0abc        SwElement                 (
+0abc          Used                      = 0          0x0 
+0abd          Desc                      = "---"
+0ac1          Version                   = "---"
+            )
+          )
+0ac5      Component                 (
+0ac5        Used                      = 0          0x0 
+0ac6        Desc                      = "---"
+0aca        SerialNumber              = "---"
+0acf        SwElement                 (
+0acf          Used                      = 0          0x0 
+0ad0          Desc                      = "---"
+0ad4          Version                   = "---"
+            )
+0ad8        SwElement                 (
+0ad8          Used                      = 0          0x0 
+0ad9          Desc                      = "---"
+0add          Version                   = "---"
+            )
+0ae1        SwElement                 (
+0ae1          Used                      = 0          0x0 
+0ae2          Desc                      = "---"
+0ae6          Version                   = "---"
+            )
+          )
+        )
+      )
+0aeb  GenericCardReader         (
+0aeb    CardReader                (
+0aeb      Type                      = INGENICO
+0af4      ModelNumber               = "ING"
+0af8      TID                       = ""
+0af9      MID                       = ""
+0afa      OEMID                     = ""
+0afb      StationID                 = ""
+0afc      PAA_DSS_Ver               = ""
+0afd      Version                   = "Ingenico non-CVM"
+0b0e      MACAddr                   = ""
+0b10      Component                 (
+0b10        Used                      = 1          0x1 
+0b11        Desc                      = "iUC1xxB"
+0b19        SerialNumber              = "20257375"
+0b23        SwElement                 (
+0b23          Used                      = 1          0x1 
+0b24          Desc                      = "---"
+0b28          Version                   = "417"
+            )
+0b2c        SwElement                 (
+0b2c          Used                      = 0          0x0 
+0b2d          Desc                      = "---"
+0b31          Version                   = "---"
+            )
+0b35        SwElement                 (
+0b35          Used                      = 0          0x0 
+0b36          Desc                      = "---"
+0b3a          Version                   = "---"
+            )
+          )
+0b3e      Component                 (
+0b3e        Used                      = 0          0x0 
+0b3f        Desc                      = "---"
+0b43        SerialNumber              = "---"
+0b48        SwElement                 (
+0b48          Used                      = 0          0x0 
+0b49          Desc                      = "---"
+0b4d          Version                   = "---"
+            )
+0b51        SwElement                 (
+0b51          Used                      = 0          0x0 
+0b52          Desc                      = "---"
+0b56          Version                   = "---"
+            )
+0b5a        SwElement                 (
+0b5a          Used                      = 0          0x0 
+0b5b          Desc                      = "---"
+0b5f          Version                   = "---"
+            )
+          )
+0b63      Component                 (
+0b63        Used                      = 0          0x0 
+0b64        Desc                      = "---"
+0b68        SerialNumber              = "---"
+0b6d        SwElement                 (
+0b6d          Used                      = 0          0x0 
+0b6e          Desc                      = "---"
+0b72          Version                   = "---"
+            )
+0b76        SwElement                 (
+0b76          Used                      = 0          0x0 
+0b77          Desc                      = "---"
+0b7b          Version                   = "---"
+            )
+0b7f        SwElement                 (
+0b7f          Used                      = 0          0x0 
+0b80          Desc                      = "---"
+0b84          Version                   = "---"
+            )
+          )
+        )
+      )
+0b89  Voucher                   (
+0b89    Enabled                   = 1          0x1 
+0b8a    Present                   = 1          0x1 
+0b8b    NumScans                  = 0          0x0 
+0b8c    LastScanResult            = ""
+      )
+0b8e  Printer                   (
+0b8e    Type                      = X56
+0b92    FwVersion                 = 0          0x0 
+0b93    FwVersionStr              = "R5-V2.01h"
+      )
+0b9e  Modem                     (
+0b9e    Name                      = "Direct WizChip"
+0bad    Class                     = WIZCHIP
+0bb5    Voice                     = 0          0x0 
+0bb6    UseDhcp                   = 1          0x1 
+0bb7    No                        = 0          0x0 
+0bb8    ATI2Resp                  = ""
+0bb9    ATCGMMResp                = ""
+0bba    ATCGMIResp                = ""
+0bbb    ATCGMRResp                = ""
+0bbc    ATCGSNResp                = ""
+0bbd    ATiRP0Resp                = ""
+0bbe    ATiRP5Resp                = ""
+0bbf    ATiRP1Resp                = ""
+0bc0    ATiMACAResp               = ""
+0bc1    ATICCIDResp               = ""
+0bc2    SignalCSQ                 = 0          0x0 
+0bc3    SignaldBm                 = 0          0x0 
+0bc4    Signalpct                 = 0          0x0 
+0bc5    NetReg                    = UNKNOWN
+0bcd    NwCarrier                 = ""
+0bce    NwTechnology              = ""
+0bcf    WizVersion                = "6.0"
+0bd3    WizMacAddr                = "00.08.DC.21.BA.65"
+0be5    WizType                   = "W7500S2E-R1"
+      )
+0bf2  UpperLock                 (
+0bf2    UpperLockType             = Integrated
+0bfd    UpperLockFwVersion        = "05.01"
+      )
+0c04  VaultLock                 (
+0c04    VaultType                 = S500049
+0c0c    VaultFwVersion            = 35         0x23 
+0c0d    VaultFwVersionStr         = "2.3"
+      )
+0c12  PSU                       (
+0c12    ReportWhenMainsOff        = 1          0x1 
+0c13    ReportWhenSolarOff        = 0          0x0 
+0c14    FwVersion                 = 1          0x1 
+0c15    BoardIssue                = 5          0x5 
+      )
+0c17  Boot                      (
+0c17    Version                   = "5.00N"
+      )
+0c1e  CPLD                      (
+0c1e    DesignRef                 = "0"
+0c20    Version                   = "3.01"
+      )
+0c26  FrontPanel                (
+0c26    FirmwareVersion           = "05.05"
+0c2c    KeyPadName                = "44-WAY-STD"
+      )
+0c38  Authman                   (
+0c38    Enabled                   = 1          0x1 
+0c39    CardEase                  (
+0c39      Enabled                   = 1          0x1 
+0c3a      TerminalId                = 99960000   0x5f544c0 
+        )
+0c3e    Base                      (
+0c3e      Enabled                   = 0          0x0 
+0c3f      TerminalId                = 99970000   0x5f56bd0 
+        )
+0c43    StoreForward              (
+0c43      Enabled                   = 0          0x0 
+0c44      MaxEntries                = 30         0x1e 
+        )
+      )
+0c46  MxdFile                   (
+0c46    File                      (
+0c46      FileSize                  = 0          0x0 
+0c47      FileCrc                   = 0          0x0 
+0c48      FileName                  = "-"
+0c4a      Customer                  = ""
+0c4b      CreationTime              = 0          0x0 
+0c4c      ContentType               = SCHEMA_DATA
+0c58      Version                   = ""
+0c59      EncryptionType            = 0          0x0 
+0c5a      ValidFromTime             = 0          0x0 
+0c5b      CompatibilityLevel        = 0          0x0 
+0c5c      CreationTz                = 0          0x0 
+0c5d      ValidFromTz               = 0          0x0 
+        )
+      )
+0c5f  Display                   (
+0c5f    VersionMajor              = 5          0x5 
+0c60    VersionMinor              = 3          0x3 
+0c61    IMXVersionMajor           = 0          0x0 
+0c62    IMXVersionMinor           = 0          0x0 
+      )
+0c64  MxdFile                   (
+0c64    File                      (
+0c64      FileSize                  = 0          0x0 
+0c65      FileCrc                   = 0          0x0 
+0c66      FileName                  = "-"
+0c68      Customer                  = ""
+0c69      CreationTime              = 0          0x0 
+0c6a      ContentType               = SCHEMA_DATA
+0c76      Version                   = ""
+0c77      EncryptionType            = 0          0x0 
+0c78      ValidFromTime             = 0          0x0 
+0c79      CompatibilityLevel        = 0          0x0 
+0c7a      CreationTz                = 0          0x0 
+0c7b      ValidFromTz               = 0          0x0 
+        )
+      )
+0c7d  CPUBoard                  (
+0c7d    Revision                  = "4"
+0c7f    Processor                 (
+0c7f      DeviceRevision            = 5          0x5 
+0c80      DeviceFamily              = "4 (K60)"
+0c88      ProgramFlash              = "11 (512 KB)"
+0c94      FlexNVM                   = "11 (512 KB)"
+        )
+      )
+0ca1  4 bytes trailer data

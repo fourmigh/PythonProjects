@@ -1,0 +1,19 @@
+一：
+7.2	Signature
+Due to Aura secure memory size limitations the RSA public key size is 512 bits.
+问题：
+但在C#代码中，private const int signatureSize = 128; // default of 1024 bit key
+文档里是512位，代码里是1024位，以哪个为准？
+
+二：
+#3-3, The data of PIN field at MXD file is used to generate a PIN code via SHA1(PIN Data) to compare to the service engineer input.
+SHA1(PIN Data) -> byte[24] -> [0,15] is the PIN Code
+问题：SHA1计算得到一个长度为20的byte数组，为什么是24？
+
+三：
+TEAN算法解密Schema和Data
+问题：
+只搜到TEA算法，不知是否就是TEAN算法（估计是，因为搜到的TEA算法示例中的DELTA值和C#代码中的一样）
+
+四：
+解密后的Schema和Data的数据如何解析？

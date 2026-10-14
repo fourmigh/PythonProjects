@@ -1,0 +1,827 @@
+MXD decode built on May 14 2009 at 14:48:41
+
+      Tag                Length  Value
+
+0000  INITIAL_CREATION_TIME   4  28 Feb 2023 13:01:33 +0000
+0006  ORIGINATING_COMPUTER    4  SAF2
+000c  COMPUTER_UID            8  0000003500001566
+0016  END_HEADER              0  
+
+0018  start record   0
+0018  VAR_UINT64        A
+001b  VAR_UINT64        B
+001e  VAR_UINT64        C
+0021  end record
+0022  start record   1
+0022  VAR_UINT64        ZoneId
+002a  VAR_UINT64        TotalTransaction
+003c  VAR_UINT64        TotalAmountPaid
+004d  VAR_UINT64        TotalAmountCharged
+0061  end record
+0062  start record   2
+0062  VAR_UINT64        TotalAmount
+006f  VAR_UINT64        TotalTickets
+007d  VAR_UINT64        TotalFreeTickets
+008f  end record
+0090  start record   3
+0090  Rec            0  NoFreeTimeInterval
+00a5  Rec            0  FreeTimeInterval
+00b8  Rec            0  TicketsValue
+00c7  end record
+00c8  start record   4
+00c8  ENUM              CardType
+00d2  VAR_UINT64        DebitTransactions
+00e5  VAR_UINT64        DebitAmount
+00f2  VAR_UINT64        CreditTransactions
+0106  VAR_UINT64        CreditAmount
+0114  VAR_UINT64        RefundedAmount
+0124  VAR_UINT64        UnRefundedAmount
+0136  end record
+0137  start record   5
+0137  ENUM              Iso4217Code
+0144  VAR_UINT64        DecimalPlaces
+0153  VAR_UINT64        GrandTotalAtLastCashBoxPull
+0170  VAR_UINT64        UnrefundedAtLastCashBoxPull
+018d  end record
+018e  start record   6
+018e  ENUM              Iso4217Code
+019b  VAR_UINT64        Denomination
+01a9  VAR_UINT64        Count
+01b0  VAR_UINT64        UnrefundedCount
+01c1  end record
+01c2  start record   7
+01c2  VAR_UINT64        SerialNo
+01cc  ENUM              Response
+01d6  end record
+01d7  start record   8
+01d7  VAR_UINT64        SerialNo
+01e1  ENUM              Command
+01ea  VAR_UINT64        NumberPar1
+01f6  UTF8_STRING       StringPar1
+0202  end record
+0203  start record   9
+0203  VAR_UINT64        FileSize
+020d  VAR_UINT64        FileCrc
+0216  UTF8_STRING       FileName
+0220  UTF8_STRING       Customer
+022a  VAR_UINT64        CreationTime
+0238  ENUM              ContentType
+0245  UTF8_STRING       Version
+024e  VAR_UINT64        EncryptionType
+025e  VAR_UINT64        ValidFromTime
+026d  VAR_UINT64        CompatibilityLevel
+0281  VAR_INT64         CreationTz
+028d  VAR_INT64         ValidFromTz
+029a  end record
+029b  start record  10
+029b  VAR_INT64         Average
+02a4  VAR_INT64         Min
+02a9  VAR_INT64         Max
+02ae  end record
+02af  start record  11
+02af  VAR_UINT64        AuditNo
+02b8  VAR_UINT64        StartTime
+02c3  VAR_UINT64        EndTime
+02cc  VAR_UINT64        nZones
+02d4  Rec            1  Zones[...]
+02dc  end record
+02dd  start record  12
+02dd  VAR_UINT64        AuditNo
+02e6  VAR_UINT64        StartTime
+02f1  VAR_UINT64        EndTime
+02fa  VAR_UINT64        DebitTransactions
+030d  VAR_UINT64        CreditTransactions
+0321  Rec            3  TimeBands[...]
+032d  Rec            2  Categories[...]
+033a  VAR_UINT64        TotalCreditAmount
+034d  end record
+034e  start record  13
+034e  VAR_UINT64        AuditNo
+0357  VAR_UINT64        StartTime
+0362  VAR_UINT64        EndTime
+036b  VAR_UINT64        CumDebitTransactions
+0381  VAR_UINT64        CumDebitAmount
+0391  VAR_UINT64        CumCreditTransactions
+03a8  VAR_UINT64        CumCreditAmount
+03b9  Rec            4  CardSystem[...]
+03c6  end record
+03c7  start record  14
+03c7  VAR_UINT64        CashboxPullNumber
+03da  VAR_UINT64        StartTime
+03e5  VAR_UINT64        EndTime
+03ee  VAR_UINT64        Transactions
+03fc  VAR_UINT64        Volume
+0404  VAR_UINT64        Value
+040b  VAR_UINT64        nItems
+0413  VAR_UINT64        nCurrencyGrandTotals
+0429  Rec            6  Item[...]
+0430  Rec            5  CurrencyGrandTotal[...]
+0445  VAR_UINT64        UnRefundedTransactions
+045d  VAR_UINT64        CumTotalTransactions
+0473  end record
+0474  start record  15
+0474  VAR_UINT64        AmountPaid
+0480  UTF8_STRING       TokenChannelId
+0490  end record
+0491  start record  16
+0491  VAR_UINT64        Time
+0497  VAR_UINT64        SequenceNumber
+04a7  ENUM              RecordType
+04b3  ENUM              Reason
+04bb  VAR_UINT64        FirstTransactionSerialNo
+04d5  VAR_UINT64        LastTransactionSerialNo
+04ee  end record
+04ef  start record  17
+04ef  VAR_UINT64        Time
+04f5  VAR_UINT64        SequenceNumber
+0505  UTF8_STRING       User
+050b  VAR_UINT64        Duration
+0515  VAR_UINT64        TxBytes
+051e  VAR_UINT64        RxBytes
+0527  end record
+0528  start record  18
+0528  VAR_UINT64        Time
+052e  VAR_UINT64        SequenceNumber
+053e  ENUM              PowerMode
+0549  VAR_UINT64        SignalCSQ
+0554  VAR_INT64         SignaldBm
+055f  end record
+0560  start record  19
+0560  VAR_UINT64        Time
+0566  VAR_UINT64        SequenceNumber
+0576  VAR_UINT64        TotalTicketsPrinted
+058b  VAR_UINT64        TotalRetries
+0599  VAR_UINT64        RetriesForLastTicket
+05af  end record
+05b0  start record  20
+05b0  VAR_UINT64        Time
+05b6  VAR_UINT64        SequenceNumber
+05c6  VAR_UINT64        TransactionSerialNumber
+05df  VAR_UINT64        AmountCharged
+05ee  VAR_UINT64        AmountPaid
+05fa  UTF8_STRING       TariffCode
+0606  UTF8_STRING       PenaltyCode
+0613  end record
+0614  start record  21
+0614  VAR_UINT64        Time
+061a  VAR_UINT64        SequenceNumber
+062a  VAR_UINT64        SessionSerialNo
+063b  BOOL              ApplicationStart
+064d  BOOL              StatusFlagChange
+065f  BOOL              ScheduledCall
+066e  BOOL              BackOfficeCall
+067e  BOOL              RetryAfterBusy
+068e  BOOL              RetryAfterFailure
+06a1  BOOL              TestCall
+06ab  BOOL              ForcedCall
+06b7  BOOL              ImmediateJob
+06c5  end record
+06c6  start record  22
+06c6  VAR_UINT64        Time
+06cc  VAR_UINT64        SequenceNumber
+06dc  Rec            7  Data
+06e3  end record
+06e4  start record  23
+06e4  VAR_UINT64        Time
+06ea  VAR_UINT64        SequenceNumber
+06fa  Rec            8  Data
+0701  end record
+0702  start record  24
+0702  VAR_UINT64        Time
+0708  VAR_UINT64        SequenceNumber
+0718  Rec            9  File
+071f  end record
+0720  start record  25
+0720  VAR_UINT64        Time
+0726  VAR_UINT64        SequenceNumber
+0736  VAR_UINT64        SampleCount
+0743  VAR_UINT64        MainsOnSampleCount
+0757  VAR_UINT64        SolarOnSampleCount
+076b  Rec           10  CurrentAcc
+0778  Rec           10  VoltageAcc
+0785  Rec           10  Temperature
+0793  end record
+0794  start record  26
+0794  VAR_UINT64        Time
+079a  VAR_UINT64        SequenceNumber
+07aa  ENUM              LockType
+07b4  VAR_UINT64        KeyPresentationTime
+07c9  VAR_INT64         KeyNumber
+07d4  BOOL              Succeeded
+07df  ENUM              LockStatus
+07eb  end record
+07ec  start record  27
+07ec  VAR_UINT64        Time
+07f2  VAR_UINT64        SequenceNumber
+0802  ENUM              Action
+080a  end record
+080b  start record  28
+080b  VAR_UINT64        Time
+0811  VAR_UINT64        SequenceNumber
+0821  VAR_UINT64        Expiry
+0829  VAR_UINT64        Quantity
+0833  end record
+0834  start record  29
+0834  VAR_UINT64        Time
+083a  VAR_UINT64        SequenceNumber
+084a  UTF8_STRING       CardReaderType
+085a  VAR_UINT64        StartTime
+0865  VAR_UINT64        Duration
+086f  ENUM              Status
+0877  end record
+0878  start record  30
+0878  VAR_UINT64        Time
+087e  VAR_UINT64        SequenceNumber
+088e  ENUM              TriggerType
+089b  VAR_UINT64        TriggerSequenceNumber
+08b2  Rec           11  Data
+08b9  end record
+08ba  start record  31
+08ba  VAR_UINT64        Time
+08c0  VAR_UINT64        SequenceNumber
+08d0  ENUM              TriggerType
+08dd  VAR_UINT64        TriggerSequenceNumber
+08f4  Rec           12  Data
+08fb  end record
+08fc  start record  32
+08fc  VAR_UINT64        Time
+0902  VAR_UINT64        SequenceNumber
+0912  ENUM              TriggerType
+091f  VAR_UINT64        TriggerSequenceNumber
+0936  Rec           13  Data
+093d  end record
+093e  start record  33
+093e  VAR_UINT64        Time
+0944  VAR_UINT64        SequenceNumber
+0954  ENUM              BoxType
+095d  Rec           14  Data
+0964  end record
+0965  start record  34
+0965  VAR_UINT64        Time
+096b  VAR_UINT64        SequenceNumber
+097b  ENUM              TriggerType
+0988  ENUM              CardType
+0992  end record
+0993  start record  35
+0993  VAR_UINT64        Time
+0999  VAR_UINT64        SequenceNumber
+09a9  ENUM              Printer
+09b2  VAR_UINT64        TimeChanged
+09bf  VAR_UINT64        OldRollLength
+09ce  VAR_UINT64        TicketsUsed
+09db  VAR_UINT64        NewRollLength
+09ea  end record
+09eb  start record  36
+09eb  VAR_UINT64        Time
+09f1  VAR_UINT64        SequenceNumber
+0a01  VAR_INT64         KeyNumber
+0a0c  ENUM              KeyType
+0a15  BOOL              Accepted
+0a1f  VAR_UINT64        PresentationTime
+0a31  VAR_UINT64        SerialNo
+0a3b  UTF8_STRING       Name
+0a41  end record
+0a42  start record  37
+0a42  VAR_UINT64        Time
+0a48  VAR_UINT64        SequenceNumber
+0a58  VAR_UINT64        TransactionSerialNumber
+0a71  VAR_UINT64        AmountPaid
+0a7d  Rec           15  TokenInfo[...]
+0a89  end record
+0a8a  start record  38
+0a8a  VAR_UINT64        Time
+0a90  VAR_UINT64        SequenceNumber
+0aa0  VAR_UINT64        TransactionSerialNumber
+0ab9  VAR_UINT64        AmountPaid
+0ac5  end record
+0ac6  start record  39
+0ac6  VAR_UINT64        Time
+0acc  VAR_UINT64        SequenceNumber
+0adc  VAR_UINT64        TransactionSerialNumber
+0af5  ENUM              CardType
+0aff  UTF8_STRING       CardNumber
+0b0b  ENUM              Iso4217Code
+0b18  UTF8_STRING       AuthorisationCode
+0b2b  ENUM              Status
+0b33  VAR_UINT64        AmountCredited
+0b43  VAR_UINT64        Balance
+0b4c  UTF8_STRING       TerminalId
+0b58  UTF8_STRING       LoyaltyID
+0b63  end record
+0b64  start record  40
+0b64  VAR_UINT64        Time
+0b6a  VAR_UINT64        SequenceNumber
+0b7a  VAR_UINT64        TransactionSerialNumber
+0b93  ENUM              CardType
+0b9d  UTF8_STRING       CardNumber
+0ba9  ENUM              Iso4217Code
+0bb6  UTF8_STRING       AuthorisationCode
+0bc9  ENUM              Status
+0bd1  VAR_UINT64        AmountPaid
+0bdd  VAR_UINT64        Balance
+0be6  UTF8_STRING       TerminalId
+0bf2  UTF8_STRING       LoyaltyID
+0bfd  end record
+0bfe  start record  41
+0bfe  VAR_UINT64        Time
+0c04  VAR_UINT64        SequenceNumber
+0c14  VAR_UINT64        TransactionSerialNumber
+0c2d  ENUM              CardType
+0c37  UTF8_STRING       CardNumber
+0c43  ENUM              Status
+0c4b  end record
+0c4c  start record  42
+0c4c  VAR_UINT64        Time
+0c52  VAR_UINT64        SequenceNumber
+0c62  VAR_UINT64        TransactionSerialNumber
+0c7b  VAR_UINT64        AmountCharged
+0c8a  VAR_UINT64        StartTime
+0c95  VAR_UINT64        EndTime
+0c9e  VAR_UINT64        NumberOfPassengers
+0cb2  UTF8_STRING       TariffCode
+0cbe  end record
+0cbf  start record  43
+0cbf  VAR_UINT64        Time
+0cc5  VAR_UINT64        SequenceNumber
+0cd5  ENUM              TransactionType
+0ce6  VAR_UINT64        TransactionSerialNumber
+0cff  VAR_UINT64        AmountCharged
+0d0e  VAR_UINT64        AmountPaid
+0d1a  UTF8_STRING       TariffCode
+0d26  VAR_UINT64        StartTime
+0d31  VAR_UINT64        EndTime
+0d3a  UTF8_STRING       RegistrationNumber
+0d4e  VAR_UINT64        SpaceNumber
+0d5b  VAR_UINT64        ZoneId
+0d63  ENUM              VrmSelected
+0d70  ENUM              ConcessionEntered
+0d83  UTF8_STRING       ConcessionCode
+0d93  UTF8_STRING       LoyaltyID
+0d9e  end record
+0d9f  start record  44
+0d9f  VAR_UINT64        Time
+0da5  VAR_UINT64        SequenceNumber
+0db5  BOOL              Set
+0dba  VAR_UINT64        Dev
+0dbf  VAR_UINT64        Flag
+0dc5  ENUM              Level
+0dcc  UTF8_STRING       DevDesc
+0dd5  UTF8_STRING       FlagDesc
+0ddf  end record
+0de0  start record  45
+0de0  VAR_UINT64        Time
+0de6  VAR_UINT64        SequenceNumber
+0df6  ENUM              CrashReason
+0e03  VAR_UINT64        Registers[...]
+0e0e  VAR_UINT64        Psr
+0e13  VAR_UINT64        Task
+0e19  VAR_UINT64        TaskStackStart
+0e29  VAR_UINT64        TaskStackEnd
+0e37  UTF8_STRING       TaskName
+0e41  end record
+0e42  start record  46
+0e42  VAR_UINT64        Time
+0e48  VAR_UINT64        SequenceNumber
+0e58  ENUM              StartupReason
+0e67  VAR_INT64         AccumulatorVoltage
+0e7b  end record
+0e7c  start record  47
+0e7c  start choice
+0e7d  Rec           46  Startup
+0e87  Rec           45  ExceptionPostmortem
+0e9d  Rec           44  StatusFlagChange
+0eb0  Rec           43  Transaction
+0ebe  Rec           42  TransportTransaction
+0ed5  Rec           41  CardNonPayment
+0ee6  Rec           40  CardDebit
+0ef2  Rec           39  CardCredit
+0eff  Rec           39  CardRefund
+0f0c  Rec           38  CoinDebit
+0f18  Rec           38  NoteDebit
+0f24  Rec           37  TokenDebit
+0f31  Rec           38  CoinUnrefunded
+0f42  Rec           38  NoteUnrefunded
+0f53  Rec           36  KeyPresented
+0f62  Rec           35  TicketStock
+0f70  Rec           34  CardCollection
+0f81  Rec           33  CashBoxRemoved
+0f92  Rec           32  CardAuditPeriodEnd
+0fa7  Rec           31  TransactionAuditPeriodEnd
+0fc3  Rec           30  SpaceSystemAuditPeriodEnd
+0fdf  Rec           29  TmsCall
+0fe9  Rec           28  RechargeLimitChange
+0fff  Rec           27  TestToken
+100b  Rec           26  Lock
+1012  Rec           25  PsuStatistics
+1022  Rec           24  APP
+1028  Rec           24  CFG
+102e  Rec           24  TRF
+1034  Rec           24  DKL
+103a  Rec           24  HTL
+1040  Rec           24  CLT
+1046  Rec           23  BackOfficeCmd
+1056  Rec           22  BackOfficeResp
+1067  Rec           21  CallReason
+1074  Rec           20  PenaltyTransaction
+1089  Rec           19  CutFailure
+1096  Rec           18  ModemStatus
+10a4  Rec           17  TcpIpConnection
+10b6  Rec           16  AnprOfflineDbRecordPurge
+10d1  end choice
+10d2  end schema, 48 records, schema size 4283 bytes
+
+10d4  BackOfficeResp            (
+10d4    Time                      = 1677589294 0x63fdfb2e 28 Feb 2023 21:01:34 +0800
+10d9    SequenceNumber            = 63         0x3f 
+10da    Data                      (
+10da      SerialNo                  = 1254       0x4e6 
+10dc      Response                  = SUCCESS
+        )
+      )
+10e5  TcpIpConnection           (
+10e5    Time                      = 1677589295 0x63fdfb2f 28 Feb 2023 21:01:35 +0800
+10ea    SequenceNumber            = 64         0x40 
+10eb    User                      = "REM-MAN"
+10f3    Duration                  = 3          0x3 
+10f4    TxBytes                   = 449        0x1c1 
+10f6    RxBytes                   = 603        0x25b 
+      )
+10f9  BackOfficeCmd             (
+10f9    Time                      = 1677589296 0x63fdfb30 28 Feb 2023 21:01:36 +0800
+10fe    SequenceNumber            = 65         0x41 
+10ff    Data                      (
+10ff      SerialNo                  = 1255       0x4e7 
+1101      Command                   = ELG_GET_LIST
+110e      NumberPar1                = 0          0x0 
+110f      StringPar1                = ""
+        )
+      )
+1111  TcpIpConnection           (
+1111    Time                      = 1677589297 0x63fdfb31 28 Feb 2023 21:01:37 +0800
+1116    SequenceNumber            = 66         0x42 
+1117    User                      = "REM-MAN"
+111f    Duration                  = 2          0x2 
+1120    TxBytes                   = 635        0x27b 
+1122    RxBytes                   = 602        0x25a 
+      )
+1125  BackOfficeResp            (
+1125    Time                      = 1677589297 0x63fdfb31 28 Feb 2023 21:01:37 +0800
+112a    SequenceNumber            = 67         0x43 
+112b    Data                      (
+112b      SerialNo                  = 1255       0x4e7 
+112d      Response                  = SUCCESS
+        )
+      )
+1136  TcpIpConnection           (
+1136    Time                      = 1677589297 0x63fdfb31 28 Feb 2023 21:01:37 +0800
+113b    SequenceNumber            = 68         0x44 
+113c    User                      = "REM-MAN"
+1144    Duration                  = 0          0x0 
+1145    TxBytes                   = 331        0x14b 
+1147    RxBytes                   = 203        0xcb 
+      )
+114a  TcpIpConnection           (
+114a    Time                      = 1677589318 0x63fdfb46 28 Feb 2023 21:01:58 +0800
+114f    SequenceNumber            = 69         0x45 
+1150    User                      = "REM-MAN"
+1158    Duration                  = 19         0x13 
+1159    TxBytes                   = 0          0x0 
+115a    RxBytes                   = 0          0x0 
+      )
+115c  CallReason                (
+115c    Time                      = 1677589320 0x63fdfb48 28 Feb 2023 21:02:00 +0800
+1161    SequenceNumber            = 70         0x46 
+1162    SessionSerialNo           = 13618      0x3532 
+1164    ApplicationStart          = 0          0x0 
+1165    StatusFlagChange          = 0          0x0 
+1166    ScheduledCall             = 0          0x0 
+1167    BackOfficeCall            = 0          0x0 
+1168    RetryAfterBusy            = 0          0x0 
+1169    RetryAfterFailure         = 1          0x1 
+116a    TestCall                  = 0          0x0 
+116b    ForcedCall                = 0          0x0 
+116c    ImmediateJob              = 0          0x0 
+      )
+116e  TcpIpConnection           (
+116e    Time                      = 1677589321 0x63fdfb49 28 Feb 2023 21:02:01 +0800
+1173    SequenceNumber            = 71         0x47 
+1174    User                      = "REM-MAN"
+117c    Duration                  = 1          0x1 
+117d    TxBytes                   = 560        0x230 
+117f    RxBytes                   = 203        0xcb 
+      )
+1182  BackOfficeCmd             (
+1182    Time                      = 1677589323 0x63fdfb4b 28 Feb 2023 21:02:03 +0800
+1187    SequenceNumber            = 72         0x48 
+1188    Data                      (
+1188      SerialNo                  = 1258       0x4ea 
+118a      Command                   = SET_CALL_TIME
+1198      NumberPar1                = 1677629100 0x63fe96ac  1 Mar 2023 08:05:00 +0800
+119d      StringPar1                = ""
+        )
+      )
+119f  BackOfficeResp            (
+119f    Time                      = 1677589323 0x63fdfb4b 28 Feb 2023 21:02:03 +0800
+11a4    SequenceNumber            = 73         0x49 
+11a5    Data                      (
+11a5      SerialNo                  = 1258       0x4ea 
+11a7      Response                  = SUCCESS
+        )
+      )
+11b0  TcpIpConnection           (
+11b0    Time                      = 1677589324 0x63fdfb4c 28 Feb 2023 21:02:04 +0800
+11b5    SequenceNumber            = 74         0x4a 
+11b6    User                      = "REM-MAN"
+11be    Duration                  = 2          0x2 
+11bf    TxBytes                   = 449        0x1c1 
+11c1    RxBytes                   = 607        0x25f 
+      )
+11c4  TcpIpConnection           (
+11c4    Time                      = 1677589343 0x63fdfb5f 28 Feb 2023 21:02:23 +0800
+11c9    SequenceNumber            = 75         0x4b 
+11ca    User                      = "REM-MAN"
+11d2    Duration                  = 19         0x13 
+11d3    TxBytes                   = 0          0x0 
+11d4    RxBytes                   = 0          0x0 
+      )
+11d6  ModemStatus               (
+11d6    Time                      = 1677589349 0x63fdfb65 28 Feb 2023 21:02:29 +0800
+11db    SequenceNumber            = 76         0x4c 
+11dc    PowerMode                 = OFF
+11e0    SignalCSQ                 = 0          0x0 
+11e1    SignaldBm                 = 0          0x0 
+      )
+11e3  CoinDebit                 (
+11e3    Time                      = 1677589352 0x63fdfb68 28 Feb 2023 21:02:32 +0800
+11e8    SequenceNumber            = 77         0x4d 
+11e9    TransactionSerialNumber   = 240        0xf0 
+11eb    AmountPaid                = 200        0xc8 
+      )
+11ee  ModemStatus               (
+11ee    Time                      = 1677589352 0x63fdfb68 28 Feb 2023 21:02:32 +0800
+11f3    SequenceNumber            = 78         0x4e 
+11f4    PowerMode                 = ON
+11f7    SignalCSQ                 = 0          0x0 
+11f8    SignaldBm                 = -113       0xffffffffffffff8f 
+      )
+11fb  Transaction               (
+11fb    Time                      = 1677589352 0x63fdfb68 28 Feb 2023 21:02:32 +0800
+1200    SequenceNumber            = 79         0x4f 
+1201    TransactionType           = DEBIT
+1207    TransactionSerialNumber   = 240        0xf0 
+1209    AmountCharged             = 170        0xaa 
+120b    AmountPaid                = 200        0xc8 
+120d    TariffCode                = "109A"
+1212    StartTime                 = 1677589320 0x63fdfb48 28 Feb 2023 21:02:00 +0800
+1217    EndTime                   = 1677592920 0x63fe0958 28 Feb 2023 22:02:00 +0800
+121c    RegistrationNumber        = "PP99PPP"
+1224    SpaceNumber               = 0          0x0 
+1225    ZoneId                    = 0          0x0 
+1226    VrmSelected               = ANPR
+122b    ConcessionEntered         = MANUAL
+1232    ConcessionCode            = ""
+1233    LoyaltyID                 = ""
+      )
+1235  CallReason                (
+1235    Time                      = 1677589380 0x63fdfb84 28 Feb 2023 21:03:00 +0800
+123a    SequenceNumber            = 80         0x50 
+123b    SessionSerialNo           = 13619      0x3533 
+123d    ApplicationStart          = 0          0x0 
+123e    StatusFlagChange          = 0          0x0 
+123f    ScheduledCall             = 0          0x0 
+1240    BackOfficeCall            = 0          0x0 
+1241    RetryAfterBusy            = 0          0x0 
+1242    RetryAfterFailure         = 1          0x1 
+1243    TestCall                  = 0          0x0 
+1244    ForcedCall                = 0          0x0 
+1245    ImmediateJob              = 0          0x0 
+      )
+1247  TcpIpConnection           (
+1247    Time                      = 1677589381 0x63fdfb85 28 Feb 2023 21:03:01 +0800
+124c    SequenceNumber            = 81         0x51 
+124d    User                      = "REM-MAN"
+1255    Duration                  = 1          0x1 
+1256    TxBytes                   = 560        0x230 
+1258    RxBytes                   = 203        0xcb 
+      )
+125b  TcpIpConnection           (
+125b    Time                      = 1677589382 0x63fdfb86 28 Feb 2023 21:03:02 +0800
+1260    SequenceNumber            = 82         0x52 
+1261    User                      = "REM-MAN"
+1269    Duration                  = 0          0x0 
+126a    TxBytes                   = 0          0x0 
+126b    RxBytes                   = 0          0x0 
+      )
+126d  ModemStatus               (
+126d    Time                      = 1677589388 0x63fdfb8c 28 Feb 2023 21:03:08 +0800
+1272    SequenceNumber            = 83         0x53 
+1273    PowerMode                 = OFF
+1277    SignalCSQ                 = 0          0x0 
+1278    SignaldBm                 = 0          0x0 
+      )
+127a  ModemStatus               (
+127a    Time                      = 1677589398 0x63fdfb96 28 Feb 2023 21:03:18 +0800
+127f    SequenceNumber            = 84         0x54 
+1280    PowerMode                 = ON
+1283    SignalCSQ                 = 0          0x0 
+1284    SignaldBm                 = -113       0xffffffffffffff8f 
+      )
+1287  ModemStatus               (
+1287    Time                      = 1677589434 0x63fdfbba 28 Feb 2023 21:03:54 +0800
+128c    SequenceNumber            = 85         0x55 
+128d    PowerMode                 = OFF
+1291    SignalCSQ                 = 0          0x0 
+1292    SignaldBm                 = 0          0x0 
+      )
+1294  ModemStatus               (
+1294    Time                      = 1677589440 0x63fdfbc0 28 Feb 2023 21:04:00 +0800
+1299    SequenceNumber            = 86         0x56 
+129a    PowerMode                 = ON
+129d    SignalCSQ                 = 0          0x0 
+129e    SignaldBm                 = -113       0xffffffffffffff8f 
+      )
+12a1  ModemStatus               (
+12a1    Time                      = 1677589476 0x63fdfbe4 28 Feb 2023 21:04:36 +0800
+12a6    SequenceNumber            = 87         0x57 
+12a7    PowerMode                 = OFF
+12ab    SignalCSQ                 = 0          0x0 
+12ac    SignaldBm                 = 0          0x0 
+      )
+12ae  ModemStatus               (
+12ae    Time                      = 1677589486 0x63fdfbee 28 Feb 2023 21:04:46 +0800
+12b3    SequenceNumber            = 88         0x58 
+12b4    PowerMode                 = ON
+12b7    SignalCSQ                 = 0          0x0 
+12b8    SignaldBm                 = -113       0xffffffffffffff8f 
+      )
+12bb  ModemStatus               (
+12bb    Time                      = 1677589522 0x63fdfc12 28 Feb 2023 21:05:22 +0800
+12c0    SequenceNumber            = 89         0x59 
+12c1    PowerMode                 = OFF
+12c5    SignalCSQ                 = 0          0x0 
+12c6    SignaldBm                 = 0          0x0 
+      )
+12c8  ModemStatus               (
+12c8    Time                      = 1677589680 0x63fdfcb0 28 Feb 2023 21:08:00 +0800
+12cd    SequenceNumber            = 90         0x5a 
+12ce    PowerMode                 = ON
+12d1    SignalCSQ                 = 0          0x0 
+12d2    SignaldBm                 = -113       0xffffffffffffff8f 
+      )
+12d5  ModemStatus               (
+12d5    Time                      = 1677589716 0x63fdfcd4 28 Feb 2023 21:08:36 +0800
+12da    SequenceNumber            = 91         0x5b 
+12db    PowerMode                 = OFF
+12df    SignalCSQ                 = 0          0x0 
+12e0    SignaldBm                 = 0          0x0 
+      )
+12e2  ModemStatus               (
+12e2    Time                      = 1677589725 0x63fdfcdd 28 Feb 2023 21:08:45 +0800
+12e7    SequenceNumber            = 92         0x5c 
+12e8    PowerMode                 = ON
+12eb    SignalCSQ                 = 0          0x0 
+12ec    SignaldBm                 = -113       0xffffffffffffff8f 
+      )
+12ef  ModemStatus               (
+12ef    Time                      = 1677589763 0x63fdfd03 28 Feb 2023 21:09:23 +0800
+12f4    SequenceNumber            = 93         0x5d 
+12f5    PowerMode                 = OFF
+12f9    SignalCSQ                 = 0          0x0 
+12fa    SignaldBm                 = 0          0x0 
+      )
+12fc  StatusFlagChange          (
+12fc    Time                      = 1677589771 0x63fdfd0b 28 Feb 2023 21:09:31 +0800
+1301    SequenceNumber            = 94         0x5e 
+1302    Set                       = 1          0x1 
+1303    Dev                       = 24         0x18 
+1304    Flag                      = 35         0x23 
+1305    Level                     = E
+1307    DevDesc                   = "card reader 2"
+1315    FlagDesc                  = "Hardware Lost"
+      )
+1324  CallReason                (
+1324    Time                      = 1677589771 0x63fdfd0b 28 Feb 2023 21:09:31 +0800
+1329    SequenceNumber            = 95         0x5f 
+132a    SessionSerialNo           = 13620      0x3534 
+132c    ApplicationStart          = 0          0x0 
+132d    StatusFlagChange          = 1          0x1 
+132e    ScheduledCall             = 0          0x0 
+132f    BackOfficeCall            = 0          0x0 
+1330    RetryAfterBusy            = 0          0x0 
+1331    RetryAfterFailure         = 0          0x0 
+1332    TestCall                  = 0          0x0 
+1333    ForcedCall                = 0          0x0 
+1334    ImmediateJob              = 0          0x0 
+      )
+1336  ModemStatus               (
+1336    Time                      = 1677589771 0x63fdfd0b 28 Feb 2023 21:09:31 +0800
+133b    SequenceNumber            = 96         0x60 
+133c    PowerMode                 = ON
+133f    SignalCSQ                 = 0          0x0 
+1340    SignaldBm                 = -113       0xffffffffffffff8f 
+      )
+1343  TcpIpConnection           (
+1343    Time                      = 1677589784 0x63fdfd18 28 Feb 2023 21:09:44 +0800
+1348    SequenceNumber            = 97         0x61 
+1349    User                      = "REM-MAN"
+1351    Duration                  = 13         0xd 
+1352    TxBytes                   = 593        0x251 
+1354    RxBytes                   = 203        0xcb 
+      )
+1357  BackOfficeCmd             (
+1357    Time                      = 1677589785 0x63fdfd19 28 Feb 2023 21:09:45 +0800
+135c    SequenceNumber            = 98         0x62 
+135d    Data                      (
+135d      SerialNo                  = 1265       0x4f1 
+135f      Command                   = SET_CALL_TIME
+136d      NumberPar1                = 1677629100 0x63fe96ac  1 Mar 2023 08:05:00 +0800
+1372      StringPar1                = ""
+        )
+      )
+1374  BackOfficeResp            (
+1374    Time                      = 1677589785 0x63fdfd19 28 Feb 2023 21:09:45 +0800
+1379    SequenceNumber            = 99         0x63 
+137a    Data                      (
+137a      SerialNo                  = 1265       0x4f1 
+137c      Response                  = SUCCESS
+        )
+      )
+1385  TcpIpConnection           (
+1385    Time                      = 1677589786 0x63fdfd1a 28 Feb 2023 21:09:46 +0800
+138a    SequenceNumber            = 100        0x64 
+138b    User                      = "REM-MAN"
+1393    Duration                  = 2          0x2 
+1394    TxBytes                   = 449        0x1c1 
+1396    RxBytes                   = 607        0x25f 
+      )
+1399  BackOfficeCmd             (
+1399    Time                      = 1677589787 0x63fdfd1b 28 Feb 2023 21:09:47 +0800
+139e    SequenceNumber            = 101        0x65 
+139f    Data                      (
+139f      SerialNo                  = 1264       0x4f0 
+13a1      Command                   = SYNC_TIME
+13ab      NumberPar1                = 1677589787 0x63fdfd1b 28 Feb 2023 21:09:47 +0800
+13b0      StringPar1                = ""
+        )
+      )
+13b2  BackOfficeResp            (
+13b2    Time                      = 1677589787 0x63fdfd1b 28 Feb 2023 21:09:47 +0800
+13b7    SequenceNumber            = 102        0x66 
+13b8    Data                      (
+13b8      SerialNo                  = 1264       0x4f0 
+13ba      Response                  = SUCCESS
+        )
+      )
+13c3  TcpIpConnection           (
+13c3    Time                      = 1677589787 0x63fdfd1b 28 Feb 2023 21:09:47 +0800
+13c8    SequenceNumber            = 103        0x67 
+13c9    User                      = "REM-MAN"
+13d1    Duration                  = 1          0x1 
+13d2    TxBytes                   = 449        0x1c1 
+13d4    RxBytes                   = 603        0x25b 
+      )
+13d7  BackOfficeCmd             (
+13d7    Time                      = 1677589788 0x63fdfd1c 28 Feb 2023 21:09:48 +0800
+13dc    SequenceNumber            = 104        0x68 
+13dd    Data                      (
+13dd      SerialNo                  = 1259       0x4eb 
+13df      Command                   = SIN_UPLOAD
+13ea      NumberPar1                = 0          0x0 
+13eb      StringPar1                = "sysinfo.sin"
+        )
+      )
+13f8  TcpIpConnection           (
+13f8    Time                      = 1677589790 0x63fdfd1e 28 Feb 2023 21:09:50 +0800
+13fd    SequenceNumber            = 105        0x69 
+13fe    User                      = "REM-MAN"
+1406    Duration                  = 3          0x3 
+1407    TxBytes                   = 2381       0x94d 
+1409    RxBytes                   = 611        0x263 
+      )
+140c  BackOfficeResp            (
+140c    Time                      = 1677589790 0x63fdfd1e 28 Feb 2023 21:09:50 +0800
+1411    SequenceNumber            = 106        0x6a 
+1412    Data                      (
+1412      SerialNo                  = 1259       0x4eb 
+1414      Response                  = SUCCESS
+        )
+      )
+141d  TcpIpConnection           (
+141d    Time                      = 1677589791 0x63fdfd1f 28 Feb 2023 21:09:51 +0800
+1422    SequenceNumber            = 107        0x6b 
+1423    User                      = "REM-MAN"
+142b    Duration                  = 1          0x1 
+142c    TxBytes                   = 331        0x14b 
+142e    RxBytes                   = 203        0xcb 
+      )
+1431  BackOfficeCmd             (
+1431    Time                      = 1677589794 0x63fdfd22 28 Feb 2023 21:09:54 +0800
+1436    SequenceNumber            = 108        0x6c 
+1437    Data                      (
+1437      SerialNo                  = 1260       0x4ec 
+1439      Command                   = ELG_START_NEW
+1447      NumberPar1                = 0          0x0 
+1448      StringPar1                = ""
+        )
+      )
+144a  4 bytes trailer data

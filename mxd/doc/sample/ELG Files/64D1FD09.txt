@@ -1,0 +1,2596 @@
+MXD decode built on Mar 24 2023 at 09:03:10
+
+      Tag                Length  Value
+
+0000  INITIAL_CREATION_TIME   4  08 Aug 2023 08:30:01 +0000
+0006  ORIGINATING_COMPUTER    4  TEST
+000c  COMPUTER_UID            8  0000000019e6e5e7
+0016  END_HEADER              0  
+
+0018  start record   0
+0018  VAR_UINT64        A
+001b  VAR_UINT64        B
+001e  VAR_UINT64        C
+0021  end record
+0022  start record   1
+0022  VAR_UINT64        VoltageAcc
+002e  VAR_INT64         CurrentAcc
+003a  VAR_INT64         Temperature
+0047  ENUM              AccState
+0051  ENUM              ChargeState
+005e  VAR_UINT64        LastReadVoltageAcc
+0072  ENUM              NewAccState
+007f  VAR_UINT64        nDischargeReadings
+0093  VAR_UINT64        AccumulatorNo
+00a2  BOOL              Missing
+00ab  VAR_UINT64        VoltageAccMV
+00b9  VAR_INT64         CurrentAccMA
+00c7  end record
+00c8  start record   2
+00c8  VAR_UINT64        ZoneId
+00d0  VAR_UINT64        TotalTransaction
+00e2  VAR_UINT64        TotalAmountPaid
+00f3  VAR_UINT64        TotalAmountCharged
+0107  end record
+0108  start record   3
+0108  VAR_UINT64        TotalAmount
+0115  VAR_UINT64        TotalTickets
+0123  VAR_UINT64        TotalFreeTickets
+0135  end record
+0136  start record   4
+0136  Rec            0  NoFreeTimeInterval
+014b  Rec            0  FreeTimeInterval
+015e  Rec            0  TicketsValue
+016d  end record
+016e  start record   5
+016e  ENUM              CardType
+0178  VAR_UINT64        DebitTransactions
+018b  VAR_UINT64        DebitAmount
+0198  VAR_UINT64        CreditTransactions
+01ac  VAR_UINT64        CreditAmount
+01ba  VAR_UINT64        RefundedAmount
+01ca  VAR_UINT64        UnRefundedAmount
+01dc  end record
+01dd  start record   6
+01dd  ENUM              Iso4217Code
+01ea  VAR_UINT64        DecimalPlaces
+01f9  VAR_UINT64        GrandTotalAtLastCashBoxPull
+0216  VAR_UINT64        UnrefundedAtLastCashBoxPull
+0233  end record
+0234  start record   7
+0234  ENUM              Iso4217Code
+0241  VAR_UINT64        Denomination
+024f  VAR_UINT64        Count
+0256  VAR_UINT64        UnrefundedCount
+0267  end record
+0268  start record   8
+0268  VAR_UINT64        SerialNo
+0272  ENUM              Response
+027c  end record
+027d  start record   9
+027d  VAR_UINT64        SerialNo
+0287  ENUM              Command
+0290  VAR_UINT64        NumberPar1
+029c  UTF8_STRING       StringPar1
+02a8  end record
+02a9  start record  10
+02a9  VAR_UINT64        FileSize
+02b3  VAR_UINT64        FileCrc
+02bc  UTF8_STRING       FileName
+02c6  UTF8_STRING       Customer
+02d0  VAR_UINT64        CreationTime
+02de  ENUM              ContentType
+02eb  UTF8_STRING       Version
+02f4  VAR_UINT64        EncryptionType
+0304  VAR_UINT64        ValidFromTime
+0313  VAR_UINT64        CompatibilityLevel
+0327  VAR_INT64         CreationTz
+0333  VAR_INT64         ValidFromTz
+0340  end record
+0341  start record  11
+0341  VAR_UINT64        PsuState
+034b  VAR_UINT64        SupplyVoltage
+035a  VAR_UINT64        SupplyCurrent
+0369  VAR_UINT64        FwVersion
+0374  VAR_UINT64        BoardIssue
+0380  VAR_UINT64        SystemFlags
+038d  VAR_UINT64        SystemStatus
+039b  VAR_UINT64        ALT_Status_0
+03a9  BOOL              Solar
+03b0  BOOL              Mains
+03b7  Rec            1  Accumulator1
+03c6  Rec            1  Accumulator2
+03d5  VAR_UINT64        SupplyVoltageMV
+03e6  VAR_UINT64        SupplyCurrentMA
+03f7  ENUM              ChargerState
+0405  VAR_UINT64        ChargerVoltageMV
+0417  VAR_UINT64        SolarVoltageMV
+0427  VAR_UINT64        SolarCurrentMA
+0437  VAR_UINT64        SolarOCVoltageMV
+0449  VAR_UINT64        SleepCurrentMA
+0459  VAR_UINT64        SolarSCCurrentMA
+046b  VAR_INT64         BoardTemperature
+047d  VAR_UINT64        BatteryMode
+048a  BOOL              PrinterOn
+0495  BOOL              ExtraTempSensors
+04a7  ENUM              DataValid
+04b2  ENUM              A1
+04b6  ENUM              B1
+04ba  ENUM              C1
+04be  ENUM              D1
+04c2  ENUM              E1
+04c6  ENUM              F1
+04ca  ENUM              A2
+04ce  ENUM              B2
+04d2  ENUM              C2
+04d6  ENUM              D2
+04da  ENUM              E2
+04de  ENUM              F2
+04e2  end record
+04e3  start record  12
+04e3  Rec           13  CurrentAcc
+04f0  Rec           13  VoltageAcc
+04fd  Rec           13  Temperature
+050b  end record
+050c  start record  13
+050c  VAR_INT64         Average
+0515  VAR_INT64         Min
+051a  VAR_INT64         Max
+051f  end record
+0520  start record  14
+0520  VAR_UINT64        AuditNo
+0529  VAR_UINT64        StartTime
+0534  VAR_UINT64        EndTime
+053d  VAR_UINT64        nZones
+0545  Rec            2  Zones[...]
+054d  end record
+054e  start record  15
+054e  VAR_UINT64        AuditNo
+0557  VAR_UINT64        StartTime
+0562  VAR_UINT64        EndTime
+056b  VAR_UINT64        DebitTransactions
+057e  VAR_UINT64        CreditTransactions
+0592  Rec            4  TimeBands[...]
+059e  Rec            3  Categories[...]
+05ab  VAR_UINT64        TotalCreditAmount
+05be  end record
+05bf  start record  16
+05bf  VAR_UINT64        AuditNo
+05c8  VAR_UINT64        StartTime
+05d3  VAR_UINT64        EndTime
+05dc  VAR_UINT64        CumDebitTransactions
+05f2  VAR_UINT64        CumDebitAmount
+0602  VAR_UINT64        CumCreditTransactions
+0619  VAR_UINT64        CumCreditAmount
+062a  Rec            5  CardSystem[...]
+0637  end record
+0638  start record  17
+0638  VAR_UINT64        CashboxPullNumber
+064b  VAR_UINT64        StartTime
+0656  VAR_UINT64        EndTime
+065f  VAR_UINT64        Transactions
+066d  VAR_UINT64        Volume
+0675  VAR_UINT64        Value
+067c  VAR_UINT64        nItems
+0684  VAR_UINT64        nCurrencyGrandTotals
+069a  Rec            7  Item[...]
+06a1  Rec            6  CurrencyGrandTotal[...]
+06b6  VAR_UINT64        UnRefundedTransactions
+06ce  VAR_UINT64        CumTotalTransactions
+06e4  end record
+06e5  start record  18
+06e5  VAR_UINT64        AmountPaid
+06f1  UTF8_STRING       TokenChannelId
+0701  end record
+0702  start record  19
+0702  VAR_UINT64        Time
+0708  VAR_UINT64        SequenceNumber
+0718  ENUM              Result
+0720  end record
+0721  start record  20
+0721  VAR_UINT64        Time
+0727  VAR_UINT64        SequenceNumber
+0737  end record
+0738  start record  21
+0738  VAR_UINT64        Time
+073e  VAR_UINT64        SequenceNumber
+074e  VAR_UINT64        TransactionSerialNumber
+0767  ENUM              VoucherType
+0774  UTF8_STRING       VoucherNumber
+0783  UTF8_STRING       AuthorisationCode
+0796  ENUM              Status
+079e  VAR_UINT64        AmountPaid
+07aa  BOOL              IsRefund
+07b4  end record
+07b5  start record  22
+07b5  VAR_UINT64        Time
+07bb  VAR_UINT64        SequenceNumber
+07cb  VAR_UINT64        TransactionSerialNumber
+07e4  UTF8_STRING       BarcodeID
+07ef  end record
+07f0  start record  23
+07f0  VAR_UINT64        Time
+07f6  VAR_UINT64        SequenceNumber
+0806  ENUM              RecordType
+0812  ENUM              Reason
+081a  VAR_UINT64        FirstTransactionSerialNo
+0834  VAR_UINT64        LastTransactionSerialNo
+084d  end record
+084e  start record  24
+084e  VAR_UINT64        Time
+0854  VAR_UINT64        SequenceNumber
+0864  UTF8_STRING       User
+086a  VAR_UINT64        Duration
+0874  VAR_UINT64        TxBytes
+087d  VAR_UINT64        RxBytes
+0886  end record
+0887  start record  25
+0887  VAR_UINT64        Time
+088d  VAR_UINT64        SequenceNumber
+089d  ENUM              PowerMode
+08a8  VAR_UINT64        SignalCSQ
+08b3  VAR_INT64         SignaldBm
+08be  end record
+08bf  start record  26
+08bf  VAR_UINT64        Time
+08c5  VAR_UINT64        SequenceNumber
+08d5  VAR_UINT64        TransactionSerialNumber
+08ee  VAR_UINT64        AmountCharged
+08fd  VAR_UINT64        AmountPaid
+0909  UTF8_STRING       TariffCode
+0915  UTF8_STRING       PenaltyCode
+0922  end record
+0923  start record  27
+0923  VAR_UINT64        Time
+0929  VAR_UINT64        SequenceNumber
+0939  VAR_UINT64        SessionSerialNo
+094a  BOOL              ApplicationStart
+095c  BOOL              StatusFlagChange
+096e  BOOL              ScheduledCall
+097d  BOOL              BackOfficeCall
+098d  BOOL              RetryAfterBusy
+099d  BOOL              RetryAfterFailure
+09b0  BOOL              TestCall
+09ba  BOOL              ForcedCall
+09c6  BOOL              ImmediateJob
+09d4  end record
+09d5  start record  28
+09d5  VAR_UINT64        Time
+09db  VAR_UINT64        SequenceNumber
+09eb  Rec            8  Data
+09f2  end record
+09f3  start record  29
+09f3  VAR_UINT64        Time
+09f9  VAR_UINT64        SequenceNumber
+0a09  Rec            9  Data
+0a10  end record
+0a11  start record  30
+0a11  VAR_UINT64        Time
+0a17  VAR_UINT64        SequenceNumber
+0a27  Rec           10  File
+0a2e  end record
+0a2f  start record  31
+0a2f  VAR_UINT64        Time
+0a35  VAR_UINT64        SequenceNumber
+0a45  Rec           11  Status
+0a4e  end record
+0a4f  start record  32
+0a4f  VAR_UINT64        Time
+0a55  VAR_UINT64        SequenceNumber
+0a65  VAR_UINT64        SampleCount
+0a72  VAR_UINT64        MainsOnSampleCount
+0a86  VAR_UINT64        SolarOnSampleCount
+0a9a  Rec           13  Temperature
+0aa8  Rec           12  Accumulator1
+0ab7  Rec           12  Accumulator2
+0ac6  end record
+0ac7  start record  33
+0ac7  VAR_UINT64        Time
+0acd  VAR_UINT64        SequenceNumber
+0add  ENUM              LockType
+0ae7  VAR_UINT64        KeyPresentationTime
+0afc  VAR_INT64         KeyNumber
+0b07  BOOL              Succeeded
+0b12  ENUM              LockStatus
+0b1e  end record
+0b1f  start record  34
+0b1f  VAR_UINT64        Time
+0b25  VAR_UINT64        SequenceNumber
+0b35  ENUM              Action
+0b3d  end record
+0b3e  start record  35
+0b3e  VAR_UINT64        Time
+0b44  VAR_UINT64        SequenceNumber
+0b54  VAR_UINT64        Expiry
+0b5c  VAR_UINT64        Quantity
+0b66  end record
+0b67  start record  36
+0b67  VAR_UINT64        Time
+0b6d  VAR_UINT64        SequenceNumber
+0b7d  UTF8_STRING       CardReaderType
+0b8d  VAR_UINT64        StartTime
+0b98  VAR_UINT64        Duration
+0ba2  ENUM              Status
+0baa  end record
+0bab  start record  37
+0bab  VAR_UINT64        Time
+0bb1  VAR_UINT64        SequenceNumber
+0bc1  ENUM              TriggerType
+0bce  VAR_UINT64        TriggerSequenceNumber
+0be5  Rec           14  Data
+0bec  end record
+0bed  start record  38
+0bed  VAR_UINT64        Time
+0bf3  VAR_UINT64        SequenceNumber
+0c03  ENUM              TriggerType
+0c10  VAR_UINT64        TriggerSequenceNumber
+0c27  Rec           15  Data
+0c2e  end record
+0c2f  start record  39
+0c2f  VAR_UINT64        Time
+0c35  VAR_UINT64        SequenceNumber
+0c45  ENUM              TriggerType
+0c52  VAR_UINT64        TriggerSequenceNumber
+0c69  Rec           16  Data
+0c70  end record
+0c71  start record  40
+0c71  VAR_UINT64        Time
+0c77  VAR_UINT64        SequenceNumber
+0c87  ENUM              BoxType
+0c90  Rec           17  Data
+0c97  end record
+0c98  start record  41
+0c98  VAR_UINT64        Time
+0c9e  VAR_UINT64        SequenceNumber
+0cae  ENUM              TriggerType
+0cbb  ENUM              CardType
+0cc5  end record
+0cc6  start record  42
+0cc6  VAR_UINT64        Time
+0ccc  VAR_UINT64        SequenceNumber
+0cdc  ENUM              Printer
+0ce5  VAR_UINT64        TimeChanged
+0cf2  VAR_UINT64        OldRollLength
+0d01  VAR_UINT64        TicketsUsed
+0d0e  VAR_UINT64        NewRollLength
+0d1d  end record
+0d1e  start record  43
+0d1e  VAR_UINT64        Time
+0d24  VAR_UINT64        SequenceNumber
+0d34  VAR_INT64         KeyNumber
+0d3f  ENUM              KeyType
+0d48  BOOL              Accepted
+0d52  VAR_UINT64        PresentationTime
+0d64  VAR_UINT64        SerialNo
+0d6e  UTF8_STRING       Name
+0d74  end record
+0d75  start record  44
+0d75  VAR_UINT64        Time
+0d7b  VAR_UINT64        SequenceNumber
+0d8b  VAR_UINT64        TransactionSerialNumber
+0da4  VAR_UINT64        AmountPaid
+0db0  Rec           18  TokenInfo[...]
+0dbc  end record
+0dbd  start record  45
+0dbd  VAR_UINT64        Time
+0dc3  VAR_UINT64        SequenceNumber
+0dd3  VAR_UINT64        TransactionSerialNumber
+0dec  VAR_UINT64        AmountPaid
+0df8  end record
+0df9  start record  46
+0df9  VAR_UINT64        Time
+0dff  VAR_UINT64        SequenceNumber
+0e0f  VAR_UINT64        TransactionSerialNumber
+0e28  ENUM              CardType
+0e32  UTF8_STRING       CardNumber
+0e3e  ENUM              Iso4217Code
+0e4b  UTF8_STRING       AuthorisationCode
+0e5e  ENUM              Status
+0e66  VAR_UINT64        AmountCredited
+0e76  VAR_UINT64        Balance
+0e7f  UTF8_STRING       TerminalId
+0e8b  UTF8_STRING       LoyaltyID
+0e96  end record
+0e97  start record  47
+0e97  VAR_UINT64        Time
+0e9d  VAR_UINT64        SequenceNumber
+0ead  VAR_UINT64        TransactionSerialNumber
+0ec6  ENUM              CardType
+0ed0  UTF8_STRING       CardNumber
+0edc  ENUM              Iso4217Code
+0ee9  UTF8_STRING       AuthorisationCode
+0efc  ENUM              Status
+0f04  VAR_UINT64        AmountPaid
+0f10  VAR_UINT64        Balance
+0f19  UTF8_STRING       TerminalId
+0f25  UTF8_STRING       LoyaltyID
+0f30  end record
+0f31  start record  48
+0f31  VAR_UINT64        Time
+0f37  VAR_UINT64        SequenceNumber
+0f47  VAR_UINT64        TransactionSerialNumber
+0f60  ENUM              CardType
+0f6a  UTF8_STRING       CardNumber
+0f76  ENUM              Status
+0f7e  end record
+0f7f  start record  49
+0f7f  VAR_UINT64        Time
+0f85  VAR_UINT64        SequenceNumber
+0f95  VAR_UINT64        TransactionSerialNumber
+0fae  VAR_UINT64        AmountCharged
+0fbd  VAR_UINT64        StartTime
+0fc8  VAR_UINT64        EndTime
+0fd1  VAR_UINT64        NumberOfPassengers
+0fe5  UTF8_STRING       TariffCode
+0ff1  end record
+0ff2  start record  50
+0ff2  VAR_UINT64        Time
+0ff8  VAR_UINT64        SequenceNumber
+1008  ENUM              TransactionType
+1019  VAR_UINT64        TransactionSerialNumber
+1032  VAR_UINT64        AmountCharged
+1041  VAR_UINT64        AmountPaid
+104d  UTF8_STRING       TariffCode
+1059  VAR_UINT64        StartTime
+1064  VAR_UINT64        EndTime
+106d  UTF8_STRING       RegistrationNumber
+1081  VAR_UINT64        SpaceNumber
+108e  VAR_UINT64        ZoneId
+1096  ENUM              VrmSelected
+10a3  ENUM              ConcessionEntered
+10b6  UTF8_STRING       ConcessionCode
+10c6  UTF8_STRING       LoyaltyID
+10d1  end record
+10d2  start record  51
+10d2  VAR_UINT64        Time
+10d8  VAR_UINT64        SequenceNumber
+10e8  BOOL              Set
+10ed  VAR_UINT64        Dev
+10f2  VAR_UINT64        Flag
+10f8  ENUM              Level
+10ff  UTF8_STRING       DevDesc
+1108  UTF8_STRING       FlagDesc
+1112  end record
+1113  start record  52
+1113  VAR_UINT64        Time
+1119  VAR_UINT64        SequenceNumber
+1129  ENUM              CrashReason
+1136  VAR_UINT64        Registers[...]
+1141  VAR_UINT64        Psr
+1146  VAR_UINT64        Task
+114c  VAR_UINT64        TaskStackStart
+115c  VAR_UINT64        TaskStackEnd
+116a  UTF8_STRING       TaskName
+1174  end record
+1175  start record  53
+1175  VAR_UINT64        Time
+117b  VAR_UINT64        SequenceNumber
+118b  ENUM              StartupReason
+119a  VAR_INT64         AccumulatorVoltage
+11ae  end record
+11af  start record  54
+11af  start choice
+11b0  Rec           53  Startup
+11ba  Rec           52  ExceptionPostmortem
+11d0  Rec           51  StatusFlagChange
+11e3  Rec           50  Transaction
+11f1  Rec           49  TransportTransaction
+1208  Rec           48  CardNonPayment
+1219  Rec           47  CardDebit
+1225  Rec           46  CardCredit
+1232  Rec           46  CardRefund
+123f  Rec           45  CoinDebit
+124b  Rec           45  NoteDebit
+1257  Rec           44  TokenDebit
+1264  Rec           45  CoinUnrefunded
+1275  Rec           45  NoteUnrefunded
+1286  Rec           43  KeyPresented
+1295  Rec           42  TicketStock
+12a3  Rec           41  CardCollection
+12b4  Rec           40  CashBoxRemoved
+12c5  Rec           39  CardAuditPeriodEnd
+12da  Rec           38  TransactionAuditPeriodEnd
+12f6  Rec           37  SpaceSystemAuditPeriodEnd
+1312  Rec           36  TmsCall
+131c  Rec           35  RechargeLimitChange
+1332  Rec           34  TestToken
+133e  Rec           33  Lock
+1345  Rec           32  PsuStatistics
+1355  Rec           31  PsuStatus
+1361  Rec           30  APP
+1367  Rec           30  CFG
+136d  Rec           30  TRF
+1373  Rec           30  DKL
+1379  Rec           30  HTL
+137f  Rec           30  CLT
+1385  Rec           30  PIC
+138b  Rec           30  BL3
+1391  Rec           30  LUL
+1397  Rec           29  BackOfficeCmd
+13a7  Rec           28  BackOfficeResp
+13b8  Rec           27  CallReason
+13c5  Rec           26  PenaltyTransaction
+13da  Rec           25  ModemStatus
+13e8  Rec           24  TcpIpConnection
+13fa  Rec           23  AnprOfflineDbRecordPurge
+1415  Rec           22  BarCode
+141f  Rec           21  Voucher
+1429  Rec           20  OfflineFileTransferStart
+1444  Rec           19  OfflineFileTransferEnd
+145d  end choice
+145e  end schema, 55 records, schema size 5191 bytes
+
+1460  StatusFlagChange          (
+1460    Time                      = 1691483445 0x64d1fd35  8 Aug 2023 16:30:45 +0800
+1465    SequenceNumber            = 24         0x18 
+1466    Set                       = 1          0x1 
+1467    Dev                       = 20         0x14 
+1468    Flag                      = 8          0x8 
+1469    Level                     = E
+146b    DevDesc                   = "vault"
+1471    FlagDesc                  = "vault open"
+      )
+147d  StatusFlagChange          (
+147d    Time                      = 1691483446 0x64d1fd36  8 Aug 2023 16:30:46 +0800
+1482    SequenceNumber            = 25         0x19 
+1483    Set                       = 1          0x1 
+1484    Dev                       = 17         0x11 
+1485    Flag                      = 15         0xf 
+1486    Level                     = E
+1488    DevDesc                   = "general"
+1490    FlagDesc                  = "out of service"
+      )
+14a0  StatusFlagChange          (
+14a0    Time                      = 1691483446 0x64d1fd36  8 Aug 2023 16:30:46 +0800
+14a5    SequenceNumber            = 26         0x1a 
+14a6    Set                       = 1          0x1 
+14a7    Dev                       = 20         0x14 
+14a8    Flag                      = 0          0x0 
+14a9    Level                     = E
+14ab    DevDesc                   = "vault"
+14b1    FlagDesc                  = "vault alarm"
+      )
+14be  Startup                   (
+14be    Time                      = 1691483494 0x64d1fd66  8 Aug 2023 16:31:34 +0800
+14c3    SequenceNumber            = 0          0x0 
+14c4    StartupReason             = POWER_ON
+14cd    AccumulatorVoltage        = -28649     0xffffffffffff9017 
+      )
+14d1  StatusFlagChange          (
+14d1    Time                      = 1691483496 0x64d1fd68  8 Aug 2023 16:31:36 +0800
+14d6    SequenceNumber            = 1          0x1 
+14d7    Set                       = 1          0x1 
+14d8    Dev                       = 9          0x9 
+14d9    Flag                      = 5          0x5 
+14da    Level                     = W
+14dc    DevDesc                   = "power supply"
+14e9    FlagDesc                  = "no mains at the moment"
+      )
+1501  StatusFlagChange          (
+1501    Time                      = 1691483496 0x64d1fd68  8 Aug 2023 16:31:36 +0800
+1506    SequenceNumber            = 2          0x2 
+1507    Set                       = 0          0x0 
+1508    Dev                       = 17         0x11 
+1509    Flag                      = 29         0x1d 
+150a    Level                     = I
+150c    DevDesc                   = "general"
+1514    FlagDesc                  = "Machine problems"
+      )
+1526  StatusFlagChange          (
+1526    Time                      = 1691483502 0x64d1fd6e  8 Aug 2023 16:31:42 +0800
+152b    SequenceNumber            = 3          0x3 
+152c    Set                       = 1          0x1 
+152d    Dev                       = 19         0x13 
+152e    Flag                      = 8          0x8 
+152f    Level                     = E
+1531    DevDesc                   = "upper lock"
+153c    FlagDesc                  = "lock bar open"
+      )
+154b  StatusFlagChange          (
+154b    Time                      = 1691483503 0x64d1fd6f  8 Aug 2023 16:31:43 +0800
+1550    SequenceNumber            = 4          0x4 
+1551    Set                       = 1          0x1 
+1552    Dev                       = 17         0x11 
+1553    Flag                      = 15         0xf 
+1554    Level                     = E
+1556    DevDesc                   = "general"
+155e    FlagDesc                  = "out of service"
+      )
+156e  StatusFlagChange          (
+156e    Time                      = 1691483503 0x64d1fd6f  8 Aug 2023 16:31:43 +0800
+1573    SequenceNumber            = 5          0x5 
+1574    Set                       = 1          0x1 
+1575    Dev                       = 19         0x13 
+1576    Flag                      = 7          0x7 
+1577    Level                     = E
+1579    DevDesc                   = "upper lock"
+1584    FlagDesc                  = "door open"
+      )
+158f  StatusFlagChange          (
+158f    Time                      = 1691483503 0x64d1fd6f  8 Aug 2023 16:31:43 +0800
+1594    SequenceNumber            = 6          0x6 
+1595    Set                       = 1          0x1 
+1596    Dev                       = 19         0x13 
+1597    Flag                      = 10         0xa 
+1598    Level                     = E
+159a    DevDesc                   = "upper lock"
+15a5    FlagDesc                  = "upper lock fault"
+      )
+15b7  StatusFlagChange          (
+15b7    Time                      = 1691483503 0x64d1fd6f  8 Aug 2023 16:31:43 +0800
+15bc    SequenceNumber            = 7          0x7 
+15bd    Set                       = 1          0x1 
+15be    Dev                       = 19         0x13 
+15bf    Flag                      = 17         0x11 
+15c0    Level                     = W
+15c2    DevDesc                   = "upper lock"
+15cd    FlagDesc                  = "door unlocked"
+      )
+15dc  StatusFlagChange          (
+15dc    Time                      = 1691483503 0x64d1fd6f  8 Aug 2023 16:31:43 +0800
+15e1    SequenceNumber            = 8          0x8 
+15e2    Set                       = 1          0x1 
+15e3    Dev                       = 20         0x14 
+15e4    Flag                      = 8          0x8 
+15e5    Level                     = E
+15e7    DevDesc                   = "vault"
+15ed    FlagDesc                  = "vault open"
+      )
+15f9  StatusFlagChange          (
+15f9    Time                      = 1691483504 0x64d1fd70  8 Aug 2023 16:31:44 +0800
+15fe    SequenceNumber            = 9          0x9 
+15ff    Set                       = 1          0x1 
+1600    Dev                       = 20         0x14 
+1601    Flag                      = 9          0x9 
+1602    Level                     = E
+1604    DevDesc                   = "vault"
+160a    FlagDesc                  = "vault fault"
+      )
+1617  StatusFlagChange          (
+1617    Time                      = 1691483521 0x64d1fd81  8 Aug 2023 16:32:01 +0800
+161c    SequenceNumber            = 10         0xa 
+161d    Set                       = 1          0x1 
+161e    Dev                       = 4          0x4 
+161f    Flag                      = 0          0x0 
+1620    Level                     = E
+1622    DevDesc                   = "coin system"
+162e    FlagDesc                  = "coin box out"
+      )
+163c  CashBoxRemoved            (
+163c    Time                      = 1691483522 0x64d1fd82  8 Aug 2023 16:32:02 +0800
+1641    SequenceNumber            = 11         0xb 
+1642    BoxType                   = COIN
+1647    Data                      (
+1647      CashboxPullNumber         = 4          0x4 
+1648      StartTime                 = 1687514394 0x64956d1a 23 Jun 2023 17:59:54 +0800
+164d      EndTime                   = 1691483522 0x64d1fd82  8 Aug 2023 16:32:02 +0800
+1652      Transactions              = 6          0x6 
+1653      Volume                    = 110        0x6e 
+1654      Value                     = 420        0x1a4 
+1656      nItems                    = 4          0x4 
+1657      nCurrencyGrandTotals      = 1          0x1 
+1659      Item                      (
+1659        Iso4217Code               = GBP
+165d        Denomination              = 10         0xa 
+165e        Count                     = 2          0x2 
+165f        UnrefundedCount           = 0          0x0 
+          )
+1660      Item                      (
+1660        Iso4217Code               = GBP
+1664        Denomination              = 20         0x14 
+1665        Count                     = 5          0x5 
+1666        UnrefundedCount           = 0          0x0 
+          )
+1667      Item                      (
+1667        Iso4217Code               = GBP
+166b        Denomination              = 50         0x32 
+166c        Count                     = 4          0x4 
+166d        UnrefundedCount           = 0          0x0 
+          )
+166e      Item                      (
+166e        Iso4217Code               = GBP
+1672        Denomination              = 100        0x64 
+1673        Count                     = 1          0x1 
+1674        UnrefundedCount           = 0          0x0 
+          )
+1676      CurrencyGrandTotal        (
+1676        Iso4217Code               = GBP
+167a        DecimalPlaces             = 2          0x2 
+167b        GrandTotalAtLastCashBoxPull = 0          0x0 
+167c        UnrefundedAtLastCashBoxPull = 0          0x0 
+          )
+167d      UnRefundedTransactions    = 0          0x0 
+167e      CumTotalTransactions      = 13         0xd 
+        )
+      )
+1680  CardAuditPeriodEnd        (
+1680    Time                      = 1691483524 0x64d1fd84  8 Aug 2023 16:32:04 +0800
+1685    SequenceNumber            = 12         0xc 
+1686    TriggerType               = COIN_BOX_WITHDRAWAL
+169a    TriggerSequenceNumber     = 4          0x4 
+169b    Data                      (
+169b      AuditNo                   = 4          0x4 
+169c      StartTime                 = 1687514395 0x64956d1b 23 Jun 2023 17:59:55 +0800
+16a1      EndTime                   = 1691483524 0x64d1fd84  8 Aug 2023 16:32:04 +0800
+16a6      CumDebitTransactions      = 10         0xa 
+16a7      CumDebitAmount            = 2400       0x960 
+16a9      CumCreditTransactions     = 0          0x0 
+16aa      CumCreditAmount           = 0          0x0 
+16ac      CardSystem                (
+16ac        CardType                  = CHIP_N_PIN
+16b7        DebitTransactions         = 1          0x1 
+16b8        DebitAmount               = 50         0x32 
+16b9        CreditTransactions        = 0          0x0 
+16ba        CreditAmount              = 0          0x0 
+16bb        RefundedAmount            = 0          0x0 
+16bc        UnRefundedAmount          = 0          0x0 
+          )
+16bd      CardSystem                (
+16bd        CardType                  = BANKSYS
+16c5        DebitTransactions         = 0          0x0 
+16c6        DebitAmount               = 0          0x0 
+16c7        CreditTransactions        = 0          0x0 
+16c8        CreditAmount              = 0          0x0 
+16c9        RefundedAmount            = 0          0x0 
+16ca        UnRefundedAmount          = 0          0x0 
+          )
+16cb      CardSystem                (
+16cb        CardType                  = GPM276
+16d2        DebitTransactions         = 0          0x0 
+16d3        DebitAmount               = 0          0x0 
+16d4        CreditTransactions        = 0          0x0 
+16d5        CreditAmount              = 0          0x0 
+16d6        RefundedAmount            = 0          0x0 
+16d7        UnRefundedAmount          = 0          0x0 
+          )
+16d8      CardSystem                (
+16d8        CardType                  = METRIC_SYNC
+16e4        DebitTransactions         = 0          0x0 
+16e5        DebitAmount               = 0          0x0 
+16e6        CreditTransactions        = 0          0x0 
+16e7        CreditAmount              = 0          0x0 
+16e8        RefundedAmount            = 0          0x0 
+16e9        UnRefundedAmount          = 0          0x0 
+          )
+16ea      CardSystem                (
+16ea        CardType                  = ISO7813
+16f2        DebitTransactions         = 0          0x0 
+16f3        DebitAmount               = 0          0x0 
+16f4        CreditTransactions        = 0          0x0 
+16f5        CreditAmount              = 0          0x0 
+16f6        RefundedAmount            = 0          0x0 
+16f7        UnRefundedAmount          = 0          0x0 
+          )
+16f8      CardSystem                (
+16f8        CardType                  = UEPS_BMS
+1701        DebitTransactions         = 0          0x0 
+1702        DebitAmount               = 0          0x0 
+1703        CreditTransactions        = 0          0x0 
+1704        CreditAmount              = 0          0x0 
+1705        RefundedAmount            = 0          0x0 
+1706        UnRefundedAmount          = 0          0x0 
+          )
+1707      CardSystem                (
+1707        CardType                  = CHIPKNIP
+1710        DebitTransactions         = 0          0x0 
+1711        DebitAmount               = 0          0x0 
+1712        CreditTransactions        = 0          0x0 
+1713        CreditAmount              = 0          0x0 
+1714        RefundedAmount            = 0          0x0 
+1715        UnRefundedAmount          = 0          0x0 
+          )
+1716      CardSystem                (
+1716        CardType                  = CITYCHIP
+171f        DebitTransactions         = 0          0x0 
+1720        DebitAmount               = 0          0x0 
+1721        CreditTransactions        = 0          0x0 
+1722        CreditAmount              = 0          0x0 
+1723        RefundedAmount            = 0          0x0 
+1724        UnRefundedAmount          = 0          0x0 
+          )
+1725      CardSystem                (
+1725        CardType                  = BANKSYS_PROTON
+1734        DebitTransactions         = 0          0x0 
+1735        DebitAmount               = 0          0x0 
+1736        CreditTransactions        = 0          0x0 
+1737        CreditAmount              = 0          0x0 
+1738        RefundedAmount            = 0          0x0 
+1739        UnRefundedAmount          = 0          0x0 
+          )
+173a      CardSystem                (
+173a        CardType                  = MIFARE_CAT_SELECT
+174c        DebitTransactions         = 0          0x0 
+174d        DebitAmount               = 0          0x0 
+174e        CreditTransactions        = 0          0x0 
+174f        CreditAmount              = 0          0x0 
+1750        RefundedAmount            = 0          0x0 
+1751        UnRefundedAmount          = 0          0x0 
+          )
+1752      CardSystem                (
+1752        CardType                  = MIFARE_METRIC
+1760        DebitTransactions         = 0          0x0 
+1761        DebitAmount               = 0          0x0 
+1762        CreditTransactions        = 0          0x0 
+1763        CreditAmount              = 0          0x0 
+1764        RefundedAmount            = 0          0x0 
+1765        UnRefundedAmount          = 0          0x0 
+          )
+1766      CardSystem                (
+1766        CardType                  = ISO7816
+176e        DebitTransactions         = 0          0x0 
+176f        DebitAmount               = 0          0x0 
+1770        CreditTransactions        = 0          0x0 
+1771        CreditAmount              = 0          0x0 
+1772        RefundedAmount            = 0          0x0 
+1773        UnRefundedAmount          = 0          0x0 
+          )
+1774      CardSystem                (
+1774        CardType                  = OMPASS
+177b        DebitTransactions         = 0          0x0 
+177c        DebitAmount               = 0          0x0 
+177d        CreditTransactions        = 0          0x0 
+177e        CreditAmount              = 0          0x0 
+177f        RefundedAmount            = 0          0x0 
+1780        UnRefundedAmount          = 0          0x0 
+          )
+1781      CardSystem                (
+1781        CardType                  = CREDITCARD
+178c        DebitTransactions         = 0          0x0 
+178d        DebitAmount               = 0          0x0 
+178e        CreditTransactions        = 0          0x0 
+178f        CreditAmount              = 0          0x0 
+1790        RefundedAmount            = 0          0x0 
+1791        UnRefundedAmount          = 0          0x0 
+          )
+1792      CardSystem                (
+1792        CardType                  = CONTACTLESS
+179e        DebitTransactions         = 0          0x0 
+179f        DebitAmount               = 0          0x0 
+17a0        CreditTransactions        = 0          0x0 
+17a1        CreditAmount              = 0          0x0 
+17a2        RefundedAmount            = 0          0x0 
+17a3        UnRefundedAmount          = 0          0x0 
+          )
+17a4      CardSystem                (
+17a4        CardType                  = MAG_STRIPE
+17af        DebitTransactions         = 0          0x0 
+17b0        DebitAmount               = 0          0x0 
+17b1        CreditTransactions        = 0          0x0 
+17b2        CreditAmount              = 0          0x0 
+17b3        RefundedAmount            = 0          0x0 
+17b4        UnRefundedAmount          = 0          0x0 
+          )
+17b5      CardSystem                (
+17b5        CardType                  = VISA_CONTACTLESS
+17c6        DebitTransactions         = 0          0x0 
+17c7        DebitAmount               = 0          0x0 
+17c8        CreditTransactions        = 0          0x0 
+17c9        CreditAmount              = 0          0x0 
+17ca        RefundedAmount            = 0          0x0 
+17cb        UnRefundedAmount          = 0          0x0 
+          )
+17cc      CardSystem                (
+17cc        CardType                  = CONTACTLESS_MAG_STRIPE
+17e3        DebitTransactions         = 0          0x0 
+17e4        DebitAmount               = 0          0x0 
+17e5        CreditTransactions        = 0          0x0 
+17e6        CreditAmount              = 0          0x0 
+17e7        RefundedAmount            = 0          0x0 
+17e8        UnRefundedAmount          = 0          0x0 
+          )
+17e9      CardSystem                (
+17e9        CardType                  = OFFLINE_STORE_ERROR
+17fd        DebitTransactions         = 0          0x0 
+17fe        DebitAmount               = 0          0x0 
+17ff        CreditTransactions        = 0          0x0 
+1800        CreditAmount              = 0          0x0 
+1801        RefundedAmount            = 0          0x0 
+1802        UnRefundedAmount          = 0          0x0 
+          )
+1803      CardSystem                (
+1803        CardType                  = OFFLINE_LOAD_ERROR
+1816        DebitTransactions         = 0          0x0 
+1817        DebitAmount               = 0          0x0 
+1818        CreditTransactions        = 0          0x0 
+1819        CreditAmount              = 0          0x0 
+181a        RefundedAmount            = 0          0x0 
+181b        UnRefundedAmount          = 0          0x0 
+          )
+        )
+      )
+181d  TransactionAuditPeriodEnd (
+181d    Time                      = 1691483524 0x64d1fd84  8 Aug 2023 16:32:04 +0800
+1822    SequenceNumber            = 13         0xd 
+1823    TriggerType               = COIN_BOX_WITHDRAWAL
+1837    TriggerSequenceNumber     = 4          0x4 
+1838    Data                      (
+1838      AuditNo                   = 4          0x4 
+1839      StartTime                 = 1687514396 0x64956d1c 23 Jun 2023 17:59:56 +0800
+183e      EndTime                   = 0          0x0 
+183f      DebitTransactions         = 11         0xb 
+1840      CreditTransactions        = 0          0x0 
+1842      TimeBands                 (
+1842        NoFreeTimeInterval        (
+1842          A                         = 0          0x0 
+1843          B                         = 0          0x0 
+1844          C                         = 0          0x0 
+            )
+1845        FreeTimeInterval          (
+1845          A                         = 0          0x0 
+1846          B                         = 0          0x0 
+1847          C                         = 0          0x0 
+            )
+1848        TicketsValue              (
+1848          A                         = 0          0x0 
+1849          B                         = 0          0x0 
+184a          C                         = 0          0x0 
+            )
+          )
+184b      TimeBands                 (
+184b        NoFreeTimeInterval        (
+184b          A                         = 0          0x0 
+184c          B                         = 0          0x0 
+184d          C                         = 0          0x0 
+            )
+184e        FreeTimeInterval          (
+184e          A                         = 0          0x0 
+184f          B                         = 0          0x0 
+1850          C                         = 0          0x0 
+            )
+1851        TicketsValue              (
+1851          A                         = 0          0x0 
+1852          B                         = 0          0x0 
+1853          C                         = 0          0x0 
+            )
+          )
+1854      TimeBands                 (
+1854        NoFreeTimeInterval        (
+1854          A                         = 0          0x0 
+1855          B                         = 0          0x0 
+1856          C                         = 0          0x0 
+            )
+1857        FreeTimeInterval          (
+1857          A                         = 0          0x0 
+1858          B                         = 0          0x0 
+1859          C                         = 0          0x0 
+            )
+185a        TicketsValue              (
+185a          A                         = 0          0x0 
+185b          B                         = 0          0x0 
+185c          C                         = 0          0x0 
+            )
+          )
+185d      TimeBands                 (
+185d        NoFreeTimeInterval        (
+185d          A                         = 0          0x0 
+185e          B                         = 0          0x0 
+185f          C                         = 0          0x0 
+            )
+1860        FreeTimeInterval          (
+1860          A                         = 0          0x0 
+1861          B                         = 0          0x0 
+1862          C                         = 0          0x0 
+            )
+1863        TicketsValue              (
+1863          A                         = 0          0x0 
+1864          B                         = 0          0x0 
+1865          C                         = 0          0x0 
+            )
+          )
+1866      TimeBands                 (
+1866        NoFreeTimeInterval        (
+1866          A                         = 0          0x0 
+1867          B                         = 2          0x2 
+1868          C                         = 1          0x1 
+            )
+1869        FreeTimeInterval          (
+1869          A                         = 0          0x0 
+186a          B                         = 2          0x2 
+186b          C                         = 1          0x1 
+            )
+186c        TicketsValue              (
+186c          A                         = 0          0x0 
+186d          B                         = 0          0x0 
+186e          C                         = 0          0x0 
+            )
+          )
+186f      TimeBands                 (
+186f        NoFreeTimeInterval        (
+186f          A                         = 0          0x0 
+1870          B                         = 0          0x0 
+1871          C                         = 0          0x0 
+            )
+1872        FreeTimeInterval          (
+1872          A                         = 0          0x0 
+1873          B                         = 0          0x0 
+1874          C                         = 0          0x0 
+            )
+1875        TicketsValue              (
+1875          A                         = 0          0x0 
+1876          B                         = 0          0x0 
+1877          C                         = 0          0x0 
+            )
+          )
+1878      TimeBands                 (
+1878        NoFreeTimeInterval        (
+1878          A                         = 4          0x4 
+1879          B                         = 1          0x1 
+187a          C                         = 2          0x2 
+            )
+187b        FreeTimeInterval          (
+187b          A                         = 4          0x4 
+187c          B                         = 1          0x1 
+187d          C                         = 2          0x2 
+            )
+187e        TicketsValue              (
+187e          A                         = 0          0x0 
+187f          B                         = 0          0x0 
+1880          C                         = 0          0x0 
+            )
+          )
+1881      TimeBands                 (
+1881        NoFreeTimeInterval        (
+1881          A                         = 0          0x0 
+1882          B                         = 0          0x0 
+1883          C                         = 1          0x1 
+            )
+1884        FreeTimeInterval          (
+1884          A                         = 0          0x0 
+1885          B                         = 0          0x0 
+1886          C                         = 1          0x1 
+            )
+1887        TicketsValue              (
+1887          A                         = 0          0x0 
+1888          B                         = 0          0x0 
+1889          C                         = 0          0x0 
+            )
+          )
+188a      TimeBands                 (
+188a        NoFreeTimeInterval        (
+188a          A                         = 0          0x0 
+188b          B                         = 0          0x0 
+188c          C                         = 0          0x0 
+            )
+188d        FreeTimeInterval          (
+188d          A                         = 0          0x0 
+188e          B                         = 0          0x0 
+188f          C                         = 0          0x0 
+            )
+1890        TicketsValue              (
+1890          A                         = 0          0x0 
+1891          B                         = 0          0x0 
+1892          C                         = 0          0x0 
+            )
+          )
+1893      TimeBands                 (
+1893        NoFreeTimeInterval        (
+1893          A                         = 0          0x0 
+1894          B                         = 0          0x0 
+1895          C                         = 0          0x0 
+            )
+1896        FreeTimeInterval          (
+1896          A                         = 0          0x0 
+1897          B                         = 0          0x0 
+1898          C                         = 0          0x0 
+            )
+1899        TicketsValue              (
+1899          A                         = 0          0x0 
+189a          B                         = 0          0x0 
+189b          C                         = 0          0x0 
+            )
+          )
+189c      TimeBands                 (
+189c        NoFreeTimeInterval        (
+189c          A                         = 0          0x0 
+189d          B                         = 0          0x0 
+189e          C                         = 0          0x0 
+            )
+189f        FreeTimeInterval          (
+189f          A                         = 0          0x0 
+18a0          B                         = 0          0x0 
+18a1          C                         = 0          0x0 
+            )
+18a2        TicketsValue              (
+18a2          A                         = 0          0x0 
+18a3          B                         = 0          0x0 
+18a4          C                         = 0          0x0 
+            )
+          )
+18a5      TimeBands                 (
+18a5        NoFreeTimeInterval        (
+18a5          A                         = 0          0x0 
+18a6          B                         = 0          0x0 
+18a7          C                         = 0          0x0 
+            )
+18a8        FreeTimeInterval          (
+18a8          A                         = 0          0x0 
+18a9          B                         = 0          0x0 
+18aa          C                         = 0          0x0 
+            )
+18ab        TicketsValue              (
+18ab          A                         = 0          0x0 
+18ac          B                         = 0          0x0 
+18ad          C                         = 0          0x0 
+            )
+          )
+18ae      TimeBands                 (
+18ae        NoFreeTimeInterval        (
+18ae          A                         = 0          0x0 
+18af          B                         = 0          0x0 
+18b0          C                         = 0          0x0 
+            )
+18b1        FreeTimeInterval          (
+18b1          A                         = 0          0x0 
+18b2          B                         = 0          0x0 
+18b3          C                         = 0          0x0 
+            )
+18b4        TicketsValue              (
+18b4          A                         = 0          0x0 
+18b5          B                         = 0          0x0 
+18b6          C                         = 0          0x0 
+            )
+          )
+18b7      TimeBands                 (
+18b7        NoFreeTimeInterval        (
+18b7          A                         = 0          0x0 
+18b8          B                         = 0          0x0 
+18b9          C                         = 0          0x0 
+            )
+18ba        FreeTimeInterval          (
+18ba          A                         = 0          0x0 
+18bb          B                         = 0          0x0 
+18bc          C                         = 0          0x0 
+            )
+18bd        TicketsValue              (
+18bd          A                         = 0          0x0 
+18be          B                         = 0          0x0 
+18bf          C                         = 0          0x0 
+            )
+          )
+18c0      TimeBands                 (
+18c0        NoFreeTimeInterval        (
+18c0          A                         = 0          0x0 
+18c1          B                         = 0          0x0 
+18c2          C                         = 0          0x0 
+            )
+18c3        FreeTimeInterval          (
+18c3          A                         = 0          0x0 
+18c4          B                         = 0          0x0 
+18c5          C                         = 0          0x0 
+            )
+18c6        TicketsValue              (
+18c6          A                         = 0          0x0 
+18c7          B                         = 0          0x0 
+18c8          C                         = 0          0x0 
+            )
+          )
+18c9      TimeBands                 (
+18c9        NoFreeTimeInterval        (
+18c9          A                         = 0          0x0 
+18ca          B                         = 0          0x0 
+18cb          C                         = 0          0x0 
+            )
+18cc        FreeTimeInterval          (
+18cc          A                         = 0          0x0 
+18cd          B                         = 0          0x0 
+18ce          C                         = 0          0x0 
+            )
+18cf        TicketsValue              (
+18cf          A                         = 0          0x0 
+18d0          B                         = 0          0x0 
+18d1          C                         = 0          0x0 
+            )
+          )
+18d2      TimeBands                 (
+18d2        NoFreeTimeInterval        (
+18d2          A                         = 0          0x0 
+18d3          B                         = 0          0x0 
+18d4          C                         = 0          0x0 
+            )
+18d5        FreeTimeInterval          (
+18d5          A                         = 0          0x0 
+18d6          B                         = 0          0x0 
+18d7          C                         = 0          0x0 
+            )
+18d8        TicketsValue              (
+18d8          A                         = 0          0x0 
+18d9          B                         = 0          0x0 
+18da          C                         = 0          0x0 
+            )
+          )
+18db      TimeBands                 (
+18db        NoFreeTimeInterval        (
+18db          A                         = 0          0x0 
+18dc          B                         = 0          0x0 
+18dd          C                         = 0          0x0 
+            )
+18de        FreeTimeInterval          (
+18de          A                         = 0          0x0 
+18df          B                         = 0          0x0 
+18e0          C                         = 0          0x0 
+            )
+18e1        TicketsValue              (
+18e1          A                         = 0          0x0 
+18e2          B                         = 0          0x0 
+18e3          C                         = 0          0x0 
+            )
+          )
+18e4      TimeBands                 (
+18e4        NoFreeTimeInterval        (
+18e4          A                         = 0          0x0 
+18e5          B                         = 0          0x0 
+18e6          C                         = 0          0x0 
+            )
+18e7        FreeTimeInterval          (
+18e7          A                         = 0          0x0 
+18e8          B                         = 0          0x0 
+18e9          C                         = 0          0x0 
+            )
+18ea        TicketsValue              (
+18ea          A                         = 0          0x0 
+18eb          B                         = 0          0x0 
+18ec          C                         = 0          0x0 
+            )
+          )
+18ed      TimeBands                 (
+18ed        NoFreeTimeInterval        (
+18ed          A                         = 0          0x0 
+18ee          B                         = 0          0x0 
+18ef          C                         = 0          0x0 
+            )
+18f0        FreeTimeInterval          (
+18f0          A                         = 0          0x0 
+18f1          B                         = 0          0x0 
+18f2          C                         = 0          0x0 
+            )
+18f3        TicketsValue              (
+18f3          A                         = 0          0x0 
+18f4          B                         = 0          0x0 
+18f5          C                         = 0          0x0 
+            )
+          )
+18f6      TimeBands                 (
+18f6        NoFreeTimeInterval        (
+18f6          A                         = 0          0x0 
+18f7          B                         = 0          0x0 
+18f8          C                         = 0          0x0 
+            )
+18f9        FreeTimeInterval          (
+18f9          A                         = 0          0x0 
+18fa          B                         = 0          0x0 
+18fb          C                         = 0          0x0 
+            )
+18fc        TicketsValue              (
+18fc          A                         = 0          0x0 
+18fd          B                         = 0          0x0 
+18fe          C                         = 0          0x0 
+            )
+          )
+18ff      TimeBands                 (
+18ff        NoFreeTimeInterval        (
+18ff          A                         = 0          0x0 
+1900          B                         = 0          0x0 
+1901          C                         = 0          0x0 
+            )
+1902        FreeTimeInterval          (
+1902          A                         = 0          0x0 
+1903          B                         = 0          0x0 
+1904          C                         = 0          0x0 
+            )
+1905        TicketsValue              (
+1905          A                         = 0          0x0 
+1906          B                         = 0          0x0 
+1907          C                         = 0          0x0 
+            )
+          )
+1908      TimeBands                 (
+1908        NoFreeTimeInterval        (
+1908          A                         = 0          0x0 
+1909          B                         = 0          0x0 
+190a          C                         = 0          0x0 
+            )
+190b        FreeTimeInterval          (
+190b          A                         = 0          0x0 
+190c          B                         = 0          0x0 
+190d          C                         = 0          0x0 
+            )
+190e        TicketsValue              (
+190e          A                         = 0          0x0 
+190f          B                         = 0          0x0 
+1910          C                         = 0          0x0 
+            )
+          )
+1911      TimeBands                 (
+1911        NoFreeTimeInterval        (
+1911          A                         = 0          0x0 
+1912          B                         = 0          0x0 
+1913          C                         = 0          0x0 
+            )
+1914        FreeTimeInterval          (
+1914          A                         = 0          0x0 
+1915          B                         = 0          0x0 
+1916          C                         = 0          0x0 
+            )
+1917        TicketsValue              (
+1917          A                         = 0          0x0 
+1918          B                         = 0          0x0 
+1919          C                         = 0          0x0 
+            )
+          )
+191b      Categories                (
+191b        TotalAmount               = 240470     0x3ab56 
+191e        TotalTickets              = 11         0xb 
+191f        TotalFreeTickets          = 1          0x1 
+          )
+1920      Categories                (
+1920        TotalAmount               = 0          0x0 
+1921        TotalTickets              = 0          0x0 
+1922        TotalFreeTickets          = 0          0x0 
+          )
+1923      Categories                (
+1923        TotalAmount               = 0          0x0 
+1924        TotalTickets              = 0          0x0 
+1925        TotalFreeTickets          = 0          0x0 
+          )
+1926      Categories                (
+1926        TotalAmount               = 0          0x0 
+1927        TotalTickets              = 0          0x0 
+1928        TotalFreeTickets          = 0          0x0 
+          )
+1929      Categories                (
+1929        TotalAmount               = 0          0x0 
+192a        TotalTickets              = 0          0x0 
+192b        TotalFreeTickets          = 0          0x0 
+          )
+192c      Categories                (
+192c        TotalAmount               = 0          0x0 
+192d        TotalTickets              = 0          0x0 
+192e        TotalFreeTickets          = 0          0x0 
+          )
+192f      Categories                (
+192f        TotalAmount               = 0          0x0 
+1930        TotalTickets              = 0          0x0 
+1931        TotalFreeTickets          = 0          0x0 
+          )
+1932      Categories                (
+1932        TotalAmount               = 0          0x0 
+1933        TotalTickets              = 0          0x0 
+1934        TotalFreeTickets          = 0          0x0 
+          )
+1935      Categories                (
+1935        TotalAmount               = 0          0x0 
+1936        TotalTickets              = 0          0x0 
+1937        TotalFreeTickets          = 0          0x0 
+          )
+1938      Categories                (
+1938        TotalAmount               = 0          0x0 
+1939        TotalTickets              = 0          0x0 
+193a        TotalFreeTickets          = 0          0x0 
+          )
+193b      Categories                (
+193b        TotalAmount               = 0          0x0 
+193c        TotalTickets              = 0          0x0 
+193d        TotalFreeTickets          = 0          0x0 
+          )
+193e      Categories                (
+193e        TotalAmount               = 0          0x0 
+193f        TotalTickets              = 0          0x0 
+1940        TotalFreeTickets          = 0          0x0 
+          )
+1941      Categories                (
+1941        TotalAmount               = 0          0x0 
+1942        TotalTickets              = 0          0x0 
+1943        TotalFreeTickets          = 0          0x0 
+          )
+1944      Categories                (
+1944        TotalAmount               = 0          0x0 
+1945        TotalTickets              = 0          0x0 
+1946        TotalFreeTickets          = 0          0x0 
+          )
+1947      Categories                (
+1947        TotalAmount               = 0          0x0 
+1948        TotalTickets              = 0          0x0 
+1949        TotalFreeTickets          = 0          0x0 
+          )
+194a      Categories                (
+194a        TotalAmount               = 0          0x0 
+194b        TotalTickets              = 0          0x0 
+194c        TotalFreeTickets          = 0          0x0 
+          )
+194d      Categories                (
+194d        TotalAmount               = 0          0x0 
+194e        TotalTickets              = 0          0x0 
+194f        TotalFreeTickets          = 0          0x0 
+          )
+1950      Categories                (
+1950        TotalAmount               = 0          0x0 
+1951        TotalTickets              = 0          0x0 
+1952        TotalFreeTickets          = 0          0x0 
+          )
+1953      Categories                (
+1953        TotalAmount               = 0          0x0 
+1954        TotalTickets              = 0          0x0 
+1955        TotalFreeTickets          = 0          0x0 
+          )
+1956      Categories                (
+1956        TotalAmount               = 0          0x0 
+1957        TotalTickets              = 0          0x0 
+1958        TotalFreeTickets          = 0          0x0 
+          )
+1959      Categories                (
+1959        TotalAmount               = 0          0x0 
+195a        TotalTickets              = 0          0x0 
+195b        TotalFreeTickets          = 0          0x0 
+          )
+195c      Categories                (
+195c        TotalAmount               = 0          0x0 
+195d        TotalTickets              = 0          0x0 
+195e        TotalFreeTickets          = 0          0x0 
+          )
+195f      Categories                (
+195f        TotalAmount               = 0          0x0 
+1960        TotalTickets              = 0          0x0 
+1961        TotalFreeTickets          = 0          0x0 
+          )
+1962      Categories                (
+1962        TotalAmount               = 0          0x0 
+1963        TotalTickets              = 0          0x0 
+1964        TotalFreeTickets          = 0          0x0 
+          )
+1965      Categories                (
+1965        TotalAmount               = 0          0x0 
+1966        TotalTickets              = 0          0x0 
+1967        TotalFreeTickets          = 0          0x0 
+          )
+1968      Categories                (
+1968        TotalAmount               = 0          0x0 
+1969        TotalTickets              = 0          0x0 
+196a        TotalFreeTickets          = 0          0x0 
+          )
+196b      Categories                (
+196b        TotalAmount               = 0          0x0 
+196c        TotalTickets              = 0          0x0 
+196d        TotalFreeTickets          = 0          0x0 
+          )
+196e      Categories                (
+196e        TotalAmount               = 0          0x0 
+196f        TotalTickets              = 0          0x0 
+1970        TotalFreeTickets          = 0          0x0 
+          )
+1971      Categories                (
+1971        TotalAmount               = 0          0x0 
+1972        TotalTickets              = 0          0x0 
+1973        TotalFreeTickets          = 0          0x0 
+          )
+1974      Categories                (
+1974        TotalAmount               = 0          0x0 
+1975        TotalTickets              = 0          0x0 
+1976        TotalFreeTickets          = 0          0x0 
+          )
+1977      Categories                (
+1977        TotalAmount               = 0          0x0 
+1978        TotalTickets              = 0          0x0 
+1979        TotalFreeTickets          = 0          0x0 
+          )
+197a      Categories                (
+197a        TotalAmount               = 0          0x0 
+197b        TotalTickets              = 0          0x0 
+197c        TotalFreeTickets          = 0          0x0 
+          )
+197d      TotalCreditAmount         = 0          0x0 
+        )
+      )
+197f  StatusFlagChange          (
+197f    Time                      = 1691483561 0x64d1fda9  8 Aug 2023 16:32:41 +0800
+1984    SequenceNumber            = 14         0xe 
+1985    Set                       = 0          0x0 
+1986    Dev                       = 4          0x4 
+1987    Flag                      = 0          0x0 
+1988    Level                     = E
+198a    DevDesc                   = "coin system"
+1996    FlagDesc                  = "coin box in"
+      )
+19a3  StatusFlagChange          (
+19a3    Time                      = 1691483573 0x64d1fdb5  8 Aug 2023 16:32:53 +0800
+19a8    SequenceNumber            = 15         0xf 
+19a9    Set                       = 1          0x1 
+19aa    Dev                       = 7          0x7 
+19ab    Flag                      = 11         0xb 
+19ac    Level                     = E
+19ae    DevDesc                   = "card reader 1"
+19bc    FlagDesc                  = "serial comms failure"
+      )
+19d2  CallReason                (
+19d2    Time                      = 1691483580 0x64d1fdbc  8 Aug 2023 16:33:00 +0800
+19d7    SequenceNumber            = 16         0x10 
+19d8    SessionSerialNo           = 2421       0x975 
+19da    ApplicationStart          = 1          0x1 
+19db    StatusFlagChange          = 1          0x1 
+19dc    ScheduledCall             = 1          0x1 
+19dd    BackOfficeCall            = 0          0x0 
+19de    RetryAfterBusy            = 0          0x0 
+19df    RetryAfterFailure         = 0          0x0 
+19e0    TestCall                  = 0          0x0 
+19e1    ForcedCall                = 0          0x0 
+19e2    ImmediateJob              = 0          0x0 
+      )
+19e4  ModemStatus               (
+19e4    Time                      = 1691483580 0x64d1fdbc  8 Aug 2023 16:33:00 +0800
+19e9    SequenceNumber            = 17         0x11 
+19ea    PowerMode                 = ON
+19ed    SignalCSQ                 = 0          0x0 
+19ee    SignaldBm                 = 0          0x0 
+      )
+19f0  ModemStatus               (
+19f0    Time                      = 1691483612 0x64d1fddc  8 Aug 2023 16:33:32 +0800
+19f5    SequenceNumber            = 18         0x12 
+19f6    PowerMode                 = OFF
+19fa    SignalCSQ                 = 0          0x0 
+19fb    SignaldBm                 = 0          0x0 
+      )
+19fd  CallReason                (
+19fd    Time                      = 1691483640 0x64d1fdf8  8 Aug 2023 16:34:00 +0800
+1a02    SequenceNumber            = 19         0x13 
+1a03    SessionSerialNo           = 2422       0x976 
+1a05    ApplicationStart          = 0          0x0 
+1a06    StatusFlagChange          = 0          0x0 
+1a07    ScheduledCall             = 0          0x0 
+1a08    BackOfficeCall            = 0          0x0 
+1a09    RetryAfterBusy            = 0          0x0 
+1a0a    RetryAfterFailure         = 1          0x1 
+1a0b    TestCall                  = 0          0x0 
+1a0c    ForcedCall                = 0          0x0 
+1a0d    ImmediateJob              = 0          0x0 
+      )
+1a0f  StatusFlagChange          (
+1a0f    Time                      = 1691483641 0x64d1fdf9  8 Aug 2023 16:34:01 +0800
+1a14    SequenceNumber            = 20         0x14 
+1a15    Set                       = 0          0x0 
+1a16    Dev                       = 9          0x9 
+1a17    Flag                      = 5          0x5 
+1a18    Level                     = W
+1a1a    DevDesc                   = "power supply"
+1a27    FlagDesc                  = "mains at the moment"
+      )
+1a3c  ModemStatus               (
+1a3c    Time                      = 1691483641 0x64d1fdf9  8 Aug 2023 16:34:01 +0800
+1a41    SequenceNumber            = 21         0x15 
+1a42    PowerMode                 = ON
+1a45    SignalCSQ                 = 0          0x0 
+1a46    SignaldBm                 = 0          0x0 
+      )
+1a48  CallReason                (
+1a48    Time                      = 1691483700 0x64d1fe34  8 Aug 2023 16:35:00 +0800
+1a4d    SequenceNumber            = 22         0x16 
+1a4e    SessionSerialNo           = 2423       0x977 
+1a50    ApplicationStart          = 0          0x0 
+1a51    StatusFlagChange          = 1          0x1 
+1a52    ScheduledCall             = 0          0x0 
+1a53    BackOfficeCall            = 0          0x0 
+1a54    RetryAfterBusy            = 0          0x0 
+1a55    RetryAfterFailure         = 1          0x1 
+1a56    TestCall                  = 0          0x0 
+1a57    ForcedCall                = 0          0x0 
+1a58    ImmediateJob              = 0          0x0 
+      )
+1a5a  CallReason                (
+1a5a    Time                      = 1691483760 0x64d1fe70  8 Aug 2023 16:36:00 +0800
+1a5f    SequenceNumber            = 23         0x17 
+1a60    SessionSerialNo           = 2424       0x978 
+1a62    ApplicationStart          = 0          0x0 
+1a63    StatusFlagChange          = 0          0x0 
+1a64    ScheduledCall             = 0          0x0 
+1a65    BackOfficeCall            = 0          0x0 
+1a66    RetryAfterBusy            = 0          0x0 
+1a67    RetryAfterFailure         = 1          0x1 
+1a68    TestCall                  = 0          0x0 
+1a69    ForcedCall                = 0          0x0 
+1a6a    ImmediateJob              = 0          0x0 
+      )
+1a6c  CallReason                (
+1a6c    Time                      = 1691483820 0x64d1feac  8 Aug 2023 16:37:00 +0800
+1a71    SequenceNumber            = 24         0x18 
+1a72    SessionSerialNo           = 2425       0x979 
+1a74    ApplicationStart          = 0          0x0 
+1a75    StatusFlagChange          = 0          0x0 
+1a76    ScheduledCall             = 0          0x0 
+1a77    BackOfficeCall            = 0          0x0 
+1a78    RetryAfterBusy            = 0          0x0 
+1a79    RetryAfterFailure         = 1          0x1 
+1a7a    TestCall                  = 0          0x0 
+1a7b    ForcedCall                = 0          0x0 
+1a7c    ImmediateJob              = 0          0x0 
+      )
+1a7e  StatusFlagChange          (
+1a7e    Time                      = 1691484747 0x64d2024b  8 Aug 2023 16:52:27 +0800
+1a83    SequenceNumber            = 25         0x19 
+1a84    Set                       = 0          0x0 
+1a85    Dev                       = 19         0x13 
+1a86    Flag                      = 7          0x7 
+1a87    Level                     = E
+1a89    DevDesc                   = "upper lock"
+1a94    FlagDesc                  = "door closed"
+      )
+1aa1  CallReason                (
+1aa1    Time                      = 1691484749 0x64d2024d  8 Aug 2023 16:52:29 +0800
+1aa6    SequenceNumber            = 26         0x1a 
+1aa7    SessionSerialNo           = 2426       0x97a 
+1aa9    ApplicationStart          = 0          0x0 
+1aaa    StatusFlagChange          = 1          0x1 
+1aab    ScheduledCall             = 0          0x0 
+1aac    BackOfficeCall            = 0          0x0 
+1aad    RetryAfterBusy            = 0          0x0 
+1aae    RetryAfterFailure         = 0          0x0 
+1aaf    TestCall                  = 0          0x0 
+1ab0    ForcedCall                = 0          0x0 
+1ab1    ImmediateJob              = 0          0x0 
+      )
+1ab3  StatusFlagChange          (
+1ab3    Time                      = 1691484749 0x64d2024d  8 Aug 2023 16:52:29 +0800
+1ab8    SequenceNumber            = 27         0x1b 
+1ab9    Set                       = 0          0x0 
+1aba    Dev                       = 19         0x13 
+1abb    Flag                      = 8          0x8 
+1abc    Level                     = E
+1abe    DevDesc                   = "upper lock"
+1ac9    FlagDesc                  = "lock bar closed"
+      )
+1ada  StatusFlagChange          (
+1ada    Time                      = 1691484749 0x64d2024d  8 Aug 2023 16:52:29 +0800
+1adf    SequenceNumber            = 28         0x1c 
+1ae0    Set                       = 0          0x0 
+1ae1    Dev                       = 19         0x13 
+1ae2    Flag                      = 10         0xa 
+1ae3    Level                     = E
+1ae5    DevDesc                   = "upper lock"
+1af0    FlagDesc                  = "upper lock OK"
+      )
+1aff  StatusFlagChange          (
+1aff    Time                      = 1691484749 0x64d2024d  8 Aug 2023 16:52:29 +0800
+1b04    SequenceNumber            = 29         0x1d 
+1b05    Set                       = 0          0x0 
+1b06    Dev                       = 20         0x14 
+1b07    Flag                      = 8          0x8 
+1b08    Level                     = E
+1b0a    DevDesc                   = "vault"
+1b10    FlagDesc                  = "vault closed"
+      )
+1b1e  StatusFlagChange          (
+1b1e    Time                      = 1691484749 0x64d2024d  8 Aug 2023 16:52:29 +0800
+1b23    SequenceNumber            = 30         0x1e 
+1b24    Set                       = 0          0x0 
+1b25    Dev                       = 17         0x11 
+1b26    Flag                      = 15         0xf 
+1b27    Level                     = E
+1b29    DevDesc                   = "general"
+1b31    FlagDesc                  = "in service"
+      )
+1b3d  CallReason                (
+1b3d    Time                      = 1691484780 0x64d2026c  8 Aug 2023 16:53:00 +0800
+1b42    SequenceNumber            = 31         0x1f 
+1b43    SessionSerialNo           = 2427       0x97b 
+1b45    ApplicationStart          = 0          0x0 
+1b46    StatusFlagChange          = 1          0x1 
+1b47    ScheduledCall             = 0          0x0 
+1b48    BackOfficeCall            = 0          0x0 
+1b49    RetryAfterBusy            = 0          0x0 
+1b4a    RetryAfterFailure         = 1          0x1 
+1b4b    TestCall                  = 0          0x0 
+1b4c    ForcedCall                = 0          0x0 
+1b4d    ImmediateJob              = 0          0x0 
+      )
+1b4f  CoinDebit                 (
+1b4f    Time                      = 1691484794 0x64d2027a  8 Aug 2023 16:53:14 +0800
+1b54    SequenceNumber            = 32         0x20 
+1b55    TransactionSerialNumber   = 23         0x17 
+1b56    AmountPaid                = 50         0x32 
+      )
+1b58  Transaction               (
+1b58    Time                      = 1691484796 0x64d2027c  8 Aug 2023 16:53:16 +0800
+1b5d    SequenceNumber            = 33         0x21 
+1b5e    TransactionType           = DEBIT
+1b64    TransactionSerialNumber   = 23         0x17 
+1b65    AmountCharged             = 50         0x32 
+1b66    AmountPaid                = 50         0x32 
+1b67    TariffCode                = "2 HRS"
+1b6d    StartTime                 = 1691484780 0x64d2026c  8 Aug 2023 16:53:00 +0800
+1b72    EndTime                   = 1691491980 0x64d21e8c  8 Aug 2023 18:53:00 +0800
+1b77    RegistrationNumber        = ""
+1b78    SpaceNumber               = 0          0x0 
+1b79    ZoneId                    = 0          0x0 
+1b7a    VrmSelected               = ANPR
+1b7f    ConcessionEntered         = MANUAL
+1b86    ConcessionCode            = ""
+1b87    LoyaltyID                 = ""
+      )
+1b89  KeyPresented              (
+1b89    Time                      = 1691484806 0x64d20286  8 Aug 2023 16:53:26 +0800
+1b8e    SequenceNumber            = 34         0x22 
+1b8f    KeyNumber                 = 97201574145 0x16a1aa5101 
+1b95    KeyType                   = VAULT
+1b9b    Accepted                  = 1          0x1 
+1b9c    PresentationTime          = 1691484806 0x64d20286  8 Aug 2023 16:53:26 +0800
+1ba1    SerialNo                  = 32         0x20 
+1ba2    Name                      = "CASH COLLECTORS - New Key 4"
+      )
+1bbf  StatusFlagChange          (
+1bbf    Time                      = 1691484821 0x64d20295  8 Aug 2023 16:53:41 +0800
+1bc4    SequenceNumber            = 35         0x23 
+1bc5    Set                       = 1          0x1 
+1bc6    Dev                       = 4          0x4 
+1bc7    Flag                      = 0          0x0 
+1bc8    Level                     = E
+1bca    DevDesc                   = "coin system"
+1bd6    FlagDesc                  = "coin box out"
+      )
+1be4  StatusFlagChange          (
+1be4    Time                      = 1691484821 0x64d20295  8 Aug 2023 16:53:41 +0800
+1be9    SequenceNumber            = 36         0x24 
+1bea    Set                       = 1          0x1 
+1beb    Dev                       = 23         0x17 
+1bec    Flag                      = 3          0x3 
+1bed    Level                     = E
+1bef    DevDesc                   = "user interface"
+1bfe    FlagDesc                  = "no payment methods avail"
+      )
+1c18  StatusFlagChange          (
+1c18    Time                      = 1691484822 0x64d20296  8 Aug 2023 16:53:42 +0800
+1c1d    SequenceNumber            = 37         0x25 
+1c1e    Set                       = 1          0x1 
+1c1f    Dev                       = 17         0x11 
+1c20    Flag                      = 15         0xf 
+1c21    Level                     = E
+1c23    DevDesc                   = "general"
+1c2b    FlagDesc                  = "out of service"
+      )
+1c3b  CashBoxRemoved            (
+1c3b    Time                      = 1691484823 0x64d20297  8 Aug 2023 16:53:43 +0800
+1c40    SequenceNumber            = 38         0x26 
+1c41    BoxType                   = COIN
+1c46    Data                      (
+1c46      CashboxPullNumber         = 5          0x5 
+1c47      StartTime                 = 1691483522 0x64d1fd82  8 Aug 2023 16:32:02 +0800
+1c4c      EndTime                   = 1691484823 0x64d20297  8 Aug 2023 16:53:43 +0800
+1c51      Transactions              = 1          0x1 
+1c52      Volume                    = 11         0xb 
+1c53      Value                     = 50         0x32 
+1c54      nItems                    = 1          0x1 
+1c55      nCurrencyGrandTotals      = 1          0x1 
+1c57      Item                      (
+1c57        Iso4217Code               = GBP
+1c5b        Denomination              = 50         0x32 
+1c5c        Count                     = 1          0x1 
+1c5d        UnrefundedCount           = 0          0x0 
+          )
+1c5f      CurrencyGrandTotal        (
+1c5f        Iso4217Code               = GBP
+1c63        DecimalPlaces             = 2          0x2 
+1c64        GrandTotalAtLastCashBoxPull = 420        0x1a4 
+1c66        UnrefundedAtLastCashBoxPull = 0          0x0 
+          )
+1c67      UnRefundedTransactions    = 0          0x0 
+1c68      CumTotalTransactions      = 14         0xe 
+        )
+      )
+1c6a  CardAuditPeriodEnd        (
+1c6a    Time                      = 1691484825 0x64d20299  8 Aug 2023 16:53:45 +0800
+1c6f    SequenceNumber            = 39         0x27 
+1c70    TriggerType               = COIN_BOX_WITHDRAWAL
+1c84    TriggerSequenceNumber     = 5          0x5 
+1c85    Data                      (
+1c85      AuditNo                   = 5          0x5 
+1c86      StartTime                 = 1691483524 0x64d1fd84  8 Aug 2023 16:32:04 +0800
+1c8b      EndTime                   = 1691484824 0x64d20298  8 Aug 2023 16:53:44 +0800
+1c90      CumDebitTransactions      = 11         0xb 
+1c91      CumDebitAmount            = 2450       0x992 
+1c93      CumCreditTransactions     = 0          0x0 
+1c94      CumCreditAmount           = 0          0x0 
+1c96      CardSystem                (
+1c96        CardType                  = CHIP_N_PIN
+1ca1        DebitTransactions         = 0          0x0 
+1ca2        DebitAmount               = 0          0x0 
+1ca3        CreditTransactions        = 0          0x0 
+1ca4        CreditAmount              = 0          0x0 
+1ca5        RefundedAmount            = 0          0x0 
+1ca6        UnRefundedAmount          = 0          0x0 
+          )
+1ca7      CardSystem                (
+1ca7        CardType                  = BANKSYS
+1caf        DebitTransactions         = 0          0x0 
+1cb0        DebitAmount               = 0          0x0 
+1cb1        CreditTransactions        = 0          0x0 
+1cb2        CreditAmount              = 0          0x0 
+1cb3        RefundedAmount            = 0          0x0 
+1cb4        UnRefundedAmount          = 0          0x0 
+          )
+1cb5      CardSystem                (
+1cb5        CardType                  = GPM276
+1cbc        DebitTransactions         = 0          0x0 
+1cbd        DebitAmount               = 0          0x0 
+1cbe        CreditTransactions        = 0          0x0 
+1cbf        CreditAmount              = 0          0x0 
+1cc0        RefundedAmount            = 0          0x0 
+1cc1        UnRefundedAmount          = 0          0x0 
+          )
+1cc2      CardSystem                (
+1cc2        CardType                  = METRIC_SYNC
+1cce        DebitTransactions         = 0          0x0 
+1ccf        DebitAmount               = 0          0x0 
+1cd0        CreditTransactions        = 0          0x0 
+1cd1        CreditAmount              = 0          0x0 
+1cd2        RefundedAmount            = 0          0x0 
+1cd3        UnRefundedAmount          = 0          0x0 
+          )
+1cd4      CardSystem                (
+1cd4        CardType                  = ISO7813
+1cdc        DebitTransactions         = 0          0x0 
+1cdd        DebitAmount               = 0          0x0 
+1cde        CreditTransactions        = 0          0x0 
+1cdf        CreditAmount              = 0          0x0 
+1ce0        RefundedAmount            = 0          0x0 
+1ce1        UnRefundedAmount          = 0          0x0 
+          )
+1ce2      CardSystem                (
+1ce2        CardType                  = UEPS_BMS
+1ceb        DebitTransactions         = 0          0x0 
+1cec        DebitAmount               = 0          0x0 
+1ced        CreditTransactions        = 0          0x0 
+1cee        CreditAmount              = 0          0x0 
+1cef        RefundedAmount            = 0          0x0 
+1cf0        UnRefundedAmount          = 0          0x0 
+          )
+1cf1      CardSystem                (
+1cf1        CardType                  = CHIPKNIP
+1cfa        DebitTransactions         = 0          0x0 
+1cfb        DebitAmount               = 0          0x0 
+1cfc        CreditTransactions        = 0          0x0 
+1cfd        CreditAmount              = 0          0x0 
+1cfe        RefundedAmount            = 0          0x0 
+1cff        UnRefundedAmount          = 0          0x0 
+          )
+1d00      CardSystem                (
+1d00        CardType                  = CITYCHIP
+1d09        DebitTransactions         = 0          0x0 
+1d0a        DebitAmount               = 0          0x0 
+1d0b        CreditTransactions        = 0          0x0 
+1d0c        CreditAmount              = 0          0x0 
+1d0d        RefundedAmount            = 0          0x0 
+1d0e        UnRefundedAmount          = 0          0x0 
+          )
+1d0f      CardSystem                (
+1d0f        CardType                  = BANKSYS_PROTON
+1d1e        DebitTransactions         = 0          0x0 
+1d1f        DebitAmount               = 0          0x0 
+1d20        CreditTransactions        = 0          0x0 
+1d21        CreditAmount              = 0          0x0 
+1d22        RefundedAmount            = 0          0x0 
+1d23        UnRefundedAmount          = 0          0x0 
+          )
+1d24      CardSystem                (
+1d24        CardType                  = MIFARE_CAT_SELECT
+1d36        DebitTransactions         = 0          0x0 
+1d37        DebitAmount               = 0          0x0 
+1d38        CreditTransactions        = 0          0x0 
+1d39        CreditAmount              = 0          0x0 
+1d3a        RefundedAmount            = 0          0x0 
+1d3b        UnRefundedAmount          = 0          0x0 
+          )
+1d3c      CardSystem                (
+1d3c        CardType                  = MIFARE_METRIC
+1d4a        DebitTransactions         = 0          0x0 
+1d4b        DebitAmount               = 0          0x0 
+1d4c        CreditTransactions        = 0          0x0 
+1d4d        CreditAmount              = 0          0x0 
+1d4e        RefundedAmount            = 0          0x0 
+1d4f        UnRefundedAmount          = 0          0x0 
+          )
+1d50      CardSystem                (
+1d50        CardType                  = ISO7816
+1d58        DebitTransactions         = 0          0x0 
+1d59        DebitAmount               = 0          0x0 
+1d5a        CreditTransactions        = 0          0x0 
+1d5b        CreditAmount              = 0          0x0 
+1d5c        RefundedAmount            = 0          0x0 
+1d5d        UnRefundedAmount          = 0          0x0 
+          )
+1d5e      CardSystem                (
+1d5e        CardType                  = OMPASS
+1d65        DebitTransactions         = 0          0x0 
+1d66        DebitAmount               = 0          0x0 
+1d67        CreditTransactions        = 0          0x0 
+1d68        CreditAmount              = 0          0x0 
+1d69        RefundedAmount            = 0          0x0 
+1d6a        UnRefundedAmount          = 0          0x0 
+          )
+1d6b      CardSystem                (
+1d6b        CardType                  = CREDITCARD
+1d76        DebitTransactions         = 0          0x0 
+1d77        DebitAmount               = 0          0x0 
+1d78        CreditTransactions        = 0          0x0 
+1d79        CreditAmount              = 0          0x0 
+1d7a        RefundedAmount            = 0          0x0 
+1d7b        UnRefundedAmount          = 0          0x0 
+          )
+1d7c      CardSystem                (
+1d7c        CardType                  = CONTACTLESS
+1d88        DebitTransactions         = 0          0x0 
+1d89        DebitAmount               = 0          0x0 
+1d8a        CreditTransactions        = 0          0x0 
+1d8b        CreditAmount              = 0          0x0 
+1d8c        RefundedAmount            = 0          0x0 
+1d8d        UnRefundedAmount          = 0          0x0 
+          )
+1d8e      CardSystem                (
+1d8e        CardType                  = MAG_STRIPE
+1d99        DebitTransactions         = 0          0x0 
+1d9a        DebitAmount               = 0          0x0 
+1d9b        CreditTransactions        = 0          0x0 
+1d9c        CreditAmount              = 0          0x0 
+1d9d        RefundedAmount            = 0          0x0 
+1d9e        UnRefundedAmount          = 0          0x0 
+          )
+1d9f      CardSystem                (
+1d9f        CardType                  = VISA_CONTACTLESS
+1db0        DebitTransactions         = 0          0x0 
+1db1        DebitAmount               = 0          0x0 
+1db2        CreditTransactions        = 0          0x0 
+1db3        CreditAmount              = 0          0x0 
+1db4        RefundedAmount            = 0          0x0 
+1db5        UnRefundedAmount          = 0          0x0 
+          )
+1db6      CardSystem                (
+1db6        CardType                  = CONTACTLESS_MAG_STRIPE
+1dcd        DebitTransactions         = 0          0x0 
+1dce        DebitAmount               = 0          0x0 
+1dcf        CreditTransactions        = 0          0x0 
+1dd0        CreditAmount              = 0          0x0 
+1dd1        RefundedAmount            = 0          0x0 
+1dd2        UnRefundedAmount          = 0          0x0 
+          )
+1dd3      CardSystem                (
+1dd3        CardType                  = OFFLINE_STORE_ERROR
+1de7        DebitTransactions         = 0          0x0 
+1de8        DebitAmount               = 0          0x0 
+1de9        CreditTransactions        = 0          0x0 
+1dea        CreditAmount              = 0          0x0 
+1deb        RefundedAmount            = 0          0x0 
+1dec        UnRefundedAmount          = 0          0x0 
+          )
+1ded      CardSystem                (
+1ded        CardType                  = OFFLINE_LOAD_ERROR
+1e00        DebitTransactions         = 0          0x0 
+1e01        DebitAmount               = 0          0x0 
+1e02        CreditTransactions        = 0          0x0 
+1e03        CreditAmount              = 0          0x0 
+1e04        RefundedAmount            = 0          0x0 
+1e05        UnRefundedAmount          = 0          0x0 
+          )
+        )
+      )
+1e07  TransactionAuditPeriodEnd (
+1e07    Time                      = 1691484825 0x64d20299  8 Aug 2023 16:53:45 +0800
+1e0c    SequenceNumber            = 40         0x28 
+1e0d    TriggerType               = COIN_BOX_WITHDRAWAL
+1e21    TriggerSequenceNumber     = 5          0x5 
+1e22    Data                      (
+1e22      AuditNo                   = 5          0x5 
+1e23      StartTime                 = 1691483525 0x64d1fd85  8 Aug 2023 16:32:05 +0800
+1e28      EndTime                   = 0          0x0 
+1e29      DebitTransactions         = 1          0x1 
+1e2a      CreditTransactions        = 0          0x0 
+1e2c      TimeBands                 (
+1e2c        NoFreeTimeInterval        (
+1e2c          A                         = 0          0x0 
+1e2d          B                         = 0          0x0 
+1e2e          C                         = 0          0x0 
+            )
+1e2f        FreeTimeInterval          (
+1e2f          A                         = 0          0x0 
+1e30          B                         = 0          0x0 
+1e31          C                         = 0          0x0 
+            )
+1e32        TicketsValue              (
+1e32          A                         = 0          0x0 
+1e33          B                         = 0          0x0 
+1e34          C                         = 0          0x0 
+            )
+          )
+1e35      TimeBands                 (
+1e35        NoFreeTimeInterval        (
+1e35          A                         = 0          0x0 
+1e36          B                         = 0          0x0 
+1e37          C                         = 0          0x0 
+            )
+1e38        FreeTimeInterval          (
+1e38          A                         = 0          0x0 
+1e39          B                         = 0          0x0 
+1e3a          C                         = 0          0x0 
+            )
+1e3b        TicketsValue              (
+1e3b          A                         = 0          0x0 
+1e3c          B                         = 0          0x0 
+1e3d          C                         = 0          0x0 
+            )
+          )
+1e3e      TimeBands                 (
+1e3e        NoFreeTimeInterval        (
+1e3e          A                         = 0          0x0 
+1e3f          B                         = 0          0x0 
+1e40          C                         = 0          0x0 
+            )
+1e41        FreeTimeInterval          (
+1e41          A                         = 0          0x0 
+1e42          B                         = 0          0x0 
+1e43          C                         = 0          0x0 
+            )
+1e44        TicketsValue              (
+1e44          A                         = 0          0x0 
+1e45          B                         = 0          0x0 
+1e46          C                         = 0          0x0 
+            )
+          )
+1e47      TimeBands                 (
+1e47        NoFreeTimeInterval        (
+1e47          A                         = 0          0x0 
+1e48          B                         = 0          0x0 
+1e49          C                         = 0          0x0 
+            )
+1e4a        FreeTimeInterval          (
+1e4a          A                         = 0          0x0 
+1e4b          B                         = 0          0x0 
+1e4c          C                         = 0          0x0 
+            )
+1e4d        TicketsValue              (
+1e4d          A                         = 0          0x0 
+1e4e          B                         = 0          0x0 
+1e4f          C                         = 0          0x0 
+            )
+          )
+1e50      TimeBands                 (
+1e50        NoFreeTimeInterval        (
+1e50          A                         = 0          0x0 
+1e51          B                         = 1          0x1 
+1e52          C                         = 0          0x0 
+            )
+1e53        FreeTimeInterval          (
+1e53          A                         = 0          0x0 
+1e54          B                         = 1          0x1 
+1e55          C                         = 0          0x0 
+            )
+1e56        TicketsValue              (
+1e56          A                         = 0          0x0 
+1e57          B                         = 0          0x0 
+1e58          C                         = 0          0x0 
+            )
+          )
+1e59      TimeBands                 (
+1e59        NoFreeTimeInterval        (
+1e59          A                         = 0          0x0 
+1e5a          B                         = 0          0x0 
+1e5b          C                         = 0          0x0 
+            )
+1e5c        FreeTimeInterval          (
+1e5c          A                         = 0          0x0 
+1e5d          B                         = 0          0x0 
+1e5e          C                         = 0          0x0 
+            )
+1e5f        TicketsValue              (
+1e5f          A                         = 0          0x0 
+1e60          B                         = 0          0x0 
+1e61          C                         = 0          0x0 
+            )
+          )
+1e62      TimeBands                 (
+1e62        NoFreeTimeInterval        (
+1e62          A                         = 0          0x0 
+1e63          B                         = 0          0x0 
+1e64          C                         = 0          0x0 
+            )
+1e65        FreeTimeInterval          (
+1e65          A                         = 0          0x0 
+1e66          B                         = 0          0x0 
+1e67          C                         = 0          0x0 
+            )
+1e68        TicketsValue              (
+1e68          A                         = 0          0x0 
+1e69          B                         = 0          0x0 
+1e6a          C                         = 0          0x0 
+            )
+          )
+1e6b      TimeBands                 (
+1e6b        NoFreeTimeInterval        (
+1e6b          A                         = 0          0x0 
+1e6c          B                         = 0          0x0 
+1e6d          C                         = 0          0x0 
+            )
+1e6e        FreeTimeInterval          (
+1e6e          A                         = 0          0x0 
+1e6f          B                         = 0          0x0 
+1e70          C                         = 0          0x0 
+            )
+1e71        TicketsValue              (
+1e71          A                         = 0          0x0 
+1e72          B                         = 0          0x0 
+1e73          C                         = 0          0x0 
+            )
+          )
+1e74      TimeBands                 (
+1e74        NoFreeTimeInterval        (
+1e74          A                         = 0          0x0 
+1e75          B                         = 0          0x0 
+1e76          C                         = 0          0x0 
+            )
+1e77        FreeTimeInterval          (
+1e77          A                         = 0          0x0 
+1e78          B                         = 0          0x0 
+1e79          C                         = 0          0x0 
+            )
+1e7a        TicketsValue              (
+1e7a          A                         = 0          0x0 
+1e7b          B                         = 0          0x0 
+1e7c          C                         = 0          0x0 
+            )
+          )
+1e7d      TimeBands                 (
+1e7d        NoFreeTimeInterval        (
+1e7d          A                         = 0          0x0 
+1e7e          B                         = 0          0x0 
+1e7f          C                         = 0          0x0 
+            )
+1e80        FreeTimeInterval          (
+1e80          A                         = 0          0x0 
+1e81          B                         = 0          0x0 
+1e82          C                         = 0          0x0 
+            )
+1e83        TicketsValue              (
+1e83          A                         = 0          0x0 
+1e84          B                         = 0          0x0 
+1e85          C                         = 0          0x0 
+            )
+          )
+1e86      TimeBands                 (
+1e86        NoFreeTimeInterval        (
+1e86          A                         = 0          0x0 
+1e87          B                         = 0          0x0 
+1e88          C                         = 0          0x0 
+            )
+1e89        FreeTimeInterval          (
+1e89          A                         = 0          0x0 
+1e8a          B                         = 0          0x0 
+1e8b          C                         = 0          0x0 
+            )
+1e8c        TicketsValue              (
+1e8c          A                         = 0          0x0 
+1e8d          B                         = 0          0x0 
+1e8e          C                         = 0          0x0 
+            )
+          )
+1e8f      TimeBands                 (
+1e8f        NoFreeTimeInterval        (
+1e8f          A                         = 0          0x0 
+1e90          B                         = 0          0x0 
+1e91          C                         = 0          0x0 
+            )
+1e92        FreeTimeInterval          (
+1e92          A                         = 0          0x0 
+1e93          B                         = 0          0x0 
+1e94          C                         = 0          0x0 
+            )
+1e95        TicketsValue              (
+1e95          A                         = 0          0x0 
+1e96          B                         = 0          0x0 
+1e97          C                         = 0          0x0 
+            )
+          )
+1e98      TimeBands                 (
+1e98        NoFreeTimeInterval        (
+1e98          A                         = 0          0x0 
+1e99          B                         = 0          0x0 
+1e9a          C                         = 0          0x0 
+            )
+1e9b        FreeTimeInterval          (
+1e9b          A                         = 0          0x0 
+1e9c          B                         = 0          0x0 
+1e9d          C                         = 0          0x0 
+            )
+1e9e        TicketsValue              (
+1e9e          A                         = 0          0x0 
+1e9f          B                         = 0          0x0 
+1ea0          C                         = 0          0x0 
+            )
+          )
+1ea1      TimeBands                 (
+1ea1        NoFreeTimeInterval        (
+1ea1          A                         = 0          0x0 
+1ea2          B                         = 0          0x0 
+1ea3          C                         = 0          0x0 
+            )
+1ea4        FreeTimeInterval          (
+1ea4          A                         = 0          0x0 
+1ea5          B                         = 0          0x0 
+1ea6          C                         = 0          0x0 
+            )
+1ea7        TicketsValue              (
+1ea7          A                         = 0          0x0 
+1ea8          B                         = 0          0x0 
+1ea9          C                         = 0          0x0 
+            )
+          )
+1eaa      TimeBands                 (
+1eaa        NoFreeTimeInterval        (
+1eaa          A                         = 0          0x0 
+1eab          B                         = 0          0x0 
+1eac          C                         = 0          0x0 
+            )
+1ead        FreeTimeInterval          (
+1ead          A                         = 0          0x0 
+1eae          B                         = 0          0x0 
+1eaf          C                         = 0          0x0 
+            )
+1eb0        TicketsValue              (
+1eb0          A                         = 0          0x0 
+1eb1          B                         = 0          0x0 
+1eb2          C                         = 0          0x0 
+            )
+          )
+1eb3      TimeBands                 (
+1eb3        NoFreeTimeInterval        (
+1eb3          A                         = 0          0x0 
+1eb4          B                         = 0          0x0 
+1eb5          C                         = 0          0x0 
+            )
+1eb6        FreeTimeInterval          (
+1eb6          A                         = 0          0x0 
+1eb7          B                         = 0          0x0 
+1eb8          C                         = 0          0x0 
+            )
+1eb9        TicketsValue              (
+1eb9          A                         = 0          0x0 
+1eba          B                         = 0          0x0 
+1ebb          C                         = 0          0x0 
+            )
+          )
+1ebc      TimeBands                 (
+1ebc        NoFreeTimeInterval        (
+1ebc          A                         = 0          0x0 
+1ebd          B                         = 0          0x0 
+1ebe          C                         = 0          0x0 
+            )
+1ebf        FreeTimeInterval          (
+1ebf          A                         = 0          0x0 
+1ec0          B                         = 0          0x0 
+1ec1          C                         = 0          0x0 
+            )
+1ec2        TicketsValue              (
+1ec2          A                         = 0          0x0 
+1ec3          B                         = 0          0x0 
+1ec4          C                         = 0          0x0 
+            )
+          )
+1ec5      TimeBands                 (
+1ec5        NoFreeTimeInterval        (
+1ec5          A                         = 0          0x0 
+1ec6          B                         = 0          0x0 
+1ec7          C                         = 0          0x0 
+            )
+1ec8        FreeTimeInterval          (
+1ec8          A                         = 0          0x0 
+1ec9          B                         = 0          0x0 
+1eca          C                         = 0          0x0 
+            )
+1ecb        TicketsValue              (
+1ecb          A                         = 0          0x0 
+1ecc          B                         = 0          0x0 
+1ecd          C                         = 0          0x0 
+            )
+          )
+1ece      TimeBands                 (
+1ece        NoFreeTimeInterval        (
+1ece          A                         = 0          0x0 
+1ecf          B                         = 0          0x0 
+1ed0          C                         = 0          0x0 
+            )
+1ed1        FreeTimeInterval          (
+1ed1          A                         = 0          0x0 
+1ed2          B                         = 0          0x0 
+1ed3          C                         = 0          0x0 
+            )
+1ed4        TicketsValue              (
+1ed4          A                         = 0          0x0 
+1ed5          B                         = 0          0x0 
+1ed6          C                         = 0          0x0 
+            )
+          )
+1ed7      TimeBands                 (
+1ed7        NoFreeTimeInterval        (
+1ed7          A                         = 0          0x0 
+1ed8          B                         = 0          0x0 
+1ed9          C                         = 0          0x0 
+            )
+1eda        FreeTimeInterval          (
+1eda          A                         = 0          0x0 
+1edb          B                         = 0          0x0 
+1edc          C                         = 0          0x0 
+            )
+1edd        TicketsValue              (
+1edd          A                         = 0          0x0 
+1ede          B                         = 0          0x0 
+1edf          C                         = 0          0x0 
+            )
+          )
+1ee0      TimeBands                 (
+1ee0        NoFreeTimeInterval        (
+1ee0          A                         = 0          0x0 
+1ee1          B                         = 0          0x0 
+1ee2          C                         = 0          0x0 
+            )
+1ee3        FreeTimeInterval          (
+1ee3          A                         = 0          0x0 
+1ee4          B                         = 0          0x0 
+1ee5          C                         = 0          0x0 
+            )
+1ee6        TicketsValue              (
+1ee6          A                         = 0          0x0 
+1ee7          B                         = 0          0x0 
+1ee8          C                         = 0          0x0 
+            )
+          )
+1ee9      TimeBands                 (
+1ee9        NoFreeTimeInterval        (
+1ee9          A                         = 0          0x0 
+1eea          B                         = 0          0x0 
+1eeb          C                         = 0          0x0 
+            )
+1eec        FreeTimeInterval          (
+1eec          A                         = 0          0x0 
+1eed          B                         = 0          0x0 
+1eee          C                         = 0          0x0 
+            )
+1eef        TicketsValue              (
+1eef          A                         = 0          0x0 
+1ef0          B                         = 0          0x0 
+1ef1          C                         = 0          0x0 
+            )
+          )
+1ef2      TimeBands                 (
+1ef2        NoFreeTimeInterval        (
+1ef2          A                         = 0          0x0 
+1ef3          B                         = 0          0x0 
+1ef4          C                         = 0          0x0 
+            )
+1ef5        FreeTimeInterval          (
+1ef5          A                         = 0          0x0 
+1ef6          B                         = 0          0x0 
+1ef7          C                         = 0          0x0 
+            )
+1ef8        TicketsValue              (
+1ef8          A                         = 0          0x0 
+1ef9          B                         = 0          0x0 
+1efa          C                         = 0          0x0 
+            )
+          )
+1efb      TimeBands                 (
+1efb        NoFreeTimeInterval        (
+1efb          A                         = 0          0x0 
+1efc          B                         = 0          0x0 
+1efd          C                         = 0          0x0 
+            )
+1efe        FreeTimeInterval          (
+1efe          A                         = 0          0x0 
+1eff          B                         = 0          0x0 
+1f00          C                         = 0          0x0 
+            )
+1f01        TicketsValue              (
+1f01          A                         = 0          0x0 
+1f02          B                         = 0          0x0 
+1f03          C                         = 0          0x0 
+            )
+          )
+1f05      Categories                (
+1f05        TotalAmount               = 50         0x32 
+1f06        TotalTickets              = 1          0x1 
+1f07        TotalFreeTickets          = 0          0x0 
+          )
+1f08      Categories                (
+1f08        TotalAmount               = 0          0x0 
+1f09        TotalTickets              = 0          0x0 
+1f0a        TotalFreeTickets          = 0          0x0 
+          )
+1f0b      Categories                (
+1f0b        TotalAmount               = 0          0x0 
+1f0c        TotalTickets              = 0          0x0 
+1f0d        TotalFreeTickets          = 0          0x0 
+          )
+1f0e      Categories                (
+1f0e        TotalAmount               = 0          0x0 
+1f0f        TotalTickets              = 0          0x0 
+1f10        TotalFreeTickets          = 0          0x0 
+          )
+1f11      Categories                (
+1f11        TotalAmount               = 0          0x0 
+1f12        TotalTickets              = 0          0x0 
+1f13        TotalFreeTickets          = 0          0x0 
+          )
+1f14      Categories                (
+1f14        TotalAmount               = 0          0x0 
+1f15        TotalTickets              = 0          0x0 
+1f16        TotalFreeTickets          = 0          0x0 
+          )
+1f17      Categories                (
+1f17        TotalAmount               = 0          0x0 
+1f18        TotalTickets              = 0          0x0 
+1f19        TotalFreeTickets          = 0          0x0 
+          )
+1f1a      Categories                (
+1f1a        TotalAmount               = 0          0x0 
+1f1b        TotalTickets              = 0          0x0 
+1f1c        TotalFreeTickets          = 0          0x0 
+          )
+1f1d      Categories                (
+1f1d        TotalAmount               = 0          0x0 
+1f1e        TotalTickets              = 0          0x0 
+1f1f        TotalFreeTickets          = 0          0x0 
+          )
+1f20      Categories                (
+1f20        TotalAmount               = 0          0x0 
+1f21        TotalTickets              = 0          0x0 
+1f22        TotalFreeTickets          = 0          0x0 
+          )
+1f23      Categories                (
+1f23        TotalAmount               = 0          0x0 
+1f24        TotalTickets              = 0          0x0 
+1f25        TotalFreeTickets          = 0          0x0 
+          )
+1f26      Categories                (
+1f26        TotalAmount               = 0          0x0 
+1f27        TotalTickets              = 0          0x0 
+1f28        TotalFreeTickets          = 0          0x0 
+          )
+1f29      Categories                (
+1f29        TotalAmount               = 0          0x0 
+1f2a        TotalTickets              = 0          0x0 
+1f2b        TotalFreeTickets          = 0          0x0 
+          )
+1f2c      Categories                (
+1f2c        TotalAmount               = 0          0x0 
+1f2d        TotalTickets              = 0          0x0 
+1f2e        TotalFreeTickets          = 0          0x0 
+          )
+1f2f      Categories                (
+1f2f        TotalAmount               = 0          0x0 
+1f30        TotalTickets              = 0          0x0 
+1f31        TotalFreeTickets          = 0          0x0 
+          )
+1f32      Categories                (
+1f32        TotalAmount               = 0          0x0 
+1f33        TotalTickets              = 0          0x0 
+1f34        TotalFreeTickets          = 0          0x0 
+          )
+1f35      Categories                (
+1f35        TotalAmount               = 0          0x0 
+1f36        TotalTickets              = 0          0x0 
+1f37        TotalFreeTickets          = 0          0x0 
+          )
+1f38      Categories                (
+1f38        TotalAmount               = 0          0x0 
+1f39        TotalTickets              = 0          0x0 
+1f3a        TotalFreeTickets          = 0          0x0 
+          )
+1f3b      Categories                (
+1f3b        TotalAmount               = 0          0x0 
+1f3c        TotalTickets              = 0          0x0 
+1f3d        TotalFreeTickets          = 0          0x0 
+          )
+1f3e      Categories                (
+1f3e        TotalAmount               = 0          0x0 
+1f3f        TotalTickets              = 0          0x0 
+1f40        TotalFreeTickets          = 0          0x0 
+          )
+1f41      Categories                (
+1f41        TotalAmount               = 0          0x0 
+1f42        TotalTickets              = 0          0x0 
+1f43        TotalFreeTickets          = 0          0x0 
+          )
+1f44      Categories                (
+1f44        TotalAmount               = 0          0x0 
+1f45        TotalTickets              = 0          0x0 
+1f46        TotalFreeTickets          = 0          0x0 
+          )
+1f47      Categories                (
+1f47        TotalAmount               = 0          0x0 
+1f48        TotalTickets              = 0          0x0 
+1f49        TotalFreeTickets          = 0          0x0 
+          )
+1f4a      Categories                (
+1f4a        TotalAmount               = 0          0x0 
+1f4b        TotalTickets              = 0          0x0 
+1f4c        TotalFreeTickets          = 0          0x0 
+          )
+1f4d      Categories                (
+1f4d        TotalAmount               = 0          0x0 
+1f4e        TotalTickets              = 0          0x0 
+1f4f        TotalFreeTickets          = 0          0x0 
+          )
+1f50      Categories                (
+1f50        TotalAmount               = 0          0x0 
+1f51        TotalTickets              = 0          0x0 
+1f52        TotalFreeTickets          = 0          0x0 
+          )
+1f53      Categories                (
+1f53        TotalAmount               = 0          0x0 
+1f54        TotalTickets              = 0          0x0 
+1f55        TotalFreeTickets          = 0          0x0 
+          )
+1f56      Categories                (
+1f56        TotalAmount               = 0          0x0 
+1f57        TotalTickets              = 0          0x0 
+1f58        TotalFreeTickets          = 0          0x0 
+          )
+1f59      Categories                (
+1f59        TotalAmount               = 0          0x0 
+1f5a        TotalTickets              = 0          0x0 
+1f5b        TotalFreeTickets          = 0          0x0 
+          )
+1f5c      Categories                (
+1f5c        TotalAmount               = 0          0x0 
+1f5d        TotalTickets              = 0          0x0 
+1f5e        TotalFreeTickets          = 0          0x0 
+          )
+1f5f      Categories                (
+1f5f        TotalAmount               = 0          0x0 
+1f60        TotalTickets              = 0          0x0 
+1f61        TotalFreeTickets          = 0          0x0 
+          )
+1f62      Categories                (
+1f62        TotalAmount               = 0          0x0 
+1f63        TotalTickets              = 0          0x0 
+1f64        TotalFreeTickets          = 0          0x0 
+          )
+1f65      TotalCreditAmount         = 0          0x0 
+        )
+      )
+1f67  StatusFlagChange          (
+1f67    Time                      = 1691484836 0x64d202a4  8 Aug 2023 16:53:56 +0800
+1f6c    SequenceNumber            = 41         0x29 
+1f6d    Set                       = 0          0x0 
+1f6e    Dev                       = 4          0x4 
+1f6f    Flag                      = 0          0x0 
+1f70    Level                     = E
+1f72    DevDesc                   = "coin system"
+1f7e    FlagDesc                  = "coin box in"
+      )
+1f8b  StatusFlagChange          (
+1f8b    Time                      = 1691484837 0x64d202a5  8 Aug 2023 16:53:57 +0800
+1f90    SequenceNumber            = 42         0x2a 
+1f91    Set                       = 0          0x0 
+1f92    Dev                       = 23         0x17 
+1f93    Flag                      = 3          0x3 
+1f94    Level                     = E
+1f96    DevDesc                   = "user interface"
+1fa5    FlagDesc                  = "payment methods avail."
+      )
+1fbd  StatusFlagChange          (
+1fbd    Time                      = 1691484837 0x64d202a5  8 Aug 2023 16:53:57 +0800
+1fc2    SequenceNumber            = 43         0x2b 
+1fc3    Set                       = 0          0x0 
+1fc4    Dev                       = 17         0x11 
+1fc5    Flag                      = 15         0xf 
+1fc6    Level                     = E
+1fc8    DevDesc                   = "general"
+1fd0    FlagDesc                  = "in service"
+      )
+1fdc  CallReason                (
+1fdc    Time                      = 1691484840 0x64d202a8  8 Aug 2023 16:54:00 +0800
+1fe1    SequenceNumber            = 44         0x2c 
+1fe2    SessionSerialNo           = 2428       0x97c 
+1fe4    ApplicationStart          = 0          0x0 
+1fe5    StatusFlagChange          = 1          0x1 
+1fe6    ScheduledCall             = 0          0x0 
+1fe7    BackOfficeCall            = 0          0x0 
+1fe8    RetryAfterBusy            = 0          0x0 
+1fe9    RetryAfterFailure         = 1          0x1 
+1fea    TestCall                  = 0          0x0 
+1feb    ForcedCall                = 0          0x0 
+1fec    ImmediateJob              = 0          0x0 
+      )
+1fee  4 bytes trailer data

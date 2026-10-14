@@ -1,0 +1,25 @@
+package com.tristarinc.library.mxd.file.enums
+
+enum class CardSystemTypesEnum {
+    UNKNOWN,
+    CHIP_N_PIN,
+    BANKSYS,
+    GPM276,
+    METRIC_SYNC,
+    ISO7813,
+    UEPS_BMS,
+    CHIPKNIP,
+    CITYCHIP,
+    BANKSYS_PROTON,
+    MIFARE_CAT_SELECT,
+    MIFARE_METRIC,
+    ISO7816,
+    OMPASS,
+    CREDITCARD,
+    CONTACTLESS,
+    MAG_STRIPE,
+    VISA_CONTACTLESS,
+    CONTACTLESS_MAG_STRIPE,
+    OFFLINE_STORE_ERROR,
+    OFFLINE_LOAD_ERROR
+}

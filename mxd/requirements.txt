@@ -1,0 +1,2 @@
+# 运行依赖（GUI 使用 Python 内置的 tkinter，无需额外安装）
+pycryptodome>=3.15

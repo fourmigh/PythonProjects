@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MetricDataFile>
+  <Header>
+    <MachineId>3500001566</MachineId>
+    <MachineName>SAF2</MachineName>
+    <CreationTime>28-Feb-2023 13:03:00</CreationTime>
+    <Description />
+  </Header>
+  <StatusFlag>
+    <Dev>24</Dev>
+    <Flag>19</Flag>
+    <Level>E</Level>
+    <DevDesc>card reader 2</DevDesc>
+    <FlagDesc>hardware not found</FlagDesc>
+  </StatusFlag>
+  <CoinSnapshot>
+    <TotalInNativeCurrency>6065</TotalInNativeCurrency>
+  </CoinSnapshot>
+  <BatterySnapshot>
+    <BatteryVoltage>1356</BatteryVoltage>
+  </BatterySnapshot>
+  <LeftPrinterTicketStock>
+    <TicketsRemaining>0</TicketsRemaining>
+  </LeftPrinterTicketStock>
+</MetricDataFile>

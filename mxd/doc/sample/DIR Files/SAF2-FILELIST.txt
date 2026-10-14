@@ -1,0 +1,65 @@
+MXD decode built on May 14 2009 at 14:48:41
+
+      Tag                Length  Value
+
+0000  INITIAL_CREATION_TIME   4  28 Feb 2023 13:09:56 +0000
+0006  ORIGINATING_COMPUTER    4  SAF2
+000c  COMPUTER_UID            8  0000003500001566
+0016  END_HEADER              0  
+
+0018  start record   0
+0018  VAR_UINT64        FileSize
+0022  VAR_UINT64        FileCrc
+002b  UTF8_STRING       FileName
+0035  UTF8_STRING       Customer
+003f  VAR_UINT64        CreationTime
+004d  ENUM              ContentType
+005a  UTF8_STRING       Version
+0063  VAR_UINT64        EncryptionType
+0073  VAR_UINT64        ValidFromTime
+0082  VAR_UINT64        CompatibilityLevel
+0096  VAR_INT64         CreationTz
+00a2  VAR_INT64         ValidFromTz
+00af  end record
+00b0  start record   1
+00b0  Rec            0  Entry
+00b8  end record
+00b9  start record   2
+00b9  start choice
+00ba  Rec            1  File
+00c1  end choice
+00c2  end schema, 3 records, schema size 171 bytes
+
+00c4  File                      (
+00c4    Entry                     (
+00c4      FileSize                  = 5324       0x14cc 
+00c6      FileCrc                   = 563550868  0x21971a94 
+00cb      FileName                  = "63FDFAE5.ELG"
+00d8      Customer                  = ""
+00d9      CreationTime              = 1677589221 0x63fdfae5 28 Feb 2023 21:00:21 +0800
+00de      ContentType               = SCHEMA_DATA
+00ea      Version                   = ""
+00eb      EncryptionType            = 0          0x0 
+00ec      ValidFromTime             = 0          0x0 
+00ed      CompatibilityLevel        = 0          0x0 
+00ee      CreationTz                = 0          0x0 
+00ef      ValidFromTz               = 0          0x0 
+        )
+      )
+00f1  File                      (
+00f1    Entry                     (
+00f1      FileSize                  = 5198       0x144e 
+00f3      FileCrc                   = 2826386399 0xa8773bdf 26 Jul 2059 03:19:59 +0800
+00f8      FileName                  = "63FDFB2D.ELG"
+0105      Customer                  = ""
+0106      CreationTime              = 1677589293 0x63fdfb2d 28 Feb 2023 21:01:33 +0800
+010b      ContentType               = SCHEMA_DATA
+0117      Version                   = ""
+0118      EncryptionType            = 0          0x0 
+0119      ValidFromTime             = 0          0x0 
+011a      CompatibilityLevel        = 0          0x0 
+011b      CreationTz                = 0          0x0 
+011c      ValidFromTz               = 0          0x0 
+        )
+      )
+011e  4 bytes trailer data

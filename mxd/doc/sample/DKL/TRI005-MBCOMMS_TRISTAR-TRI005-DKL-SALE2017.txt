@@ -1,0 +1,26 @@
+MXD decode built on Mar 24 2023 at 09:03:10
+
+      Tag                Length  Value
+
+0000  FILE_TYPE               0  
+0002  COMPATIBILITY_LEVEL     1  0
+0005  _MAJOR_VERSION          1  0
+0008  _MINOR_VERSION          1  0
+000b  ENCRYPTION_TYPE         1  1
+000e  COMPRESSION_TYPE        1  0
+0011  PRIM_SIG_TYPE           1  1
+0014  SEC_SIG_TYPE            1  0
+0017  PIN_TYPE                1  1
+001a  PIN_DIGITS              1  4
+001d  CUSTOMER               24  SALES DEMO MACHINES 2014
+0037  ORIGINATING_COMPUTER    9  PCWM00344
+0042  USER_NAME              10  K.Thatcher
+004e  INITIAL_CREATION_TIME   4  08 Mar 2018 08:56:46 +0000
+0054  FINAL_MODIFICATION_TIME   4  08 Mar 2018 08:56:47 +0000
+005a  VALID_FROM_TIME         4  08 Mar 2018 08:56:46 +0000
+0060  RSA_PUBLIC_KEY        140  30 81 89 02 81 81 00 d2 20 12 37 5d 35 a6 9c 44 2c 04 4f a0 1b c9 e2 9d 34 2c 4d ff a9 79 3f ff 67 a7 f3 45 b3 19 7a 6b 15 b3 7d 5e 80 6a 2f 92 60 0c 09 7f a2 e1 a7 36 2d b4 49 36 7a fb d9 bc 1c 29 e5 6f ff f8 7f ea 5c 78 e6 51 1d e0 b3 cd 46 cc 05 f9 0f 58 37 54 56 af e0 f7 57 10 27 db 7f a8 67 5b b4 bf fd 78 77 08 58 a4 af f7 03 9b 2e 0d 35 e6 33 87 5b a5 ce 9c e3 16 37 e3 3e 43 f5 e3 13 bd 44 8c 79 02 03 01 00 01 
+00ef  END_HEADER              0  
+
+00f1  start record   0
+00f1: Unrecognised/unsupported tag 65
+00f2  2919 bytes trailer data

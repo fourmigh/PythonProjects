@@ -1,0 +1,445 @@
+MxdLib built on Apr 18 2023 at 09:57:21
+
+      Tag                Length  Value
+
+0000  COMPATIBILITY_LEVEL     1  0
+0003  _MAJOR_VERSION          1  0
+0006  _MINOR_VERSION          1  0
+0009  ENCRYPTION_TYPE         1  TEAN
+000c  COMPRESSION_TYPE        1  None
+000f  PIN_TYPE                1  Required
+0012  NUMBER_OF_PIN_DIGITS    1  4
+0015  CUSTOMER               24  SALES DEMO MACHINES 2014
+002f  ORIGINATING_COMPUTER    9  PCWM00344
+003a  USER_NAME              10  K.Thatcher
+0046  INITIAL_CREATION_TIME   4  8 Mar 2018 08:56:46 +00:00
+004c  FINAL_MODIFICATION_TIME   4  8 Mar 2018 08:56:47 +00:00
+0052  VALID_FROM_TIME         4  8 Mar 2018 08:56:46 +00:00
+0058  RSA_PUBLIC_KEY        140  30818902818100D22012375D35A69C442C044FA01BC9E29D342C4DFFA9793FFF67A7F345B3197A6B15B37D5E806A2F92600C097FA2E1A7362DB449367AFBD9BC1C29E56FFFF87FEA5C78E6511DE0B3CD46CC05F90F58375456AFE0F7571027DB7FA8675BB4BFFD78770858A4AFF7039B2E0D35E633875BA5CE9CE31637E33E43F5E313BD448C790203010001
+00e7  END_HEADER              0  
+
+00e9  start record   0
+00e9  VAR_INT64         Hour
+00ef  VAR_INT64         Minute
+00f7  end record
+00f8  start record   1
+00f8  Rec            0  StartTime
+0104  Rec            0  EndTime
+010e  end record
+010f  start record   2
+010f  VAR_INT64         DayOfWeekMask
+011e  Rec            1  Time[...]
+0125  end record
+0126  start record   3
+0126  Rec            2  AccessTime[...]
+0133  end record
+0134  start record   4
+0134  UTF8_STRING       Name
+013a  VAR_INT64         KeyID
+0141  end record
+0142  start record   5
+0142  Rec            4  KeyEntry[...]
+014d  end record
+014e  start record   6
+014e  UTF8_STRING       Name
+0154  UTF8_STRING       Type
+015a  Rec            5  KeyList
+0164  Rec            3  AccessTimeList
+0175  end record
+0176  start record   7
+0176  Rec            6  KeyGroup[...]
+0181  end record
+0182  start record   8
+0182  Rec            7  KeyGroupsList
+0192  end schema, 9 records, schema size 170 bytes
+
+0193  KeyGroupsList             (
+0194    KeyGroup                  (
+0194      Name                      = "CASH COLLECTORS"
+01a4      Type                      = "VAULT"
+01aa      KeyList                   (
+01ab        KeyEntry                  (
+01ab          Name                      = "CASH COLLECTORS - New Key 1"
+01c7          KeyID                     = 97193512193 0x16a12f4d01 
+            )
+01cd        KeyEntry                  (
+01cd          Name                      = "CASH COLLECTORS - New Key 2"
+01e9          KeyID                     = 97193639425 0x16a1313e01 
+            )
+01ef        KeyEntry                  (
+01ef          Name                      = "CASH COLLECTORS - New Key 3"
+020b          KeyID                     = 97189886209 0x16a0f7f901 
+            )
+0211        KeyEntry                  (
+0211          Name                      = "CASH COLLECTORS - New Key 4"
+022d          KeyID                     = 97201574145 0x16a1aa5101 
+            )
+0233        KeyEntry                  (
+0233          Name                      = "CASH COLLECTORS - New Key 5"
+024f          KeyID                     = 97193215745 0x16a12ac701 
+            )
+0255        KeyEntry                  (
+0255          Name                      = "CASH COLLECTORS - New Key 6"
+0271          KeyID                     = 97201275905 0x16a1a5c401 
+            )
+0277        KeyEntry                  (
+0277          Name                      = "CASH COLLECTORS - New Key 7"
+0293          KeyID                     = 97188456449 0x16a0e22801 
+            )
+0299        KeyEntry                  (
+0299          Name                      = "CASH COLLECTORS - New Key 8"
+02b5          KeyID                     = 97193078017 0x16a128ad01 
+            )
+02bb        KeyEntry                  (
+02bb          Name                      = "CASH COLLECTORS - New Key 9"
+02d7          KeyID                     = 97192015617 0x16a1187701 
+            )
+02dd        KeyEntry                  (
+02dd          Name                      = "CASH COLLECTORS - New Key 10"
+02fa          KeyID                     = 97194486785 0x16a13e2c01 
+            )
+0300        KeyEntry                  (
+0300          Name                      = "CASH COLLECTORS - New Key 11"
+031d          KeyID                     = 97189608961 0x16a0f3be01 
+            )
+0323        KeyEntry                  (
+0323          Name                      = "CASH COLLECTORS - New Key 12"
+0340          KeyID                     = 97191497729 0x16a1109001 
+            )
+0346        KeyEntry                  (
+0346          Name                      = "CASH COLLECTORS - New Key 13"
+0363          KeyID                     = 97180674305 0x16a06b6901 
+            )
+0369        KeyEntry                  (
+0369          Name                      = "CASH COLLECTORS - New Key 14"
+0386          KeyID                     = 97188113921 0x16a0dcee01 
+            )
+038c        KeyEntry                  (
+038c          Name                      = "CASH COLLECTORS - New Key 15"
+03a9          KeyID                     = 97191535617 0x16a1112401 
+            )
+03af        KeyEntry                  (
+03af          Name                      = "CASH COLLECTORS - New Key 16"
+03cc          KeyID                     = 108439584257 0x193f80be01 
+            )
+03d2        KeyEntry                  (
+03d2          Name                      = "CASH COLLECTORS - New Key 17"
+03ef          KeyID                     = 108439831553 0x193f848401 
+            )
+03f5        KeyEntry                  (
+03f5          Name                      = "CASH COLLECTORS - New Key 18"
+0412          KeyID                     = 113757964801 0x1a7c80ca01 
+            )
+0418        KeyEntry                  (
+0418          Name                      = "CASH COLLECTORS - New Key 19"
+0435          KeyID                     = 113745923585 0x1a7bc90e01 
+            )
+043b        KeyEntry                  (
+043b          Name                      = "CASH COLLECTORS - New Key 20"
+0458          KeyID                     = 113748352513 0x1a7bee1e01 
+            )
+045e        KeyEntry                  (
+045e          Name                      = "CASH COLLECTORS - New Key 21"
+047b          KeyID                     = 113727481601 0x1a7aafa701 
+            )
+0481        KeyEntry                  (
+0481          Name                      = "CASH COLLECTORS - New Key 22"
+049e          KeyID                     = 113764915969 0x1a7ceadb01 
+            )
+04a4        KeyEntry                  (
+04a4          Name                      = "CASH COLLECTORS - New Key 23"
+04c1          KeyID                     = 113762213121 0x1a7cc19d01 
+            )
+04c7        KeyEntry                  (
+04c7          Name                      = "CASH COLLECTORS - New Key 24"
+04e4          KeyID                     = 113729026305 0x1a7ac73901 
+            )
+04ea        KeyEntry                  (
+04ea          Name                      = "CASH COLLECTORS - New Key 25"
+0507          KeyID                     = 113727437825 0x1a7aaefc01 
+            )
+050d        KeyEntry                  (
+050d          Name                      = "CASH COLLECTORS - New Key 26"
+052a          KeyID                     = 113725373697 0x1a7a8f7d01 
+            )
+0530        KeyEntry                  (
+0530          Name                      = "CASH COLLECTORS - New Key 27"
+054d          KeyID                     = 113763869441 0x1a7cdae301 
+            )
+          )
+0553      AccessTimeList            (
+0554        AccessTime                (
+0554          DayOfWeekMask             = 127         0x7f 
+0557          Time                      (
+0557            StartTime                 (
+0557              Hour                      = 0           0x0 
+0558              Minute                    = 0           0x0 
+                )
+0559            EndTime                   (
+0559              Hour                      = 23          0x17 
+055a              Minute                    = 59          0x3b 
+                )
+              )
+            )
+          )
+        )
+055b    KeyGroup                  (
+055b      Name                      = "ENGINEERS"
+0565      Type                      = "LOCK"
+056a      KeyList                   (
+056b        KeyEntry                  (
+056b          Name                      = "ENGINEERS - New Key 1"
+0581          KeyID                     = 97189823233 0x16a0f70301 
+            )
+0587        KeyEntry                  (
+0587          Name                      = "ENGINEERS - New Key 2"
+059d          KeyID                     = 97202297857 0x16a1b55c01 
+            )
+05a3        KeyEntry                  (
+05a3          Name                      = "ENGINEERS - New Key 3"
+05b9          KeyID                     = 97188802049 0x16a0e76e01 
+            )
+05bf        KeyEntry                  (
+05bf          Name                      = "ENGINEERS - New Key 4"
+05d5          KeyID                     = 97179378177 0x16a057a201 
+            )
+05db        KeyEntry                  (
+05db          Name                      = "ENGINEERS - New Key 5"
+05f1          KeyID                     = 97179274241 0x16a0560c01 
+            )
+05f7        KeyEntry                  (
+05f7          Name                      = "ENGINEERS - New Key 6"
+060d          KeyID                     = 97187948033 0x16a0da6601 
+            )
+0613        KeyEntry                  (
+0613          Name                      = "ENGINEERS - New Key 7"
+0629          KeyID                     = 97193451009 0x16a12e5e01 
+            )
+062f        KeyEntry                  (
+062f          Name                      = "ENGINEERS - New Key 8"
+0645          KeyID                     = 97181395457 0x16a0766a01 
+            )
+064b        KeyEntry                  (
+064b          Name                      = "ENGINEERS - New Key 9"
+0661          KeyID                     = 97190167553 0x16a0fc4401 
+            )
+0667        KeyEntry                  (
+0667          Name                      = "ENGINEERS - New Key 10"
+067e          KeyID                     = 97194646785 0x16a1409d01 
+            )
+0684        KeyEntry                  (
+0684          Name                      = "ENGINEERS - New Key 11"
+069b          KeyID                     = 97193201921 0x16a12a9101 
+            )
+06a1        KeyEntry                  (
+06a1          Name                      = "ENGINEERS - New Key 12"
+06b8          KeyID                     = 97191941121 0x16a1175401 
+            )
+06be        KeyEntry                  (
+06be          Name                      = "ENGINEERS - New Key 13"
+06d5          KeyID                     = 97189204993 0x16a0ed9401 
+            )
+06db        KeyEntry                  (
+06db          Name                      = "ENGINEERS - New Key 14"
+06f2          KeyID                     = 97192242177 0x16a11bec01 
+            )
+06f8        KeyEntry                  (
+06f8          Name                      = "ENGINEERS - New Key 15"
+070f          KeyID                     = 97193213185 0x16a12abd01 
+            )
+0715        KeyEntry                  (
+0715          Name                      = "ENGINEERS - New Key 16"
+072c          KeyID                     = 108411641601 0x193dd65f01 
+            )
+0732        KeyEntry                  (
+0732          Name                      = "ENGINEERS - New Key 17"
+0749          KeyID                     = 108440514049 0x193f8eee01 
+            )
+074f        KeyEntry                  (
+074f          Name                      = "ENGINEERS - New Key 18"
+0766          KeyID                     = 113726671617 0x1a7aa34b01 
+            )
+076c        KeyEntry                  (
+076c          Name                      = "ENGINEERS - New Key 19"
+0783          KeyID                     = 113744046849 0x1a7bac6b01 
+            )
+0789        KeyEntry                  (
+0789          Name                      = "ENGINEERS - New Key 20"
+07a0          KeyID                     = 113727862529 0x1a7ab57701 
+            )
+07a6        KeyEntry                  (
+07a6          Name                      = "ENGINEERS - New Key 21"
+07bd          KeyID                     = 113758532609 0x1a7c897401 
+            )
+07c3        KeyEntry                  (
+07c3          Name                      = "ENGINEERS - New Key 22"
+07da          KeyID                     = 113743142913 0x1a7b9ea001 
+            )
+07e0        KeyEntry                  (
+07e0          Name                      = "ENGINEERS - New Key 23"
+07f7          KeyID                     = 113758279425 0x1a7c859701 
+            )
+07fd        KeyEntry                  (
+07fd          Name                      = "ENGINEERS - New Key 24"
+0814          KeyID                     = 113746393345 0x1a7bd03901 
+            )
+081a        KeyEntry                  (
+081a          Name                      = "ENGINEERS - New Key 25"
+0831          KeyID                     = 113729690625 0x1a7ad15c01 
+            )
+0837        KeyEntry                  (
+0837          Name                      = "ENGINEERS - New Key 26"
+084e          KeyID                     = 113742495233 0x1a7b94be01 
+            )
+0854        KeyEntry                  (
+0854          Name                      = "ENGINEERS - New Key 27"
+086b          KeyID                     = 113730399745 0x1a7adc2e01 
+            )
+          )
+0871      AccessTimeList            (
+0872        AccessTime                (
+0872          DayOfWeekMask             = 127         0x7f 
+0875          Time                      (
+0875            StartTime                 (
+0875              Hour                      = 0           0x0 
+0876              Minute                    = 0           0x0 
+                )
+0877            EndTime                   (
+0877              Hour                      = 23          0x17 
+0878              Minute                    = 59          0x3b 
+                )
+              )
+            )
+          )
+        )
+0879    KeyGroup                  (
+0879      Name                      = "ATTENDANTS"
+0884      Type                      = "SERVICE"
+088c      KeyList                   (
+088d        KeyEntry                  (
+088d          Name                      = "ATTENDANTS - New Key 1"
+08a4          KeyID                     = 97189055489 0x16a0eb4c01 
+            )
+08aa        KeyEntry                  (
+08aa          Name                      = "ATTENDANTS - New Key 2"
+08c1          KeyID                     = 97192688641 0x16a122bc01 
+            )
+08c7        KeyEntry                  (
+08c7          Name                      = "ATTENDANTS - New Key 3"
+08de          KeyID                     = 97180075777 0x16a0624701 
+            )
+08e4        KeyEntry                  (
+08e4          Name                      = "ATTENDANTS - New Key 4"
+08fb          KeyID                     = 97181199873 0x16a0736e01 
+            )
+0901        KeyEntry                  (
+0901          Name                      = "ATTENDANTS - New Key 5"
+0918          KeyID                     = 97192179713 0x16a11af801 
+            )
+091e        KeyEntry                  (
+091e          Name                      = "ATTENDANTS - New Key 6"
+0935          KeyID                     = 97191996417 0x16a1182c01 
+            )
+093b        KeyEntry                  (
+093b          Name                      = "ATTENDANTS - New Key 7"
+0952          KeyID                     = 97201319425 0x16a1a66e01 
+            )
+0958        KeyEntry                  (
+0958          Name                      = "ATTENDANTS - New Key 8"
+096f          KeyID                     = 97180806401 0x16a06d6d01 
+            )
+0975        KeyEntry                  (
+0975          Name                      = "ATTENDANTS - New Key 9"
+098c          KeyID                     = 97201618177 0x16a1aafd01 
+            )
+0992        KeyEntry                  (
+0992          Name                      = "ATTENDANTS - New Key 10"
+09aa          KeyID                     = 97193409793 0x16a12dbd01 
+            )
+09b0        KeyEntry                  (
+09b0          Name                      = "ATTENDANTS - New Key 11"
+09c8          KeyID                     = 97180023297 0x16a0617a01 
+            )
+09ce        KeyEntry                  (
+09ce          Name                      = "ATTENDANTS - New Key 12"
+09e6          KeyID                     = 97179899905 0x16a05f9801 
+            )
+09ec        KeyEntry                  (
+09ec          Name                      = "ATTENDANTS - New Key 13"
+0a04          KeyID                     = 97190538753 0x16a101ee01 
+            )
+0a0a        KeyEntry                  (
+0a0a          Name                      = "ATTENDANTS - New Key 14"
+0a22          KeyID                     = 97194489089 0x16a13e3501 
+            )
+0a28        KeyEntry                  (
+0a28          Name                      = "ATTENDANTS - New Key 15"
+0a40          KeyID                     = 97180988161 0x16a0703301 
+            )
+0a46        KeyEntry                  (
+0a46          Name                      = "ATTENDANTS - New Key 16"
+0a5e          KeyID                     = 108441547009 0x193f9eb101 
+            )
+0a64        KeyEntry                  (
+0a64          Name                      = "ATTENDANTS - New Key 17"
+0a7c          KeyID                     = 108441239809 0x193f9a0101 
+            )
+0a82        KeyEntry                  (
+0a82          Name                      = "ATTENDANTS - New Key 18"
+0a9a          KeyID                     = 111434974209 0x19f20ac401 
+            )
+0aa0        KeyEntry                  (
+0aa0          Name                      = "ATTENDANTS - New Key 19"
+0ab8          KeyID                     = 111434274049 0x19f2001501 
+            )
+0abe        KeyEntry                  (
+0abe          Name                      = "ATTENDANTS - New Key 20"
+0ad6          KeyID                     = 113752158721 0x1a7c283201 
+            )
+0adc        KeyEntry                  (
+0adc          Name                      = "ATTENDANTS - New Key 21"
+0af4          KeyID                     = 111428960001 0x19f1aeff01 
+            )
+0afa        KeyEntry                  (
+0afa          Name                      = "ATTENDANTS - New Key 22"
+0b12          KeyID                     = 111436158977 0x19f21cd801 
+            )
+0b18        KeyEntry                  (
+0b18          Name                      = "ATTENDANTS - New Key 23"
+0b30          KeyID                     = 113750203649 0x1a7c0a5d01 
+            )
+0b36        KeyEntry                  (
+0b36          Name                      = "ATTENDANTS - New Key 24"
+0b4e          KeyID                     = 113730273537 0x1a7ada4101 
+            )
+0b54        KeyEntry                  (
+0b54          Name                      = "ATTENDANTS - New Key 25"
+0b6c          KeyID                     = 111426187265 0x19f184b001 
+            )
+0b72        KeyEntry                  (
+0b72          Name                      = "ATTENDANTS - New Key 26"
+0b8a          KeyID                     = 113754432257 0x1a7c4ae301 
+            )
+0b90        KeyEntry                  (
+0b90          Name                      = "ATTENDANTS - New Key 27"
+0ba8          KeyID                     = 113748672257 0x1a7bf2ff01 
+            )
+          )
+0bae      AccessTimeList            (
+0baf        AccessTime                (
+0baf          DayOfWeekMask             = 127         0x7f 
+0bb2          Time                      (
+0bb2            StartTime                 (
+0bb2              Hour                      = 0           0x0 
+0bb3              Minute                    = 0           0x0 
+                )
+0bb4            EndTime                   (
+0bb4              Hour                      = 23          0x17 
+0bb5              Minute                    = 59          0x3b 
+                )
+              )
+            )
+          )
+        )
+      )
+0bb6  4 bytes trailer data

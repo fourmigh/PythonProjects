@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MetricDataFile>
+  <Header>
+    <MachineId>3500001566</MachineId>
+    <MachineName>SAF2</MachineName>
+    <CreationTime>02-Mar-2023 00:05:18</CreationTime>
+    <Description />
+  </Header>
+  <NameLocation>
+    <Name>SAF2</Name>
+    <Location />
+    <LocationId>988</LocationId>
+  </NameLocation>
+  <MxdFile>
+    <File>
+      <FileSize>0</FileSize>
+      <FileCrc>0</FileCrc>
+      <FileName>1B25-09.AP2</FileName>
+      <Customer>General Release</Customer>
+      <CreationTime>1565079616</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version>Elite LS</Version>
+      <EncryptionType>0</EncryptionType>
+      <ValidFromTime>0</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>100</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </File>
+  </MxdFile>
+  <MxdFile>
+    <File>
+      <FileSize>47211</FileSize>
+      <FileCrc>253088699</FileCrc>
+      <FileName>NEWTRI.CFG</FileName>
+      <Customer />
+      <CreationTime>1675942010</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version />
+      <EncryptionType>0</EncryptionType>
+      <ValidFromTime>1675942017</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>0</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </File>
+  </MxdFile>
+  <PciVersion>
+    <SysVer>04.00.XX</SysVer>
+    <SsVer>15</SsVer>
+    <SsVer>8</SsVer>
+    <SsVer>5</SsVer>
+    <SsVer>10</SsVer>
+    <SsVer>1</SsVer>
+    <SsVer>19</SsVer>
+    <SsVer>15</SsVer>
+    <SsVer>3</SsVer>
+    <SsVer>3</SsVer>
+    <SsCRC>1841908152</SsCRC>
+    <SsCRC>3565601567</SsCRC>
+    <SsCRC>2334355727</SsCRC>
+    <SsCRC>2667687541</SsCRC>
+    <SsCRC>3309444293</SsCRC>
+    <SsCRC>770821962</SsCRC>
+    <SsCRC>3031350040</SsCRC>
+    <SsCRC>2996431051</SsCRC>
+    <SsCRC>3623454034</SsCRC>
+  </PciVersion>
+  <MxdFile>
+    <File>
+      <FileSize>3608</FileSize>
+      <FileCrc>0</FileCrc>
+      <FileName>N3084-31.TRF</FileName>
+      <Customer>N3084-31 - CHELTENHAM B.</Customer>
+      <CreationTime>1675246058</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version />
+      <EncryptionType>0</EncryptionType>
+      <ValidFromTime>1606694400</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>0</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </File>
+  </MxdFile>
+  <MxdFile>
+    <File>
+      <FileSize>3161</FileSize>
+      <FileCrc>3120388287</FileCrc>
+      <FileName>SALE2017_New.DKL</FileName>
+      <Customer>SALES DEMO MACHINES 2014</Customer>
+      <CreationTime>1520499406</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version />
+      <EncryptionType>1</EncryptionType>
+      <ValidFromTime>1520499406</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>0</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </File>
+  </MxdFile>
+  <MxdFile>
+    <File>
+      <FileSize>0</FileSize>
+      <FileCrc>0</FileCrc>
+      <FileName>-</FileName>
+      <Customer />
+      <CreationTime>0</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version />
+      <EncryptionType>0</EncryptionType>
+      <ValidFromTime>0</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>0</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </File>
+  </MxdFile>
+  <Locale>
+    <No>1</No>
+    <Id>CAPITA</Id>
+    <User>true</User>
+    <Maint>true</Maint>
+  </Locale>
+  <Currency>
+    <No>0</No>
+    <Iso4217Code>GBP</Iso4217Code>
+    <ExchangeRate>1000</ExchangeRate>
+  </Currency>
+  <Coin>
+    <Type>GCSDE</Type>
+    <FwVersion>2F.20</FwVersion>
+    <RejFile>--------.REJ</RejFile>
+    <Validator>------/---</Validator>
+  </Coin>
+  <Csc>
+    <SerialNo>0</SerialNo>
+    <Release />
+    <Ux300SerialNumber />
+    <Ux300SoftwareVersion />
+    <Ux100SerialNumber />
+    <Ux100SoftwareVersion />
+  </Csc>
+  <Printer>
+    <Type>METRIC_MK2</Type>
+    <FwVersion>68</FwVersion>
+    <FwVersionStr />
+  </Printer>
+  <Modem>
+    <Name>Direct iChip</Name>
+    <Class>ICHIP</Class>
+    <Voice>false</Voice>
+    <No>0</No>
+    <ATI2Resp />
+    <ATCGMMResp />
+    <ATCGMIResp />
+    <ATCGMRResp />
+    <ATCGSNResp />
+    <ATiRP0Resp>CO2144- D</ATiRP0Resp>
+    <ATiRP5Resp>1406713A</ATiRP5Resp>
+    <ATiRP1Resp>ID809b16 11.6.2012</ATiRP1Resp>
+    <ATiMACAResp>0003941B34B3</ATiMACAResp>
+  </Modem>
+  <UpperLock>
+    <UpperLockType>Integrated</UpperLockType>
+    <UpperLockFwVersion>0</UpperLockFwVersion>
+  </UpperLock>
+  <VaultLock>
+    <VaultType>S500049</VaultType>
+    <VaultFwVersion>17</VaultFwVersion>
+  </VaultLock>
+  <PSU>
+    <ReportWhenMainsOff>true</ReportWhenMainsOff>
+    <ReportWhenSolarOff>false</ReportWhenSolarOff>
+    <FwVersion>1</FwVersion>
+    <BoardIssue>3</BoardIssue>
+  </PSU>
+  <Boot>
+    <Version>4.28</Version>
+  </Boot>
+  <CPLD>
+    <DesignRef>1</DesignRef>
+    <Version>3.03</Version>
+  </CPLD>
+  <FrontPanel>
+    <FirmwareVersion>66</FirmwareVersion>
+  </FrontPanel>
+  <MxdFile>
+    <File>
+      <FileSize>0</FileSize>
+      <FileCrc>0</FileCrc>
+      <FileName>-</FileName>
+      <Customer />
+      <CreationTime>0</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version />
+      <EncryptionType>0</EncryptionType>
+      <ValidFromTime>0</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>0</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </File>
+  </MxdFile>
+</MetricDataFile>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MetricDataFile>
+  <Header>
+    <MachineId>3500001566</MachineId>
+    <MachineName>SAF2</MachineName>
+    <CreationTime>28-Feb-2023 13:09:56</CreationTime>
+    <Description />
+  </Header>
+  <File>
+    <Entry>
+      <FileSize>5324</FileSize>
+      <FileCrc>563550868</FileCrc>
+      <FileName>63FDFAE5.ELG</FileName>
+      <Customer />
+      <CreationTime>1677589221</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version />
+      <EncryptionType>0</EncryptionType>
+      <ValidFromTime>0</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>0</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </Entry>
+  </File>
+  <File>
+    <Entry>
+      <FileSize>5198</FileSize>
+      <FileCrc>2826386399</FileCrc>
+      <FileName>63FDFB2D.ELG</FileName>
+      <Customer />
+      <CreationTime>1677589293</CreationTime>
+      <ContentType>SCHEMA_DATA</ContentType>
+      <Version />
+      <EncryptionType>0</EncryptionType>
+      <ValidFromTime>0</ValidFromTime>
+      <CompatibilityLevel>0</CompatibilityLevel>
+      <CreationTz>0</CreationTz>
+      <ValidFromTz>0</ValidFromTz>
+    </Entry>
+  </File>
+</MetricDataFile>

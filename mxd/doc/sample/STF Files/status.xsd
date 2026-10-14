@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      New Aura software schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="FlagLevelEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="I"/>
+      <xsd:enumeration value="W"/>
+      <xsd:enumeration value="E"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="STATUS_FLAG">
+    <xsd:sequence>
+        <xsd:element name="Dev" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Flag" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Level" minOccurs="1" maxOccurs="1" type="FlagLevelEnum" default="E">
+        </xsd:element>
+        <xsd:element name="DevDesc" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="31"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FlagDesc" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="31"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_CASH_SNAPSHOT">
+    <xsd:sequence>
+        <xsd:element name="TotalInNativeCurrency" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AUDIT_TICKET_STOCK_SNAPSHOT">
+    <xsd:sequence>
+        <xsd:element name="TicketsRemaining" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="PSU_ACCUMULATOR_SNAPSHOT">
+    <xsd:sequence>
+        <xsd:element name="Accumulator1Voltage" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Accumulator2Voltage" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="STATUS">
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="StatusFlag" minOccurs="1" maxOccurs="1" type="STATUS_FLAG">
+        </xsd:element>
+        <xsd:element name="CoinSnapshot" minOccurs="1" maxOccurs="1" type="AUDIT_CASH_SNAPSHOT">
+        </xsd:element>
+        <xsd:element name="NoteSnapshot" minOccurs="1" maxOccurs="1" type="AUDIT_CASH_SNAPSHOT">
+        </xsd:element>
+        <xsd:element name="LeftPrinterTicketStock" minOccurs="1" maxOccurs="1" type="AUDIT_TICKET_STOCK_SNAPSHOT">
+        </xsd:element>
+        <xsd:element name="RightPrinterTicketStock" minOccurs="1" maxOccurs="1" type="AUDIT_TICKET_STOCK_SNAPSHOT">
+        </xsd:element>
+        <xsd:element name="AccumulatorSnapshot" minOccurs="1" maxOccurs="1" type="PSU_ACCUMULATOR_SNAPSHOT">
+        </xsd:element>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:element name="MetricDataFile" type="STATUS"/>
+
+</xsd:schema>

@@ -1,0 +1,1309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      New Aura software schema
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:simpleType name="MxdContentTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SCHEMA_DATA"/>
+      <xsd:enumeration value="BINARY"/>
+      <xsd:enumeration value="TEXT"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CurrencyIso4217Enum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="AED"/>
+      <xsd:enumeration value="AFN"/>
+      <xsd:enumeration value="ALL"/>
+      <xsd:enumeration value="AMD"/>
+      <xsd:enumeration value="ANG"/>
+      <xsd:enumeration value="AOA"/>
+      <xsd:enumeration value="ARS"/>
+      <xsd:enumeration value="AUD"/>
+      <xsd:enumeration value="AWG"/>
+      <xsd:enumeration value="AZN"/>
+      <xsd:enumeration value="BAM"/>
+      <xsd:enumeration value="BBD"/>
+      <xsd:enumeration value="BDT"/>
+      <xsd:enumeration value="BGN"/>
+      <xsd:enumeration value="BHD"/>
+      <xsd:enumeration value="BIF"/>
+      <xsd:enumeration value="BMD"/>
+      <xsd:enumeration value="BND"/>
+      <xsd:enumeration value="BOB"/>
+      <xsd:enumeration value="BRL"/>
+      <xsd:enumeration value="BSD"/>
+      <xsd:enumeration value="BTN"/>
+      <xsd:enumeration value="BWP"/>
+      <xsd:enumeration value="BYR"/>
+      <xsd:enumeration value="BZD"/>
+      <xsd:enumeration value="CAD"/>
+      <xsd:enumeration value="CDF"/>
+      <xsd:enumeration value="CHE"/>
+      <xsd:enumeration value="CHF"/>
+      <xsd:enumeration value="CHW"/>
+      <xsd:enumeration value="CLP"/>
+      <xsd:enumeration value="CNY"/>
+      <xsd:enumeration value="COP"/>
+      <xsd:enumeration value="COU"/>
+      <xsd:enumeration value="CRC"/>
+      <xsd:enumeration value="CUP"/>
+      <xsd:enumeration value="CVE"/>
+      <xsd:enumeration value="CYP"/>
+      <xsd:enumeration value="CZK"/>
+      <xsd:enumeration value="DJF"/>
+      <xsd:enumeration value="DKK"/>
+      <xsd:enumeration value="DOP"/>
+      <xsd:enumeration value="DZD"/>
+      <xsd:enumeration value="EEK"/>
+      <xsd:enumeration value="EGP"/>
+      <xsd:enumeration value="ERN"/>
+      <xsd:enumeration value="ETB"/>
+      <xsd:enumeration value="EUR"/>
+      <xsd:enumeration value="FJD"/>
+      <xsd:enumeration value="FKP"/>
+      <xsd:enumeration value="GBP"/>
+      <xsd:enumeration value="GEL"/>
+      <xsd:enumeration value="GHS"/>
+      <xsd:enumeration value="GIP"/>
+      <xsd:enumeration value="GMD"/>
+      <xsd:enumeration value="GNF"/>
+      <xsd:enumeration value="GTQ"/>
+      <xsd:enumeration value="GYD"/>
+      <xsd:enumeration value="HKD"/>
+      <xsd:enumeration value="HNL"/>
+      <xsd:enumeration value="HRK"/>
+      <xsd:enumeration value="HTG"/>
+      <xsd:enumeration value="HUF"/>
+      <xsd:enumeration value="IDR"/>
+      <xsd:enumeration value="ILS"/>
+      <xsd:enumeration value="INR"/>
+      <xsd:enumeration value="IQD"/>
+      <xsd:enumeration value="IRR"/>
+      <xsd:enumeration value="ISK"/>
+      <xsd:enumeration value="JMD"/>
+      <xsd:enumeration value="JOD"/>
+      <xsd:enumeration value="JPY"/>
+      <xsd:enumeration value="KES"/>
+      <xsd:enumeration value="KGS"/>
+      <xsd:enumeration value="KHR"/>
+      <xsd:enumeration value="KMF"/>
+      <xsd:enumeration value="KPW"/>
+      <xsd:enumeration value="KRW"/>
+      <xsd:enumeration value="KWD"/>
+      <xsd:enumeration value="KYD"/>
+      <xsd:enumeration value="KZT"/>
+      <xsd:enumeration value="LAK"/>
+      <xsd:enumeration value="LBP"/>
+      <xsd:enumeration value="LKR"/>
+      <xsd:enumeration value="LRD"/>
+      <xsd:enumeration value="LSL"/>
+      <xsd:enumeration value="LTL"/>
+      <xsd:enumeration value="LVL"/>
+      <xsd:enumeration value="LYD"/>
+      <xsd:enumeration value="MAD"/>
+      <xsd:enumeration value="MDL"/>
+      <xsd:enumeration value="MGA"/>
+      <xsd:enumeration value="MKD"/>
+      <xsd:enumeration value="MMK"/>
+      <xsd:enumeration value="MNT"/>
+      <xsd:enumeration value="MOP"/>
+      <xsd:enumeration value="MRO"/>
+      <xsd:enumeration value="MTL"/>
+      <xsd:enumeration value="MUR"/>
+      <xsd:enumeration value="MVR"/>
+      <xsd:enumeration value="MWK"/>
+      <xsd:enumeration value="MXN"/>
+      <xsd:enumeration value="MYR"/>
+      <xsd:enumeration value="MZN"/>
+      <xsd:enumeration value="NAD"/>
+      <xsd:enumeration value="NGN"/>
+      <xsd:enumeration value="NIO"/>
+      <xsd:enumeration value="NOK"/>
+      <xsd:enumeration value="NPR"/>
+      <xsd:enumeration value="NZD"/>
+      <xsd:enumeration value="OMR"/>
+      <xsd:enumeration value="PAB"/>
+      <xsd:enumeration value="PEN"/>
+      <xsd:enumeration value="PGK"/>
+      <xsd:enumeration value="PHP"/>
+      <xsd:enumeration value="PKR"/>
+      <xsd:enumeration value="PLN"/>
+      <xsd:enumeration value="PYG"/>
+      <xsd:enumeration value="QAR"/>
+      <xsd:enumeration value="RON"/>
+      <xsd:enumeration value="RSD"/>
+      <xsd:enumeration value="RUB"/>
+      <xsd:enumeration value="RWF"/>
+      <xsd:enumeration value="SAR"/>
+      <xsd:enumeration value="SBD"/>
+      <xsd:enumeration value="SCR"/>
+      <xsd:enumeration value="SDG"/>
+      <xsd:enumeration value="SEK"/>
+      <xsd:enumeration value="SGD"/>
+      <xsd:enumeration value="SHP"/>
+      <xsd:enumeration value="SKK"/>
+      <xsd:enumeration value="SLL"/>
+      <xsd:enumeration value="SOS"/>
+      <xsd:enumeration value="SRD"/>
+      <xsd:enumeration value="STD"/>
+      <xsd:enumeration value="SYP"/>
+      <xsd:enumeration value="SZL"/>
+      <xsd:enumeration value="THB"/>
+      <xsd:enumeration value="TJS"/>
+      <xsd:enumeration value="TMM"/>
+      <xsd:enumeration value="TND"/>
+      <xsd:enumeration value="TOP"/>
+      <xsd:enumeration value="TRY"/>
+      <xsd:enumeration value="TTD"/>
+      <xsd:enumeration value="TWD"/>
+      <xsd:enumeration value="TZS"/>
+      <xsd:enumeration value="UAH"/>
+      <xsd:enumeration value="UGX"/>
+      <xsd:enumeration value="USD"/>
+      <xsd:enumeration value="UYU"/>
+      <xsd:enumeration value="UZS"/>
+      <xsd:enumeration value="VEB"/>
+      <xsd:enumeration value="VND"/>
+      <xsd:enumeration value="VUV"/>
+      <xsd:enumeration value="WST"/>
+      <xsd:enumeration value="XAF"/>
+      <xsd:enumeration value="XCD"/>
+      <xsd:enumeration value="XOF"/>
+      <xsd:enumeration value="XPF"/>
+      <xsd:enumeration value="XTS"/>
+      <xsd:enumeration value="XXX"/>
+      <xsd:enumeration value="YER"/>
+      <xsd:enumeration value="ZAR"/>
+      <xsd:enumeration value="ZMK"/>
+      <xsd:enumeration value="ZWD"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PrinterTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="FUJITSU"/>
+      <xsd:enumeration value="METRIC_MK2"/>
+      <xsd:enumeration value="X56"/>
+      <xsd:enumeration value="NONE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="LMC_UlockTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="S400135-A"/>
+      <xsd:enumeration value="Integrated"/>
+      <xsd:enumeration value="Integrated"/>
+      <xsd:enumeration value="Mechanical"/>
+      <xsd:enumeration value="Kiosk"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="LMC_VaultTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="S400135-A"/>
+      <xsd:enumeration value="S400742-A"/>
+      <xsd:enumeration value="S500049"/>
+      <xsd:enumeration value="Mechanical"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CSM_CashSystemTypeEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="NOT_FITTED"/>
+      <xsd:enumeration value="AURA_PM"/>
+      <xsd:enumeration value="AURA"/>
+      <xsd:enumeration value="CASH_CODE"/>
+      <xsd:enumeration value="GCSDE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ModemClassEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN"/>
+      <xsd:enumeration value="CABLE"/>
+      <xsd:enumeration value="PSTN"/>
+      <xsd:enumeration value="GSM"/>
+      <xsd:enumeration value="GSM_GPRS"/>
+      <xsd:enumeration value="ICHIP"/>
+      <xsd:enumeration value="WIZCHIP"/>
+      <xsd:enumeration value="CDMA"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="SYSINFO_DATA">
+    <xsd:sequence>
+        <xsd:element name="Name" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Location" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="78"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="LocationId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="78"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="PCI_VERSION">
+    <xsd:sequence>
+        <xsd:element name="SysVer" minOccurs="1" maxOccurs="1" default="INVALID">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            INVALID
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="12"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SsVer" minOccurs="0" maxOccurs="9" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Subsystem Versions
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SsCRC" minOccurs="0" maxOccurs="9" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Subsystem CRCs
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TEMP_MXD_FILE">
+    <xsd:sequence>
+        <xsd:element name="FileSize" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FileCrc" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FileName" minOccurs="1" maxOccurs="1" default="-">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="40"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Customer" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CreationTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ContentType" minOccurs="1" maxOccurs="1" type="MxdContentTypeEnum" default="SCHEMA_DATA">
+        </xsd:element>
+        <xsd:element name="Version" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="EncryptionType" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ValidFromTime" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CompatibilityLevel" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="CreationTz" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-840"/>
+              <xsd:maxInclusive value="840"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ValidFromTz" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-840"/>
+              <xsd:maxInclusive value="840"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_MXD_SINGLE_FILE">
+    <xsd:sequence>
+        <xsd:element name="File" minOccurs="1" maxOccurs="1" type="TEMP_MXD_FILE">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_BOOT">
+    <xsd:sequence>
+        <xsd:element name="Version" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="5"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_LOCALE_INFO">
+    <xsd:sequence>
+        <xsd:element name="No" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="11"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Id" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="User" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="Maint" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CURRENCY_LINE">
+    <xsd:sequence>
+        <xsd:element name="No" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Iso4217Code" minOccurs="1" maxOccurs="1" type="CurrencyIso4217Enum" default="XXX">
+        </xsd:element>
+        <xsd:element name="ExchangeRate" minOccurs="1" maxOccurs="1" default="1000">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="10"/>
+              <xsd:maxInclusive value="1000000"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_PRINTER">
+    <xsd:sequence>
+        <xsd:element name="Type" minOccurs="1" maxOccurs="1" type="PrinterTypeEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="FwVersion" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FwVersionStr" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="11"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CPLD">
+    <xsd:sequence>
+        <xsd:element name="DesignRef" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Version" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_UPPER_LOCK">
+    <xsd:sequence>
+        <xsd:element name="UpperLockType" minOccurs="1" maxOccurs="1" type="LMC_UlockTypeEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="UpperLockFwVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_VAULT_LOCK">
+    <xsd:sequence>
+        <xsd:element name="VaultType" minOccurs="1" maxOccurs="1" type="LMC_VaultTypeEnum" default="UNKNOWN">
+        </xsd:element>
+        <xsd:element name="VaultFwVersion" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_PSU">
+    <xsd:sequence>
+        <xsd:element name="ReportWhenMainsOff" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Report when no power
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="ReportWhenSolarOff" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Report when no power
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="FwVersion" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="BoardIssue" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CASH">
+    <xsd:sequence>
+        <xsd:element name="Type" minOccurs="1" maxOccurs="1" type="CSM_CashSystemTypeEnum" default="NOT_FITTED">
+        </xsd:element>
+        <xsd:element name="FwVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="5"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="RejFile" minOccurs="1" maxOccurs="1" default="--------.REJ">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            &quot;rejector file&quot;
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="12"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Validator" minOccurs="1" maxOccurs="1" default="------/---">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            Validator
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="26"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_MODEM_INSTANCE">
+    <xsd:sequence>
+        <xsd:element name="Name" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Class" minOccurs="1" maxOccurs="1" type="ModemClassEnum" default="GSM">
+        </xsd:element>
+        <xsd:element name="Voice" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="No" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATI2Resp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATCGMMResp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATCGMIResp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATCGMRResp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATCGSNResp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATiRP0Resp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATiRP5Resp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATiRP1Resp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ATiMACAResp" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="128"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="WizVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="WizMacAddr" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="WizType" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="24"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CADIX">
+    <xsd:sequence>
+        <xsd:element name="FwId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="11"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FwVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="7"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CSC">
+    <xsd:sequence>
+        <xsd:element name="SerialNo" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-9223372036854775808"/>
+              <xsd:maxInclusive value="9223372036854775807"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Release" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Ux300SerialNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Ux300SoftwareVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="34"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Ux100SerialNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Ux100SoftwareVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="34"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_ATOS">
+    <xsd:sequence>
+        <xsd:element name="SoftwareVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SoftwarePackage" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SixTerminalId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="MACAddress" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_AUTHMAN_CARDEASE">
+    <xsd:sequence>
+        <xsd:element name="OEMId" minOccurs="1" maxOccurs="1" default="9997">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            CardEase OEM Id
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="1"/>
+              <xsd:maxInclusive value="9999"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TerminalId" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            CardEase Terminal Id
+          </xsd:documentation></xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="9999"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_FRONT_PANEL">
+    <xsd:sequence>
+        <xsd:element name="FirmwareVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="KeyPadName" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="30"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CHIP_N_PIN_READER_INFO">
+    <xsd:sequence>
+        <xsd:element name="ManufacturerCode" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="4"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SerialNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="16"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ModelNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="16"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SoftwareVersion" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_SWISSCASH">
+    <xsd:sequence>
+        <xsd:element name="TermId" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="4294967295"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FirmwareVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="8"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="Enabled276" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="TRUE">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            True if 276 card accepted
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+        <xsd:element name="EnabledCash" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="TRUE">
+          <xsd:annotation><xsd:documentation xml:lang="en">
+            True if Swiss Cash card accepted
+          </xsd:documentation></xsd:annotation>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_DISPLAY">
+    <xsd:sequence>
+        <xsd:element name="VersionMajor" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="VersionMinor" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="IMXVersionMajor" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="IMXVersionMinor" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="255"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_LUL">
+    <xsd:sequence>
+        <xsd:element name="ListVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FolderNumber" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:nonNegativeInteger">
+              <xsd:minInclusive value="0"/>
+              <xsd:maxInclusive value="65535"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CONTACT_CARD">
+    <xsd:sequence>
+        <xsd:element name="FwId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="FwVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="GLOBALCOM_CONFIG_SERIAL_NUMBER">
+    <xsd:sequence>
+        <xsd:element name="SerialNumber" minOccurs="1" maxOccurs="1" default="xxxxxxxxxxxxx">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="14"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="GLOBALCOM_CONFIG_FIRMWARE_VERSION">
+    <xsd:sequence>
+        <xsd:element name="FirmwareVersion" minOccurs="1" maxOccurs="1" default="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="32"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_GLOBALCOM">
+    <xsd:sequence>
+        <xsd:element name="SerialNumber" minOccurs="0" maxOccurs="2" type="GLOBALCOM_CONFIG_SERIAL_NUMBER">
+        </xsd:element>
+        <xsd:element name="FirmwareVersion" minOccurs="0" maxOccurs="2" type="GLOBALCOM_CONFIG_FIRMWARE_VERSION">
+        </xsd:element>
+        <xsd:element name="TerminalId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_INGENICO">
+    <xsd:sequence>
+        <xsd:element name="TerminalId" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TrmSwVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="VcsSwVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TerminalSn" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ContactReaderSn" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ClessReaderSn" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="10"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_GECR">
+    <xsd:sequence>
+        <xsd:element name="SoftwareVersion" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="16"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_VOUCHER">
+    <xsd:sequence>
+        <xsd:element name="Present" minOccurs="1" maxOccurs="1" type="xsd:boolean" default="FALSE">
+        </xsd:element>
+        <xsd:element name="NumScans" minOccurs="1" maxOccurs="1" default="0">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:integer">
+              <xsd:minInclusive value="-32768"/>
+              <xsd:maxInclusive value="32767"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="LastScanResult" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="32"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CARDREADER">
+    <xsd:sequence>
+        <xsd:element name="Type" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SerialNumber1" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SerialNumber2" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SerialNumber3" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="ModelNumber" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SoftwareVersion1" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SoftwareVersion2" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SoftwareVersion3" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SoftwareVersion4" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="SoftwareVersion5" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="TID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="60"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="MID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="OEMID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="StationID" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="PA_DSS_Version" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="MACAddress" minOccurs="1" maxOccurs="1" default="">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="20"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO_CPU_BOARD">
+    <xsd:sequence>
+        <xsd:element name="Revision" minOccurs="1" maxOccurs="1" default="E">
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+              <xsd:maxLength value="5"/>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="SYSINFO">
+    <xsd:sequence>
+        <xsd:element name="NameLocation" minOccurs="1" maxOccurs="1" type="SYSINFO_DATA">
+        </xsd:element>
+        <xsd:element name="PciVersion" minOccurs="1" maxOccurs="1" type="PCI_VERSION">
+        </xsd:element>
+        <xsd:element name="MxdFile" minOccurs="1" maxOccurs="1" type="SYSINFO_MXD_SINGLE_FILE">
+        </xsd:element>
+        <xsd:element name="Boot" minOccurs="1" maxOccurs="1" type="SYSINFO_BOOT">
+        </xsd:element>
+        <xsd:element name="Locale" minOccurs="1" maxOccurs="1" type="SYSINFO_LOCALE_INFO">
+        </xsd:element>
+        <xsd:element name="Currency" minOccurs="1" maxOccurs="1" type="SYSINFO_CURRENCY_LINE">
+        </xsd:element>
+        <xsd:element name="Printer" minOccurs="1" maxOccurs="1" type="SYSINFO_PRINTER">
+        </xsd:element>
+        <xsd:element name="CPLD" minOccurs="1" maxOccurs="1" type="SYSINFO_CPLD">
+        </xsd:element>
+        <xsd:element name="UpperLock" minOccurs="1" maxOccurs="1" type="SYSINFO_UPPER_LOCK">
+        </xsd:element>
+        <xsd:element name="VaultLock" minOccurs="1" maxOccurs="1" type="SYSINFO_VAULT_LOCK">
+        </xsd:element>
+        <xsd:element name="PSU" minOccurs="1" maxOccurs="1" type="SYSINFO_PSU">
+        </xsd:element>
+        <xsd:element name="Coin" minOccurs="1" maxOccurs="1" type="SYSINFO_CASH">
+        </xsd:element>
+        <xsd:element name="Note" minOccurs="1" maxOccurs="1" type="SYSINFO_CASH">
+        </xsd:element>
+        <xsd:element name="Modem" minOccurs="1" maxOccurs="1" type="SYSINFO_MODEM_INSTANCE">
+        </xsd:element>
+        <xsd:element name="Cadix" minOccurs="1" maxOccurs="1" type="SYSINFO_CADIX">
+        </xsd:element>
+        <xsd:element name="Csc" minOccurs="1" maxOccurs="1" type="SYSINFO_CSC">
+        </xsd:element>
+        <xsd:element name="Atos" minOccurs="1" maxOccurs="1" type="SYSINFO_ATOS">
+        </xsd:element>
+        <xsd:element name="CardEase" minOccurs="1" maxOccurs="1" type="SYSINFO_AUTHMAN_CARDEASE">
+        </xsd:element>
+        <xsd:element name="FrontPanel" minOccurs="1" maxOccurs="1" type="SYSINFO_FRONT_PANEL">
+        </xsd:element>
+        <xsd:element name="ChipnPin" minOccurs="1" maxOccurs="1" type="SYSINFO_CHIP_N_PIN_READER_INFO">
+        </xsd:element>
+        <xsd:element name="SwissCash" minOccurs="1" maxOccurs="1" type="SYSINFO_SWISSCASH">
+        </xsd:element>
+        <xsd:element name="Display" minOccurs="1" maxOccurs="1" type="SYSINFO_DISPLAY">
+        </xsd:element>
+        <xsd:element name="Lul" minOccurs="1" maxOccurs="1" type="SYSINFO_LUL">
+        </xsd:element>
+        <xsd:element name="ContactCard" minOccurs="1" maxOccurs="1" type="SYSINFO_CONTACT_CARD">
+        </xsd:element>
+        <xsd:element name="GlobalCom" minOccurs="1" maxOccurs="1" type="SYSINFO_GLOBALCOM">
+        </xsd:element>
+        <xsd:element name="Ingenico" minOccurs="1" maxOccurs="1" type="SYSINFO_INGENICO">
+        </xsd:element>
+        <xsd:element name="Gecr" minOccurs="1" maxOccurs="1" type="SYSINFO_GECR">
+        </xsd:element>
+        <xsd:element name="Voucher" minOccurs="1" maxOccurs="1" type="SYSINFO_VOUCHER">
+        </xsd:element>
+        <xsd:element name="CardReader" minOccurs="1" maxOccurs="1" type="SYSINFO_CARDREADER">
+        </xsd:element>
+        <xsd:element name="CPUBoard" minOccurs="1" maxOccurs="1" type="SYSINFO_CPU_BOARD">
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="MetricDataFile" type="SYSINFO"/>
+
+</xsd:schema>

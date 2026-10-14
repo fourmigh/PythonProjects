@@ -1,0 +1,53 @@
+MXD decode built on May 14 2009 at 14:48:41
+
+      Tag                Length  Value
+
+0000  INITIAL_CREATION_TIME   4  28 Feb 2023 13:03:00 +0000
+0006  ORIGINATING_COMPUTER    4  SAF2
+000c  COMPUTER_UID            8  0000003500001566
+0016  END_HEADER              0  
+
+0018  start record   0
+0018  VAR_UINT64        BatteryVoltage
+0028  end record
+0029  start record   1
+0029  VAR_UINT64        TicketsRemaining
+003b  end record
+003c  start record   2
+003c  VAR_UINT64        TotalInNativeCurrency
+0053  end record
+0054  start record   3
+0054  VAR_UINT64        Dev
+0059  VAR_UINT64        Flag
+005f  ENUM              Level
+0066  UTF8_STRING       DevDesc
+006f  UTF8_STRING       FlagDesc
+0079  end record
+007a  start record   4
+007a  start choice
+007b  Rec            3  StatusFlag
+0088  Rec            2  CoinSnapshot
+0097  Rec            2  NoteSnapshot
+00a6  Rec            1  LeftPrinterTicketStock
+00bf  Rec            1  RightPrinterTicketStock
+00d9  Rec            0  BatterySnapshot
+00eb  end choice
+00ec  end schema, 5 records, schema size 213 bytes
+
+00ee  StatusFlag                (
+00ee    Dev                       = 24         0x18 
+00ef    Flag                      = 19         0x13 
+00f0    Level                     = E
+00f2    DevDesc                   = "card reader 2"
+0100    FlagDesc                  = "hardware not found"
+      )
+0114  CoinSnapshot              (
+0114    TotalInNativeCurrency     = 6065       0x17b1 
+      )
+0117  BatterySnapshot           (
+0117    BatteryVoltage            = 1356       0x54c 
+      )
+011a  LeftPrinterTicketStock    (
+011a    TicketsRemaining          = 0          0x0 
+      )
+011c  4 bytes trailer data

@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace = 'com.tristarinc.library.mxd.file'
+    compileSdk = rootProject.ext.sdk_version
+
+    defaultConfig {
+        minSdk = 26
+        targetSdk = rootProject.ext.sdk_version
+
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility rootProject.ext.compatibility_version
+        targetCompatibility rootProject.ext.compatibility_version
+    }
+    kotlinOptions {
+        jvmTarget = rootProject.ext.jvm_version
+    }
+}
+
+dependencies {
+
+    api project(':mxd')
+    api project(':file')
+    api project(':sha1')
+    api project(':xtea')
+    api project(':rsa')
+    api project(':sqlite')
+    api project(':mlog')
+    api project(':currency')
+    api project(':interfaces')
+    api project(':config')
+}

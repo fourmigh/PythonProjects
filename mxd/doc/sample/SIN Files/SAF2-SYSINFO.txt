@@ -1,0 +1,377 @@
+MXD decode built on May 14 2009 at 14:48:41
+
+      Tag                Length  Value
+
+0000  INITIAL_CREATION_TIME   4  02 Mar 2023 00:05:18 +0000
+0006  ORIGINATING_COMPUTER    4  SAF2
+000c  COMPUTER_UID            8  0000003500001566
+0016  END_HEADER              0  
+
+0018  start record   0
+0018  UTF8_STRING       FirmwareVersion
+0029  end record
+002a  start record   1
+002a  UTF8_STRING       SerialNumber
+0038  end record
+0039  start record   2
+0039  VAR_UINT64        FileSize
+0043  VAR_UINT64        FileCrc
+004c  UTF8_STRING       FileName
+0056  UTF8_STRING       Customer
+0060  VAR_UINT64        CreationTime
+006e  ENUM              ContentType
+007b  UTF8_STRING       Version
+0084  VAR_UINT64        EncryptionType
+0094  VAR_UINT64        ValidFromTime
+00a3  VAR_UINT64        CompatibilityLevel
+00b7  VAR_INT64         CreationTz
+00c3  VAR_INT64         ValidFromTz
+00d0  end record
+00d1  start record   3
+00d1  UTF8_STRING       TerminalId
+00dd  UTF8_STRING       TrmSwVersion
+00eb  UTF8_STRING       VcsSwVersion
+00f9  end record
+00fa  start record   4
+00fa  Rec            1  SerialNumber[...]
+0109  Rec            0  FirmwareVersion[...]
+011b  UTF8_STRING       TerminalId
+0127  end record
+0128  start record   5
+0128  UTF8_STRING       FwId
+012e  UTF8_STRING       FwVersion
+0139  end record
+013a  start record   6
+013a  VAR_UINT64        VersionMajor
+0148  VAR_UINT64        VersionMinor
+0156  end record
+0157  start record   7
+0157  VAR_UINT64        TermId
+015f  UTF8_STRING       FirmwareVersion
+0170  BOOL              Enabled276
+017c  BOOL              EnabledCash
+0189  end record
+018a  start record   8
+018a  UTF8_STRING       ManufacturerCode
+019c  UTF8_STRING       SerialNumber
+01aa  UTF8_STRING       ModelNumber
+01b7  VAR_UINT64        SoftwareVersion
+01c8  end record
+01c9  start record   9
+01c9  VAR_UINT64        FirmwareVersion
+01da  end record
+01db  start record  10
+01db  VAR_UINT64        OEMId
+01e2  VAR_UINT64        TerminalId
+01ee  end record
+01ef  start record  11
+01ef  UTF8_STRING       SoftwareVersion
+0200  UTF8_STRING       SoftwarePackage
+0211  UTF8_STRING       SixTerminalId
+0220  UTF8_STRING       MACAddress
+022c  end record
+022d  start record  12
+022d  VAR_INT64         SerialNo
+0237  UTF8_STRING       Release
+0240  UTF8_STRING       Ux300SerialNumber
+0253  UTF8_STRING       Ux300SoftwareVersion
+0269  UTF8_STRING       Ux100SerialNumber
+027c  UTF8_STRING       Ux100SoftwareVersion
+0292  end record
+0293  start record  13
+0293  UTF8_STRING       FwId
+0299  UTF8_STRING       FwVersion
+02a4  end record
+02a5  start record  14
+02a5  UTF8_STRING       Name
+02ab  ENUM              Class
+02b2  BOOL              Voice
+02b9  VAR_UINT64        No
+02bd  UTF8_STRING       ATI2Resp
+02c7  UTF8_STRING       ATCGMMResp
+02d3  UTF8_STRING       ATCGMIResp
+02df  UTF8_STRING       ATCGMRResp
+02eb  UTF8_STRING       ATCGSNResp
+02f7  UTF8_STRING       ATiRP0Resp
+0303  UTF8_STRING       ATiRP5Resp
+030f  UTF8_STRING       ATiRP1Resp
+031b  UTF8_STRING       ATiMACAResp
+0328  end record
+0329  start record  15
+0329  ENUM              Type
+032f  UTF8_STRING       FwVersion
+033a  UTF8_STRING       RejFile
+0343  UTF8_STRING       Validator
+034e  end record
+034f  start record  16
+034f  BOOL              ReportWhenMainsOff
+0363  BOOL              ReportWhenSolarOff
+0377  VAR_UINT64        FwVersion
+0382  VAR_UINT64        BoardIssue
+038e  end record
+038f  start record  17
+038f  ENUM              VaultType
+039a  VAR_UINT64        VaultFwVersion
+03aa  end record
+03ab  start record  18
+03ab  ENUM              UpperLockType
+03ba  VAR_UINT64        UpperLockFwVersion
+03ce  end record
+03cf  start record  19
+03cf  UTF8_STRING       DesignRef
+03da  UTF8_STRING       Version
+03e3  end record
+03e4  start record  20
+03e4  ENUM              Type
+03ea  VAR_UINT64        FwVersion
+03f5  UTF8_STRING       FwVersionStr
+0403  end record
+0404  start record  21
+0404  VAR_UINT64        No
+0408  ENUM              Iso4217Code
+0415  VAR_UINT64        ExchangeRate
+0423  end record
+0424  start record  22
+0424  VAR_UINT64        No
+0428  UTF8_STRING       Id
+042c  BOOL              User
+0432  BOOL              Maint
+0439  end record
+043a  start record  23
+043a  UTF8_STRING       Version
+0443  end record
+0444  start record  24
+0444  Rec            2  File
+044b  end record
+044c  start record  25
+044c  UTF8_STRING       SysVer
+0454  VAR_UINT64        SsVer[...]
+045b  VAR_UINT64        SsCRC[...]
+0462  end record
+0463  start record  26
+0463  UTF8_STRING       Name
+0469  UTF8_STRING       Location
+0473  UTF8_STRING       LocationId
+047f  end record
+0480  start record  27
+0480  start choice
+0481  Rec           26  NameLocation
+0490  Rec           25  PciVersion
+049d  Rec           24  MxdFile
+04a7  Rec           23  Boot
+04ae  Rec           22  Locale
+04b7  Rec           21  Currency
+04c2  Rec           20  Printer
+04cc  Rec           19  CPLD
+04d3  Rec           18  UpperLock
+04df  Rec           17  VaultLock
+04eb  Rec           16  PSU
+04f1  Rec           15  Coin
+04f8  Rec           15  Note
+04ff  Rec           14  Modem
+0507  Rec           13  Cadix
+050f  Rec           12  Csc
+0515  Rec           11  Atos
+051c  Rec           10  CardEase
+0527  Rec            9  FrontPanel
+0534  Rec            8  ChipnPin
+053f  Rec            7  SwissCash
+054b  Rec            6  Display
+0555  Rec            5  ContactCard
+0563  Rec            4  GlobalCom
+056f  Rec            3  Ingenico
+057a  end choice
+057b  end schema, 28 records, schema size 1380 bytes
+
+057d  NameLocation              (
+057d    Name                      = "SAF2"
+0582    Location                  = ""
+0583    LocationId                = "988"
+      )
+0588  MxdFile                   (
+0588    File                      (
+0588      FileSize                  = 0          0x0 
+0589      FileCrc                   = 0          0x0 
+058a      FileName                  = "1B25-09.AP2"
+0596      Customer                  = "General Release"
+05a6      CreationTime              = 1565079616 0x5d493840  6 Aug 2019 16:20:16 +0800
+05ab      ContentType               = SCHEMA_DATA
+05b7      Version                   = "Elite LS"
+05c0      EncryptionType            = 0          0x0 
+05c1      ValidFromTime             = 0          0x0 
+05c2      CompatibilityLevel        = 0          0x0 
+05c3      CreationTz                = 100        0x64 
+05c5      ValidFromTz               = 0          0x0 
+        )
+      )
+05c7  MxdFile                   (
+05c7    File                      (
+05c7      FileSize                  = 47211      0xb86b 
+05ca      FileCrc                   = 253088699  0xf15d3bb 
+05ce      FileName                  = "NEWTRI.CFG"
+05d9      Customer                  = ""
+05da      CreationTime              = 1675942010 0x63e4d87a  9 Feb 2023 19:26:50 +0800
+05df      ContentType               = SCHEMA_DATA
+05eb      Version                   = ""
+05ec      EncryptionType            = 0          0x0 
+05ed      ValidFromTime             = 1675942017 0x63e4d881  9 Feb 2023 19:26:57 +0800
+05f2      CompatibilityLevel        = 0          0x0 
+05f3      CreationTz                = 0          0x0 
+05f4      ValidFromTz               = 0          0x0 
+        )
+      )
+05f6  PciVersion                (
+05f6    SysVer                    = "04.00.XX"
+0600    SsVer                     = 15         0xf 
+0601    SsVer                     = 8          0x8 
+0602    SsVer                     = 5          0x5 
+0603    SsVer                     = 10         0xa 
+0604    SsVer                     = 1          0x1 
+0605    SsVer                     = 19         0x13 
+0606    SsVer                     = 15         0xf 
+0607    SsVer                     = 3          0x3 
+0608    SsVer                     = 3          0x3 
+060a    SsCRC                     = 1841908152 0x6dc949b8 14 May 2028 17:09:12 +0800
+060f    SsCRC                     = 3565601567 0xd486c31f 27 Dec 2082 20:52:47 +0800
+0614    SsCRC                     = 2334355727 0x8b23710f 22 Dec 2043 08:08:47 +0800
+0619    SsCRC                     = 2667687541 0x9f01ae75 15 Jul 2054 08:19:01 +0800
+061e    SsCRC                     = 3309444293 0xc5421cc5 15 Nov 2074 02:04:53 +0800
+0623    SsCRC                     = 770821962  0x2df1cf4a 
+0628    SsCRC                     = 3031350040 0xb4aebb18 22 Jan 2066 09:40:40 +0800
+062d    SsCRC                     = 2996431051 0xb299e8cb 14 Dec 2064 05:57:31 +0800
+0632    SsCRC                     = 3623454034 0xd7f98552 27 Oct 2084 11:00:34 +0800
+      )
+0638  MxdFile                   (
+0638    File                      (
+0638      FileSize                  = 3608       0xe18 
+063a      FileCrc                   = 0          0x0 
+063b      FileName                  = "N3084-31.TRF"
+0648      Customer                  = "N3084-31 - CHELTENHAM B."
+0661      CreationTime              = 1675246058 0x63da39ea  1 Feb 2023 18:07:38 +0800
+0666      ContentType               = SCHEMA_DATA
+0672      Version                   = ""
+0673      EncryptionType            = 0          0x0 
+0674      ValidFromTime             = 1606694400 0x5fc43600 30 Nov 2020 08:00:00 +0800
+0679      CompatibilityLevel        = 0          0x0 
+067a      CreationTz                = 0          0x0 
+067b      ValidFromTz               = 0          0x0 
+        )
+      )
+067d  MxdFile                   (
+067d    File                      (
+067d      FileSize                  = 3161       0xc59 
+067f      FileCrc                   = 3120388287 0xb9fd58bf 17 Nov 2068 22:31:27 +0800
+0684      FileName                  = "SALE2017_New.DKL"
+0695      Customer                  = "SALES DEMO MACHINES 2014"
+06ae      CreationTime              = 1520499406 0x5aa0face  8 Mar 2018 16:56:46 +0800
+06b3      ContentType               = SCHEMA_DATA
+06bf      Version                   = ""
+06c0      EncryptionType            = 1          0x1 
+06c1      ValidFromTime             = 1520499406 0x5aa0face  8 Mar 2018 16:56:46 +0800
+06c6      CompatibilityLevel        = 0          0x0 
+06c7      CreationTz                = 0          0x0 
+06c8      ValidFromTz               = 0          0x0 
+        )
+      )
+06ca  MxdFile                   (
+06ca    File                      (
+06ca      FileSize                  = 0          0x0 
+06cb      FileCrc                   = 0          0x0 
+06cc      FileName                  = "-"
+06ce      Customer                  = ""
+06cf      CreationTime              = 0          0x0 
+06d0      ContentType               = SCHEMA_DATA
+06dc      Version                   = ""
+06dd      EncryptionType            = 0          0x0 
+06de      ValidFromTime             = 0          0x0 
+06df      CompatibilityLevel        = 0          0x0 
+06e0      CreationTz                = 0          0x0 
+06e1      ValidFromTz               = 0          0x0 
+        )
+      )
+06e3  Locale                    (
+06e3    No                        = 1          0x1 
+06e4    Id                        = "CAPITA"
+06eb    User                      = 1          0x1 
+06ec    Maint                     = 1          0x1 
+      )
+06ee  Currency                  (
+06ee    No                        = 0          0x0 
+06ef    Iso4217Code               = GBP
+06f3    ExchangeRate              = 1000       0x3e8 
+      )
+06f6  Coin                      (
+06f6    Type                      = GCSDE
+06fc    FwVersion                 = "2F.20"
+0702    RejFile                   = "--------.REJ"
+070f    Validator                 = "------/---"
+      )
+071b  Csc                       (
+071b    SerialNo                  = 0          0x0 
+071c    Release                   = ""
+071d    Ux300SerialNumber         = ""
+071e    Ux300SoftwareVersion      = ""
+071f    Ux100SerialNumber         = ""
+0720    Ux100SoftwareVersion      = ""
+      )
+0722  Printer                   (
+0722    Type                      = METRIC_MK2
+072d    FwVersion                 = 68         0x44 
+072e    FwVersionStr              = ""
+      )
+0730  Modem                     (
+0730    Name                      = "Direct iChip"
+073d    Class                     = ICHIP
+0743    Voice                     = 0          0x0 
+0744    No                        = 0          0x0 
+0745    ATI2Resp                  = ""
+0746    ATCGMMResp                = ""
+0747    ATCGMIResp                = ""
+0748    ATCGMRResp                = ""
+0749    ATCGSNResp                = ""
+074a    ATiRP0Resp                = "CO2144- D"
+0754    ATiRP5Resp                = "1406713A"
+075d    ATiRP1Resp                = "ID809b16 11.6.2012"
+0770    ATiMACAResp               = "0003941B34B3"
+      )
+077e  UpperLock                 (
+077e    UpperLockType             = Integrated
+0789    UpperLockFwVersion        = 0          0x0 
+      )
+078b  VaultLock                 (
+078b    VaultType                 = S500049
+0793    VaultFwVersion            = 17         0x11 
+      )
+0795  PSU                       (
+0795    ReportWhenMainsOff        = 1          0x1 
+0796    ReportWhenSolarOff        = 0          0x0 
+0797    FwVersion                 = 1          0x1 
+0798    BoardIssue                = 3          0x3 
+      )
+079a  Boot                      (
+079a    Version                   = "4.28"
+      )
+07a0  CPLD                      (
+07a0    DesignRef                 = "1"
+07a2    Version                   = "3.03"
+      )
+07a8  FrontPanel                (
+07a8    FirmwareVersion           = 66         0x42 
+      )
+07aa  MxdFile                   (
+07aa    File                      (
+07aa      FileSize                  = 0          0x0 
+07ab      FileCrc                   = 0          0x0 
+07ac      FileName                  = "-"
+07ae      Customer                  = ""
+07af      CreationTime              = 0          0x0 
+07b0      ContentType               = SCHEMA_DATA
+07bc      Version                   = ""
+07bd      EncryptionType            = 0          0x0 
+07be      ValidFromTime             = 0          0x0 
+07bf      CompatibilityLevel        = 0          0x0 
+07c0      CreationTz                = 0          0x0 
+07c1      ValidFromTz               = 0          0x0 
+        )
+      )
+07c3  4 bytes trailer data
