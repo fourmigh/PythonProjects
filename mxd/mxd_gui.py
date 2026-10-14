@@ -147,7 +147,7 @@ def _int_validator(maxlen=20):
 
 
 def _dallas_validator(max_dec=20):
-    """KeyID(18位 Dallas) 输入限制：十进制 ≤ 2^64-1，或 0x + ≤16 位十六进制。"""
+    """DallasKey 输入限制：十进制 ≤ 2^64-1，或 0x + ≤16 位十六进制。"""
     def check(proposed):
         if proposed == "":
             return True
@@ -488,7 +488,7 @@ class App(tk.Tk):
             for k in g.keys:
                 self.group_tree.insert(
                     node, "end", text="  " + k.name,
-                    values=("KeyID(12位)=%d (0x%x)   Dallas(18位)=%d"
+                    values=("KeyID = %d (0x%x)   DallasKey = %d"
                             % (k.key_id, k.key_id, dkl_key_to_dallas_key(k.key_id)),))
             for at in g.access_times:
                 times = "; ".join("%02d:%02d-%02d:%02d" % (t.start.hour, t.start.minute,
@@ -575,7 +575,7 @@ class App(tk.Tk):
         ttk.Label(edit, text="类型").grid(row=0, column=2, sticky="w", padx=4)
         ttk.Combobox(edit, textvariable=self.e_type, values=("VAULT", "LOCK", "SERVICE"),
                      width=12, state="readonly").grid(row=0, column=3, padx=4)
-        ttk.Label(edit, text="KeyID(18位)").grid(row=1, column=0, sticky="w", padx=4)
+        ttk.Label(edit, text="DallasKey").grid(row=1, column=0, sticky="w", padx=4)
         ttk.Entry(edit, textvariable=self.e_keyid, width=24, validate="key",
                   validatecommand=(edit.register(_dallas_validator()), "%P")).grid(row=1, column=1, padx=4)
         ttk.Label(edit, text="星期掩码").grid(row=1, column=2, sticky="w", padx=4)
@@ -768,7 +768,7 @@ class App(tk.Tk):
             for ki, k in enumerate(g.keys):
                 self.e_group_tree.insert(
                     node, "end", iid="g%d_k%d" % (gi, ki), text="  " + k.name,
-                    values=("KeyID(12位)=%d   Dallas(18位)=%d"
+                    values=("KeyID = %d   DallasKey = %d"
                             % (k.key_id, dkl_key_to_dallas_key(k.key_id)),))
 
     def _on_edit_select(self, _event=None):
@@ -798,7 +798,7 @@ class App(tk.Tk):
             k = g.keys[ki]
             self.e_name.set(k.name)
             self.e_type.set(g.type)                       # 显示所属组类型（可改，同步到组）
-            self.e_keyid.set(str(dkl_key_to_dallas_key(k.key_id)))   # 显示 18 位 Dallas
+            self.e_keyid.set(str(dkl_key_to_dallas_key(k.key_id)))   # 显示 DallasKey
             for v in (self.e_mask, self.e_sh, self.e_sm, self.e_eh, self.e_em):
                 v.set("")
 
@@ -869,10 +869,10 @@ class App(tk.Tk):
                 try:
                     raw = int(text, 0)
                 except ValueError:
-                    messagebox.showerror("错误", "KeyID 必须是整数（18 位 Dallas 编号，支持 0x 前缀）")
+                    messagebox.showerror("错误", "DallasKey 必须是整数（支持 0x 前缀）")
                     return
                 if not (0 <= raw <= 0xFFFFFFFFFFFFFFFF):
-                    messagebox.showerror("错误", "Dallas 编号超出 64 位范围")
+                    messagebox.showerror("错误", "DallasKey 超出 64 位范围")
                     return
                 k.key_id = dallas_key_to_dkl_key(raw)
             else:
@@ -1216,28 +1216,28 @@ class App(tk.Tk):
     # 工具
     # ==================================================================
     def _build_tools(self):
-        f = ttk.LabelFrame(self.tab_tools, text="Dallas Key（18位）↔ DKL KeyID（12位）转换")
+        f = ttk.LabelFrame(self.tab_tools, text="DallasKey ↔ KeyID 转换")
         f.pack(fill="x", padx=8, pady=8)
         self.t_dallas = tk.StringVar()
         self.t_dkl = tk.StringVar()
 
-        ttk.Label(f, text="Dallas Key（18位）").grid(row=0, column=0, sticky="w", padx=4, pady=4)
+        ttk.Label(f, text="DallasKey").grid(row=0, column=0, sticky="w", padx=4, pady=4)
         ttk.Entry(f, textvariable=self.t_dallas, width=32).grid(row=0, column=1, padx=4)
-        ttk.Button(f, text="18位 → 12位", command=self._d2k).grid(row=0, column=2, padx=4)
+        ttk.Button(f, text="DallasKey → KeyID", command=self._d2k).grid(row=0, column=2, padx=4)
 
-        ttk.Label(f, text="DKL KeyID（12位）").grid(row=1, column=0, sticky="w", padx=4, pady=4)
+        ttk.Label(f, text="KeyID").grid(row=1, column=0, sticky="w", padx=4, pady=4)
         ttk.Entry(f, textvariable=self.t_dkl, width=32).grid(row=1, column=1, padx=4)
-        ttk.Button(f, text="12位 → 18位", command=self._k2d).grid(row=1, column=2, padx=4)
+        ttk.Button(f, text="KeyID → DallasKey", command=self._k2d).grid(row=1, column=2, padx=4)
 
         info = ttk.LabelFrame(self.tab_tools, text="说明")
         info.pack(fill="both", expand=True, padx=8, pady=8)
         txt = tk.Text(info, wrap="word")
         txt.pack(fill="both", expand=True)
         txt.insert("1.0",
-                   "Dallas Key：物理钥匙编号，64 位整数（18 位十进制），含 1 个校验和字节。\n"
-                   "DKL KeyID：DKL 文件内存储的 KeyID（12 位十进制）。\n\n"
-                   "18位 → 12位：把编号按小端展开，清零首字节（校验和），再按大端解释。\n"
-                   "12位 → 18位：校验和字节由 Dallas CRC8（poly 0x8C）对剩余 7 字节逆序计算得出，可精确还原。\n\n"
+                   "DallasKey：用户持有的钥匙编号（64 位整数）。\n"
+                   "KeyID：写入 DKL 文件时存储的 KeyID。\n\n"
+                   "DallasKey → KeyID：把编号按小端展开，清零首字节（校验和），再按大端解释。\n"
+                   "KeyID → DallasKey：首字节由 Dallas CRC8（poly 0x8C）对剩余 7 字节逆序计算得出，可精确还原。\n\n"
                    "示例：\n"
                    "  87496571729477800  ->  127437190657\n"
                    "  121938773469560946 ->  127426539777\n"

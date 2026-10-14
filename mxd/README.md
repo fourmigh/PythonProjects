@@ -53,8 +53,9 @@ python mxd_gui.py
   > 编码为**最小宽度的有符号小端整数**（±2h07m 内 1 字节，如 +0800=480 用 2 字节），兼容 ±14:00。
 - **密钥更新**：向导式——从旧 DKL 导入内容、指定旧(主)/新(次)私钥、一键生成覆盖文件，
   并自动做头公钥指纹与签名的自检。
-- **工具**：`Dallas Key（18位）` ↔ `DKL KeyID（12位）` 互转（12→18 由 Dallas CRC8 自动补校验和字节，可精确还原）。
-- **KeyID 显示/编辑**：密钥组树“详情”同时显示 `KeyID(12位)` 与 `Dallas(18位)`；编辑选中项里的 `KeyID` 以 **18 位 Dallas 编号**输入，内部转换为 12 位存储。
+- **工具**：`DallasKey` ↔ `KeyID` 互转（KeyID→DallasKey 由 Dallas CRC8 自动补校验和字节，可精确还原）。
+- **术语统一**：用户输入的一律叫 `DallasKey`，写入文件存储的叫 `KeyID`（`KeyID = dallas_key_to_dkl_key(DallasKey)`）。
+  密钥组树“详情”同时显示 `KeyID` 与 `DallasKey`；编辑选中项里的 `DallasKey` 输入后转换为 `KeyID` 存储。
 
 ## 库用法
 
