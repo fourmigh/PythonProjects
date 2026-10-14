@@ -264,6 +264,12 @@ def _wall_to_epoch(text, tz_minutes):
     return calendar.timegm(dt.timetuple()) - (tz_minutes or 0) * 60
 
 
+def resource_path(*parts):
+    """资源路径：打包后取 sys._MEIPASS，否则取脚本所在目录。"""
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, *parts)
+
+
 def mask_to_days(mask):
     return ",".join(DAY_NAMES[i] for i in range(7) if mask & (1 << i)) or "-"
 
@@ -346,6 +352,10 @@ class App(tk.Tk):
         self.title("MXD / DKL 工具")
         self.geometry("1120x760")
         self.minsize(1000, 660)
+        try:
+            self.iconbitmap(resource_path("assets", "app.ico"))
+        except Exception:  # noqa: BLE001
+            pass
         self.parsed = None
         self.groups = []
         self.current_group = None

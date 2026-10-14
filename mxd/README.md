@@ -177,6 +177,27 @@ python -m unittest discover -s tests -v
 schema/data 与样本逐字节一致；`dallas_prim.dkl` / `dallas_sec.dkl` 的**整文件逐字节重建**；
 混淆+PIN+双签名的生成/回读往返。
 
+## 打包 exe（Windows）
+
+**一键打包**：直接双击运行 `build.bat` 即可，它会依次：
+
+1. 安装构建依赖（`pyinstaller`、`pillow`，已装则跳过）；
+2. 生成图标 `assets/app.ico`（已存在则跳过）；
+3. 调用 PyInstaller 打包，产出 `dist\MxdTool.exe`。
+
+也可手动分步：
+
+```powershell
+python -m pip install pyinstaller pillow
+python make_icon.py
+python -m PyInstaller --clean --noconfirm MxdTool.spec
+```
+
+产物：`dist\MxdTool.exe`（单文件、无控制台）。
+
+- `MxdTool.spec`：PyInstaller 规格（入口 `mxd_gui.py`，打包 `mxdlib` 与 `Crypto`，内嵌 `assets/app.ico`）。
+- 运行期依赖仍只有 `pycryptodome`；`pyinstaller`、`pillow` 仅用于构建。
+
 ## 说明
 
 - `doc/MxdDecode.exe` 为 Debug 构建，依赖调试版 CRT，当前环境无法运行，仅作参考。
