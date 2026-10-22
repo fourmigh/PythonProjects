@@ -1,5 +1,10 @@
 """自行车停车库预订系统"""
 
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from core import (
     ParkingSystem,
     AllocationManager,
@@ -8,9 +13,7 @@ from core import (
     UserStatus,
     TimeSlotStatus,
     calculate_bitmap,
-    has_overlap,
-    get_conflict_range,
-    format_slots
+    has_overlap
 )
 
 from ui import (
@@ -34,8 +37,6 @@ __all__ = [
     'TimeSlotStatus',
     'calculate_bitmap',
     'has_overlap',
-    'get_conflict_range',
-    'format_slots',
     # UI模块
     'ParkingGUI',
     'SpotStatusWindow',

@@ -1,12 +1,12 @@
 # parking_system.py
-from typing import List, Tuple, Dict, Optional, Set
+from typing import List, Tuple, Dict, Optional
 from collections import defaultdict
 import time
 
 from .config import AllocationWeights
 from .models import User, TimeSlotStatus
 from .allocation import AllocationManager
-from .utils import get_conflict_range, calculate_bitmap, format_slots
+from .utils import calculate_bitmap
 
 
 class ParkingSystem:
@@ -129,35 +129,6 @@ class ParkingSystem:
         self.next_user_id = max(self.next_user_id, user_id + 1)
         
         return True, "预订成功"
-    
-    @_profile
-    def check_availability(self, slots: List[int]) -> Tuple[bool, str]:
-        for slot in slots:
-            idx = slot - 1
-            if self.occupied[idx] >= self.total_spots:
-                return False, f"时段{slot}已满"
-        return True, "可用"
-    
-    @_profile
-    def get_available_slots(self) -> List[List[int]]:
-        available = []
-        past_slots = self.time_point // 2
-        
-        for i in range(1, self.num_slots + 1):
-            if i <= past_slots:
-                continue
-            if self.occupied[i-1] < self.total_spots:
-                available.append([i])
-        
-        for length in range(2, self.num_slots + 1):
-            for start in range(1, self.num_slots - length + 2):
-                slots = list(range(start, start + length))
-                if any(s <= past_slots for s in slots):
-                    continue
-                if all(self.occupied[s-1] < self.total_spots for s in slots):
-                    available.append(slots)
-        
-        return available
     
     @_profile
     def arrive(self, user_id: int, time_slot: int) -> Tuple[bool, str]:

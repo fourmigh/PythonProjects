@@ -7,8 +7,6 @@ import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.models import User
-
 
 # ========== 颜色配置 ==========
 COLORS = {
@@ -168,7 +166,3 @@ def create_scrollable_area(parent, bg_color):
     canvas.bind("<MouseWheel>", on_mousewheel)
     
     return canvas, scrollable_frame
-
-
-# 为了避免循环导入，在函数内部导入tkinter
-import tkinter as tk

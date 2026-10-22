@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-from datetime import datetime
 import sys
 import os
 
@@ -165,19 +164,21 @@ class ParkingGUI:
         # 创建内容框架
         self.scrollable_frame = tk.Frame(self.canvas, bg=self.colors["bg"])
         
+        # 将框架放入画布（宽度由 <Configure> 回调动态设置）
+        self.canvas_window = self.canvas.create_window(
+            (0, 0), window=self.scrollable_frame, anchor="nw"
+        )
+        
         # 绑定配置事件
         def on_frame_configure(event):
             self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+            self.draw_separators()
+        
+        def on_canvas_configure(event):
+            self.canvas.itemconfig(self.canvas_window, width=event.width)
+            self.draw_separators()
         
         self.scrollable_frame.bind("<Configure>", on_frame_configure)
-        
-        # 将框架放入画布
-        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw", width=self.canvas.winfo_width())
-        
-        # 当画布大小变化时，调整内部框架宽度
-        def on_canvas_configure(event):
-            self.canvas.itemconfig(1, width=event.width)
-        
         self.canvas.bind("<Configure>", on_canvas_configure)
         
         self.canvas.configure(yscrollcommand=scrollbar.set)
@@ -267,10 +268,6 @@ class ParkingGUI:
         
         # 在Canvas上绘制分隔线（覆盖在左右两列上）
         self.draw_separators()
-        
-        # 绑定滚动时重绘分隔线
-        self.canvas.bind("<Configure>", lambda e: self.draw_separators())
-        self.scrollable_frame.bind("<Configure>", lambda e: self.draw_separators())
         
         # ========== 底部控制区域 ==========
         control_frame = tk.Frame(self.root, bg=self.colors["bg"])

@@ -1,7 +1,6 @@
 # allocation.py
 from typing import List, Tuple, Set, Dict, Optional
 from collections import defaultdict
-import time
 
 from .config import AllocationWeights
 from .models import User

@@ -2,7 +2,7 @@
 
 import sys
 import os
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict
 from collections import defaultdict
 
 # 添加项目根目录到路径

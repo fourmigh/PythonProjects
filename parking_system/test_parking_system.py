@@ -1,5 +1,4 @@
 # test_parking_system.py
-import itertools
 import random
 import time
 from typing import List, Tuple, Dict
