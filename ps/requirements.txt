@@ -1,0 +1,8 @@
+PySide6>=6.6
+Pillow>=10.0
+numpy>=1.26
+opencv-python-headless>=4.8
+requests>=2.31
+rembg>=2.0
+onnxruntime>=1.16
+pytest>=8.0
