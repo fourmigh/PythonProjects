@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+repo/
+tools/
+data/
+logs/
+config.json
+*.log

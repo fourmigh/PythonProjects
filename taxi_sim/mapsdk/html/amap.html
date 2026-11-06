@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"/>
+<style>html,body{margin:0;height:100%}#m{width:100%;height:100%}
+.mk{font-size:17px;text-align:center;line-height:17px}</style></head>
+<body><div id="m"></div>
+<script src="https://webapi.amap.com/maps?v=1.4.15&key=__KEY__"></script>
+<script>
+var map = new AMap.Map('m', {center:[__LNG__, __LAT__], zoom:__ZOOM__, mapStyle:'amap://styles/whitesmoke'});
+var taxiMk = {}, paxMk = {}, lines = {};
+var ICON = {
+  idle:        '<div class="mk" style="filter:grayscale(1)">🚕</div>',
+  to_passenger:'<div class="mk">🚖</div>',
+  onboard:     '<div class="mk">🚕</div>'
+};
+window.updateState = function(s){
+  var seenP = {}, seenT = {};
+  (s.passengers||[]).forEach(function(p){ seenP[p.id]=1;
+    if(paxMk[p.id]){ paxMk[p.id].setPosition([p.lng,p.lat]); }
+    else paxMk[p.id] = new AMap.Marker({position:[p.lng,p.lat], content:'<div class="mk">🧍</div>', map:map});
+  });
+  Object.keys(paxMk).forEach(function(k){ if(!seenP[k]){ map.remove(paxMk[k]); delete paxMk[k]; }});
+  (s.taxis||[]).forEach(function(t){ seenT[t.id]=1;
+    if(taxiMk[t.id]){
+      taxiMk[t.id].setPosition([t.lng,t.lat]);
+      if(taxiMk[t.id]._st !== t.state){ taxiMk[t.id].setContent(ICON[t.state]); taxiMk[t.id]._st = t.state; }
+    } else {
+      var m = new AMap.Marker({position:[t.lng,t.lat], content:ICON[t.state], map:map});
+      m._st = t.state; taxiMk[t.id] = m;
+    }
+  });
+  Object.keys(taxiMk).forEach(function(k){ if(!seenT[k]){ map.remove(taxiMk[k]); delete taxiMk[k]; }});
+  Object.keys(lines).forEach(function(k){
+    if(!(s.routes && s.routes[k])){ map.remove(lines[k]); delete lines[k]; }});
+  if(s.routes) Object.keys(s.routes).forEach(function(k){
+    var path = s.routes[k].map(function(p){ return [p[1], p[0]]; });
+    if(lines[k]) lines[k].setPath(path);
+    else lines[k] = new AMap.Polyline({path:path, map:map, strokeColor:'#2196f3', strokeWeight:5, strokeOpacity:0.9, showDir:true, dirColor:'#fff'});
+  });
+};
+window.setCenter = function(lat, lng){ map.setCenter([lng, lat]); };
+</script></body></html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"/>
+<style>html,body{margin:0;height:100%}#m{width:100%;height:100%}
+.BMapLabel{font-size:17px;border:none!important;background:transparent!important;}</style></head>
+<body><div id="m"></div>
+<script src="https://api.map.baidu.com/api?type=webgl&v=1.0&ak=__KEY__"></script>
+<script>
+var map = new BMapGL.Map('m', {enableMapClick:false});
+map.centerAndZoom(new BMapGL.Point(__LNG__, __LAT__), __ZOOM__);
+map.enableScrollWheelZoom();
+var taxiMk = {}, paxMk = {}, lines = {};
+var ICON = {idle:'🚕', to_passenger:'🚖', onboard:'🚕'};
+function makeLabel(txt, pt){
+  var l = new BMapGL.Label(txt, {position:pt, offset:new BMapGL.Size(-9,-9)});
+  l.setStyle({border:'none', background:'transparent', fontSize:'17px'});
+  map.addOverlay(l);
+  return l;
+}
+window.updateState = function(s){
+  var seenP = {}, seenT = {};
+  (s.passengers||[]).forEach(function(p){ seenP[p.id]=1;
+    if(paxMk[p.id]){ paxMk[p.id].setPosition(new BMapGL.Point(p.lng,p.lat)); }
+    else paxMk[p.id] = makeLabel('🧍', new BMapGL.Point(p.lng,p.lat));
+  });
+  Object.keys(paxMk).forEach(function(k){ if(!seenP[k]){ map.removeOverlay(paxMk[k]); delete paxMk[k]; }});
+  (s.taxis||[]).forEach(function(t){ seenT[t.id]=1;
+    if(taxiMk[t.id]){
+      taxiMk[t.id].setPosition(new BMapGL.Point(t.lng,t.lat));
+      if(taxiMk[t.id]._st !== t.state){ taxiMk[t.id].setContent(ICON[t.state]); taxiMk[t.id]._st = t.state; }
+    } else {
+      var l = makeLabel(ICON[t.state]||'🚕', new BMapGL.Point(t.lng,t.lat));
+      l._st = t.state; taxiMk[t.id] = l;
+    }
+  });
+  Object.keys(taxiMk).forEach(function(k){ if(!seenT[k]){ map.removeOverlay(taxiMk[k]); delete taxiMk[k]; }});
+  Object.keys(lines).forEach(function(k){
+    if(!(s.routes && s.routes[k])){ map.removeOverlay(lines[k]); delete lines[k]; }});
+  if(s.routes) Object.keys(s.routes).forEach(function(k){
+    var pts = s.routes[k].map(function(p){ return new BMapGL.Point(p[1], p[0]); });
+    if(lines[k]) lines[k].setPath(pts);
+    else lines[k] = new BMapGL.Polyline(pts, {strokeColor:'#2196f3', strokeWeight:5, strokeOpacity:0.9});
+  });
+};
+window.setCenter = function(lat, lng){ map.setCenter(new BMapGL.Point(lng, lat)); };
+</script></body></html>

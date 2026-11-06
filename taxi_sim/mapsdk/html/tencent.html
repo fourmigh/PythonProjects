@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"/>
+<style>html,body{margin:0;height:100%}#m{width:100%;height:100%}</style></head>
+<body><div id="m"></div>
+<script src="https://map.qq.com/api/gljs?v=1.exp&key=__KEY__"></script>
+<script>
+var map = new TMap.Map('m', {center:new TMap.LatLng(__LAT__, __LNG__), zoom:__ZOOM__});
+var taxiLayer = new TMap.MultiLabel({map:map, styles:{'default':{}}});
+var paxLayer  = new TMap.MultiLabel({map:map, styles:{'default':{}}});
+var lineLayer = new TMap.MultiPolyline({map:map,
+  styles:{'route':{color:'#2196f3', width:5}}, geometries:[]});
+var ICON = {idle:'🚕', to_passenger:'🚖', onboard:'🚕'};
+window.updateState = function(s){
+  var pg = (s.passengers||[]).map(function(p){
+    return {id:'p'+p.id, position:new TMap.LatLng(p.lat,p.lng), content:'🧍'};
+  });
+  paxLayer.setGeometries(pg);
+  var tg = (s.taxis||[]).map(function(t){
+    return {id:'t'+t.id, position:new TMap.LatLng(t.lat,t.lng), content:ICON[t.state]||'🚕'};
+  });
+  taxiLayer.setGeometries(tg);
+  var lg = [];
+  if(s.routes) Object.keys(s.routes).forEach(function(k){
+    lg.push({id:k, styleId:'route',
+             paths:s.routes[k].map(function(p){return new TMap.LatLng(p[0],p[1]);})});
+  });
+  lineLayer.setGeometries(lg);
+};
+window.setCenter = function(lat, lng){ map.setCenter(new TMap.LatLng(lat, lng)); };
+</script></body></html>
