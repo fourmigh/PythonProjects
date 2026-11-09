@@ -3,3 +3,11 @@ __pycache__/
 .deepseek/
 build/
 dist/
+
+# IDE 工作数据(计划文件等)
+.codebuddy/
+
+# 本地密钥与运行数据
+taxi_sim/config.ini
+taxi_sim/taxi_sim.db
+taxi_sim/taxi_sim.db.bak_*

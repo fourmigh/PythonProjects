@@ -113,13 +113,24 @@ def get_route_cached(key):
             "duration": r["duration"], "provider": r["provider"]}
 
 
+def _valid_pt(p):
+    """坐标合法性防护: 纬度 ±90, 经度 ±180 (拦截颠倒/脏数据入库)。"""
+    return abs(p[0]) <= 90.0 and abs(p[1]) <= 180.0
+
+
 def put_route(key, city, origin, dest, provider, points, distance, duration):
+    points = [p for p in points if _valid_pt(p)]
+    if len(points) < 2:
+        return
     with _conn() as c:
         c.execute(
             "INSERT OR REPLACE INTO route_cache"
             "(route_key,city,origin,dest,provider,points,distance,duration)"
             " VALUES(?,?,?,?,?,?,?,?)",
-            (key, city, origin, dest, provider,
+            (key, city,
+             json.dumps([round(origin[0], 6), round(origin[1], 6)]),
+             json.dumps([round(dest[0], 6), round(dest[1], 6)]),
+             provider,
              json.dumps([[round(p[0], 6), round(p[1], 6)] for p in points]),
              distance, duration))
         add_points(city, points, key, _c=c)
@@ -142,7 +153,8 @@ def cache_size(city):
 
 def add_points(city, points, route_key_, _c=None):
     sql = "INSERT OR IGNORE INTO road_points(city,lat,lng,route_key) VALUES(?,?,?,?)"
-    rows = [(city, round(p[0], 6), round(p[1], 6), route_key_) for p in points]
+    rows = [(city, round(p[0], 6), round(p[1], 6), route_key_)
+            for p in points if _valid_pt(p)]
     if _c is not None:
         _c.executemany(sql, rows)
     else:

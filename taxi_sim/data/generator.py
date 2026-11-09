@@ -9,7 +9,12 @@ import random
 
 from i18n import t
 from data import roads, store
-from sim.city import get_city
+from sim.city import City, get_city
+
+
+def _as_city(city):
+    """兼容传入 City 对象或城市 key(含"当前位置"临时城市)。"""
+    return city if isinstance(city, City) else get_city(city)
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +37,8 @@ class DataGenerator:
         cached = store.get_route_cached(key)
         if cached:
             return {**cached, "provider": "cache"}
-        provider, res = self.manager.route_driving(o[1], o[0], d[1], d[0])
+        # o/d 均为 (lat,lng), route_driving 形参顺序即 (o_lat, o_lng, ...)
+        provider, res = self.manager.route_driving(o[0], o[1], d[0], d[1])
         if res:
             store.put_route(key, city, o, d, provider, res["points"],
                             res["distance"], res["duration"])
@@ -46,10 +52,9 @@ class DataGenerator:
 
     # ---------------- 种子采集(冷启动) ----------------
 
-    def seed_collect(self, city_name, target_pool=500, max_calls=30,
-                     log_cb=None):
+    def seed_collect(self, city, target_pool=500, max_calls=30, log_cb=None):
         """调SDK规划随机点对, 成功的折线全部入库+入池。返回本次实际调用次数。"""
-        city = get_city(city_name)
+        city = _as_city(city)
         calls = 0
         fails = 0
         while store.pool_size(city.name) < target_pool and calls < max_calls:
@@ -60,7 +65,7 @@ class DataGenerator:
             if roads.hav_deg(o, d) < 0.004:
                 continue
             calls += 1
-            provider, res = self.manager.route_driving(o[1], o[0], d[1], d[0])
+            provider, res = self.manager.route_driving(o[0], o[1], d[0], d[1])
             if res:
                 key = store.route_key(city.name, o[0], o[1], d[0], d[1])
                 store.put_route(key, city.name, o, d, provider,
@@ -78,28 +83,29 @@ class DataGenerator:
 
     # ---------------- 实体生成(本地优先 → 点池 → 种子) ----------------
 
-    def ensure_entities(self, city_name, n_pax, n_taxis, log_cb=None):
-        city = get_city(city_name)
+    def ensure_entities(self, city, n_pax, n_taxis, log_cb=None):
+        city = _as_city(city)
+        name = city.name
         rng = random.Random()
-        deficit_p = max(0, n_pax - store.count_passengers(city_name))
-        deficit_t = max(0, n_taxis - store.count_taxis(city_name))
+        deficit_p = max(0, n_pax - store.count_passengers(name))
+        deficit_t = max(0, n_taxis - store.count_taxis(name))
         summary = {"added_pax": 0, "added_taxis": 0, "from_db": 0}
 
         # 已有数量大于请求数: 直接随机抽样即可(调用方 sample), 无需补
         if deficit_p == 0 and deficit_t == 0:
-            summary["from_db"] = min(n_pax, store.count_passengers(city_name))
+            summary["from_db"] = min(n_pax, store.count_passengers(name))
             return summary
 
         # 点池不足时先做少量种子采集(消耗配额, 不够则挂起)
-        need = (deficit_p * 2 + deficit_t + 10) - store.pool_size(city_name)
+        need = (deficit_p * 2 + deficit_t + 10) - store.pool_size(name)
         if need > 0:
             calls = self.seed_collect(
-                city_name, target_pool=store.pool_size(city_name) + need * 3,
+                city, target_pool=store.pool_size(name) + need * 3,
                 max_calls=min(60, need * 2), log_cb=log_cb)
             if log_cb:
                 log_cb(t("gen.seed_done", calls=calls))
 
-        pool = store.sample_pool(city_name, max(20, (deficit_p * 2 + deficit_t) * 2))
+        pool = store.sample_pool(name, max(20, (deficit_p * 2 + deficit_t) * 2))
         if not pool:
             if log_cb:
                 log_cb(t("gen.pool_empty"))
@@ -120,17 +126,17 @@ class DataGenerator:
             used.extend([o, d])
             pax_rows.append((o[0], o[1], d[0], d[1], "pool"))
         if pax_rows:
-            store.add_passengers(city_name, pax_rows)
+            store.add_passengers(name, pax_rows)
             summary["added_pax"] = len(pax_rows)
 
         # 出租车: 从点池采样初始位置
         taxi_rows = []
-        for p in store.sample_pool(city_name, deficit_t + len(used),
+        for p in store.sample_pool(name, deficit_t + len(used),
                                    exclude=used):
             taxi_rows.append((p[0], p[1], "pool"))
         taxi_rows = taxi_rows[:deficit_t]
         if taxi_rows:
-            store.add_taxis(city_name, taxi_rows)
+            store.add_taxis(name, taxi_rows)
             summary["added_taxis"] = len(taxi_rows)
 
         if log_cb:

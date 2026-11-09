@@ -19,11 +19,13 @@ class MapManager:
         self.ledger = QuotaLedger()
         self.providers = [
             AMapProvider(config.amap_web_key),
-            TencentProvider(config.tencent_key),
-            BaiduProvider(config.baidu_ak),
+            TencentProvider(config.tencent_key, config.tencent_sk),
+            BaiduProvider(config.baidu_ak, config.baidu_sk),
         ]
         # 连续QPS失败的暂时冷却
         self._cooldown = {}
+        # Key 无效的平台: 当日跳过(用户在设置里改 Key 后 reload 清除)
+        self._invalid = set()
 
     def reload_config(self):
         cfg = self.config
@@ -32,8 +34,11 @@ class MapManager:
                 p.web_key = cfg.amap_web_key
             elif isinstance(p, TencentProvider):
                 p.key = cfg.tencent_key
+                p.secret_key = cfg.tencent_sk
             elif isinstance(p, BaiduProvider):
                 p.ak = cfg.baidu_ak
+                p.sk = cfg.baidu_sk
+        self._invalid.clear()   # 用户可能已更换 Key
 
     def _candidates(self, api):
         """有 Key、有剩余配额、不在冷却中的平台, 按剩余配额降序。"""
@@ -41,6 +46,8 @@ class MapManager:
         out = []
         for p in self.providers:
             if not p.api_ready:
+                continue
+            if p.name in self._invalid:
                 continue
             if self.ledger.is_exhausted(p.name, api):
                 continue
@@ -63,7 +70,8 @@ class MapManager:
                 self.ledger.mark_exhausted(p.name, "route")
                 last_err = e
             except InvalidKeyError as e:
-                log.warning("%s Key无效, 跳过: %s", p.display_name, e)
+                log.warning("%s Key无效, 当日跳过: %s", p.display_name, e)
+                self._invalid.add(p.name)
                 last_err = e
             except RateLimitedError as e:
                 # QPS超限: 冷却10秒后本平台仍可用

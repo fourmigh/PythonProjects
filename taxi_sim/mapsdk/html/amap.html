@@ -1,32 +1,69 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"/>
 <style>html,body{margin:0;height:100%}#m{width:100%;height:100%}
-.mk{font-size:17px;text-align:center;line-height:17px}</style></head>
+.wr{text-align:center;font-family:sans-serif}
+.mk{font-size:17px;line-height:18px}
+.mk.dim{filter:grayscale(1);opacity:.55}
+.bx{display:inline-block;background:rgba(255,255,255,.93);border:1px solid #8899aa;
+border-radius:3px;padding:0 3px;font-size:9px;line-height:12px;color:#223344;white-space:nowrap}
+</style></head>
 <body><div id="m"></div>
-<script src="https://webapi.amap.com/maps?v=1.4.15&key=__KEY__"></script>
+<!-- 2021-12后申请的JS Key需配合安全密钥; 旧Key留空即可 -->
+<script>window._AMapSecurityConfig = {securityJsCode: "__SEC__"};</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=__KEY__"></script>
 <script>
-var map = new AMap.Map('m', {center:[__LNG__, __LAT__], zoom:__ZOOM__, mapStyle:'amap://styles/whitesmoke'});
+/* 2.0 版模块异步加载, 不再依赖 document.write(1.4.x 会被浏览器拦截导致白图) */
+var map = new AMap.Map('m', {center:[__LNG__, __LAT__], zoom:__ZOOM__});
 var taxiMk = {}, paxMk = {}, lines = {};
-var ICON = {
-  idle:        '<div class="mk" style="filter:grayscale(1)">🚕</div>',
-  to_passenger:'<div class="mk">🚖</div>',
-  onboard:     '<div class="mk">🚕</div>'
-};
+var ICON = {idle:'🚕', to_passenger:'🚖', onboard:'🚕', to_home:'🚖', off_duty:'🅿️'};
+var PAX = {waiting:'🧍', pending:'💤', onboard:'🚕'};
+var LABELS = {today:'今日收益', ride:'本单收益'};
+
+function distKm(a,b,c,d){
+  var dy=(a-c)*111.0, dx=(d-b)*111.0*Math.cos((a+c)/2*Math.PI/180);
+  return Math.sqrt(dy*dy+dx*dx);
+}
+function arrow(a,b,c,d){
+  var ang=Math.atan2(c-a,(d-b)*Math.cos((a+c)/2*Math.PI/180))*180/Math.PI;
+  var i=Math.round((((ang%360)+360)%360)/45)%8;
+  return ['→','↗','↑','↖','←','↙','↓','↘'][i];
+}
+/* 乘客: 图标在上, 信息框在下 */
+function paxContent(p){
+  var ico='<div class="mk'+(p.state==='pending'?' dim':'')+'">'+
+          (PAX[p.state]||PAX.waiting)+'</div>';
+  if(p.state==='pending'||!p.dest) return '<div class="wr">'+ico+'</div>';
+  var txt=arrow(p.lat,p.lng,p.dest[0],p.dest[1])+' '+
+          distKm(p.lat,p.lng,p.dest[0],p.dest[1]).toFixed(1)+'km';
+  return '<div class="wr">'+ico+'<div class="bx">'+txt+'</div></div>';
+}
+/* 出租车: 信息框在上, 图标在下 */
+function taxiContent(t){
+  var ico='<div class="mk'+((t.state==='to_home'||t.state==='off_duty')?' dim':'')+'">'+
+          (ICON[t.state]||'🚕')+'</div>';
+  var rows=[LABELS.today+' ¥'+Number(t.income||0).toFixed(1)];
+  if(t.ride>0) rows.push(LABELS.ride+' ¥'+Number(t.ride).toFixed(1));
+  return '<div class="wr"><div class="bx">'+rows.join('<br>')+'</div>'+ico+'</div>';
+}
+function put(store, key, content, pos){
+  var m = store[key];
+  if(m){
+    if(m._c!==content){ m.setContent(content); m._c=content; }
+    m.setPosition(pos);
+  } else {
+    m = new AMap.Marker({position:pos, content:content, anchor:'center', map:map});
+    m._c = content; store[key] = m;
+  }
+}
 window.updateState = function(s){
-  var seenP = {}, seenT = {};
+  if(s.labels) LABELS=s.labels;
+  var seenP={}, seenT={};
   (s.passengers||[]).forEach(function(p){ seenP[p.id]=1;
-    if(paxMk[p.id]){ paxMk[p.id].setPosition([p.lng,p.lat]); }
-    else paxMk[p.id] = new AMap.Marker({position:[p.lng,p.lat], content:'<div class="mk">🧍</div>', map:map});
+    put(paxMk, p.id, paxContent(p), [p.lng,p.lat]);
   });
   Object.keys(paxMk).forEach(function(k){ if(!seenP[k]){ map.remove(paxMk[k]); delete paxMk[k]; }});
   (s.taxis||[]).forEach(function(t){ seenT[t.id]=1;
-    if(taxiMk[t.id]){
-      taxiMk[t.id].setPosition([t.lng,t.lat]);
-      if(taxiMk[t.id]._st !== t.state){ taxiMk[t.id].setContent(ICON[t.state]); taxiMk[t.id]._st = t.state; }
-    } else {
-      var m = new AMap.Marker({position:[t.lng,t.lat], content:ICON[t.state], map:map});
-      m._st = t.state; taxiMk[t.id] = m;
-    }
+    put(taxiMk, t.id, taxiContent(t), [t.lng,t.lat]);
   });
   Object.keys(taxiMk).forEach(function(k){ if(!seenT[k]){ map.remove(taxiMk[k]); delete taxiMk[k]; }});
   Object.keys(lines).forEach(function(k){

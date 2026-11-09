@@ -53,17 +53,37 @@ class SettingsDialog(QDialog):
             ed["web_key"].setEchoMode(QLineEdit.Password)
             ed["js_key"] = QLineEdit(self.config.amap_js_key)
             ed["js_key"].setEchoMode(QLineEdit.Password)
+            ed["js_code"] = QLineEdit(self.config.amap_js_code)
+            ed["js_code"].setEchoMode(QLineEdit.Password)
             form.addRow(t("settings.web_key"), ed["web_key"])
             form.addRow(t("settings.js_key"), ed["js_key"])
+            form.addRow(t("settings.security_code"), ed["js_code"])
             self._amap_ed = ed
+        elif name == "tencent":
+            ed["key"] = QLineEdit(self.config.tencent_key)
+            ed["key"].setEchoMode(QLineEdit.Password)
+            ed["secret"] = QLineEdit(self.config.tencent_sk)
+            ed["secret"].setEchoMode(QLineEdit.Password)
+            form.addRow(t("settings.key"), ed["key"])
+            form.addRow(t("settings.secret_key"), ed["secret"])
+            hint = QLabel(t("settings.tencent_sig_hint"))
+            hint.setWordWrap(True)
+            form.addRow(hint)
+            self._tencent_ed = ed
         else:
-            key = QLineEdit(self.config.tencent_key if name == "tencent"
-                            else self.config.baidu_ak)
-            key.setEchoMode(QLineEdit.Password)
-            ed["key"] = key
-            form.addRow(t("settings.key" if name == "tencent" else "settings.ak"),
-                        key)
-            setattr(self, f"_{name}_ed", ed)
+            ed["key"] = QLineEdit(self.config.baidu_ak)
+            ed["key"].setEchoMode(QLineEdit.Password)
+            ed["sk"] = QLineEdit(self.config.baidu_sk)
+            ed["sk"].setEchoMode(QLineEdit.Password)
+            form.addRow(t("settings.ak"), ed["key"])
+            form.addRow(t("settings.baidu_sk"), ed["sk"])
+            sn_hint = QLabel(t("settings.baidu_sn_hint"))
+            sn_hint.setWordWrap(True)
+            form.addRow(sn_hint)
+            hint = QLabel(t("settings.baidu_referer_hint"))
+            hint.setWordWrap(True)
+            form.addRow(hint)
+            self._baidu_ed = ed
         btn = QPushButton(t("settings.test_key"))
         status = QLabel(t("settings.status_none"))
         btn.clicked.connect(lambda: self._test_key(name, ed, status))
@@ -98,10 +118,12 @@ class SettingsDialog(QDialog):
         form.addRow(t("settings.lang"), self.lang_combo)
 
         self.city_combo = QComboBox()
+        self.city_combo.addItem(t("city.current"), "current")
         for key, c in CITIES.items():
             self.city_combo.addItem(c.display_name, key)
-        if self.config.city in CITIES:
-            self.city_combo.setCurrentIndex(list(CITIES).index(self.config.city))
+        idx = self.city_combo.findData(self.config.city)
+        if idx >= 0:
+            self.city_combo.setCurrentIndex(idx)
         form.addRow(t("settings.sim_city"), self.city_combo)
 
         self.taxi_spin = self._spin(self.config.taxi_count, 1, 200)
@@ -144,8 +166,11 @@ class SettingsDialog(QDialog):
             self.config.cp.set("amap", "web_key", ed["web_key"].text().strip())
         elif name == "tencent":
             self.config.cp.set("tencent", "key", ed["key"].text().strip())
+            self.config.cp.set("tencent", "secret_key",
+                               ed["secret"].text().strip())
         else:
             self.config.cp.set("baidu", "ak", ed["key"].text().strip())
+            self.config.cp.set("baidu", "sk", ed["sk"].text().strip())
         self.manager.reload_config()
         ok, key, detail = self.manager.test_key(name)
         if ok:
@@ -158,8 +183,13 @@ class SettingsDialog(QDialog):
     def _save(self):
         self.config.cp.set("amap", "web_key", self._amap_ed["web_key"].text().strip())
         self.config.cp.set("amap", "js_key", self._amap_ed["js_key"].text().strip())
+        self.config.cp.set("amap", "security_js_code",
+                           self._amap_ed["js_code"].text().strip())
         self.config.cp.set("tencent", "key", self._tencent_ed["key"].text().strip())
+        self.config.cp.set("tencent", "secret_key",
+                           self._tencent_ed["secret"].text().strip())
         self.config.cp.set("baidu", "ak", self._baidu_ed["key"].text().strip())
+        self.config.cp.set("baidu", "sk", self._baidu_ed["sk"].text().strip())
         self.config.set_general(
             language=self.lang_combo.currentData(),
             city=self.city_combo.currentData(),

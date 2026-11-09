@@ -8,11 +8,14 @@ SPEED_KMH = 30.0  # 市区平均车速
 
 class Taxi:
     __slots__ = ("tid", "position", "state", "route", "route_idx",
-                 "target", "passenger", "strategy", "idle_since", "busy_time")
+                 "target", "passenger", "strategy", "idle_since", "busy_time",
+                 "home", "off_at", "income", "ride_income")
 
     CRUISING = "cruising"
     TO_PASSENGER = "to_passenger"
     ONBOARD = "onboard"
+    TO_HOME = "to_home"          # 下班回程(灰色)
+    OFF_DUTY = "off_duty"        # 下班停驻(深灰, 不再接单)
 
     def __init__(self, tid, position, strategy):
         self.tid = tid
@@ -25,6 +28,10 @@ class Taxi:
         self.strategy = strategy
         self.idle_since = 0.0
         self.busy_time = 0.0
+        self.home = position       # 初始位置(下班回归点)
+        self.off_at = float("inf")  # 下班时刻(仿真秒, 未设置=永不)
+        self.income = 0.0        # 当日累计收入(元)
+        self.ride_income = 0.0   # 当前订单收入(元), 未载客为 0
 
     def set_route(self, points, target=None):
         if points and len(points) >= 2:

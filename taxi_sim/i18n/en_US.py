@@ -11,11 +11,41 @@ STRINGS = {
     "city.guangzhou": "Guangzhou",
     "city.chengdu": "Chengdu",
     "city.hangzhou": "Hangzhou",
+    "city.current": "Current location (auto)",
 
     # ---- cruise strategies (enum) ----
     "strategy.random": "Random Walk",
     "strategy.snake": "Snake Scan",
     "strategy.hotspot": "Hotspot Greedy",
+    "strategy.grid": "Grid Patrol",
+    "strategy.standby": "Hotzone Standby",
+    "strategy.roam": "Anti-crowd Roam",
+    "strategy.history": "History Hotspots",
+    "strategy.station": "Station Standby",
+
+    # ---- strategy schemes panel ----
+    "strat.group": "Strategies",
+    "strat.hint": "Checked schemes are evenly split across the fleet "
+                  "and compared per strategy",
+    "strat.add": "➕",
+    "strat.add_tip": "Add a strategy scheme",
+    "strat.edit": "✏️",
+    "strat.edit_tip": "Edit name/params",
+    "strat.del": "🗑",
+    "strat.del_tip": "Delete selected scheme",
+    "strat.dlg.title": "Edit strategy scheme",
+    "strat.dlg.name": "Name:",
+    "strat.dlg.type": "Type:",
+    "strat.p.grid_n": "Grid N (2~6):",
+    "strat.p.radius": "Radius (km):",
+    "strat.p.top_n": "Hot cells:",
+    "strat.p.station": "Station:",
+    "strat.p.station_custom": "Custom coordinates",
+    "strat.p.station_lat": "Station lat:",
+    "strat.p.station_lng": "Station lng:",
+    "strat.cmp.empty": "(no enabled scheme)",
+    "strat.cmp.row": "{name}: {taxis} taxis, {orders} orders, ¥{income}, "
+                     "empty {empty:.0f}%, wait {wait:.0f}s",
 
     # ---- common ----
     "app.title": "Taxi Cruising Simulation — Multi-Map SDK Auto-Switch",
@@ -30,7 +60,13 @@ STRINGS = {
     "panel.taxis": "Taxis:",
     "panel.passengers": "Passengers:",
     "panel.speed": "Speed:",
+    "panel.shift": "Shift (hours):",
+    "panel.follow": "Follow taxi",
+    "map.today": "Today",
+    "map.ride": "Trip",
     "panel.strategy_hint": "Cruise strategies (multi-select, round-robin):",
+    "panel.strat_cmp": "Strategy comparison",
+    "panel.locate": "Locate current position",
     "panel.stats": "Statistics",
     "stats.sim_time": "Sim time (s)",
     "stats.delivered": "Orders done",
@@ -49,6 +85,14 @@ STRINGS = {
     "msg.config_saved": "Settings saved, reloading map...",
     "msg.config_incomplete": "config.ini is incomplete: configure at least one "
                              "provider key in Settings to unlock all features.",
+    "msg.city_switched": "Switched to {city}, map updated",
+    "msg.locating": "Locating current position...",
+    "msg.located_hit": "Located near {city}, map switched automatically",
+    "msg.located_temp": "Current position is not in the built-in city list; "
+                        "map centered at ({lat:.3f}, {lng:.3f})",
+    "msg.locate_failed": "Locate failed (network or service unavailable), "
+                         "please choose a city manually",
+    "msg.locate_need": "No location yet, locating now, please retry shortly",
     "msg.sim_stopped": "Simulation stopped",
     "msg.lang_restart": "Language changed, restart to fully apply",
 
@@ -60,8 +104,22 @@ STRINGS = {
     "settings.tab.general": "General",
     "settings.web_key": "Web-service key (routing):",
     "settings.js_key": "JS API key (map display):",
+    "settings.security_code": "Security code (securityJsCode):",
     "settings.key": "Key:",
+    "settings.secret_key": "Secret key (if signature verification is on):",
+    "settings.tencent_sig_hint": "Note: if \"signature verification\" is enabled "
+                                 "for WebServiceAPI in the console, the Secret Key "
+                                 "is required, otherwise requests fail with 111.",
     "settings.ak": "AK:",
+    "settings.baidu_sk": "SK (for SN check):",
+    "settings.baidu_sn_hint": "Note: a server AK is authorized either by IP "
+                              "whitelist or by SN check (AK+SK). If SN is chosen "
+                              "in the console, SK is required, otherwise 211.",
+    "settings.baidu_js_ak": "Browser AK (map display):",
+    "settings.baidu_referer_hint": "Note: if the map fails to load, add a "
+                                   "Referer whitelist for the AK in the Baidu "
+                                   "console. This app loads pages from "
+                                   "taxi-sim.local; or just use *.",
     "settings.test_key": "Test key",
     "settings.status_none": "—",
     "settings.lang": "Language (restart to apply):",
@@ -79,6 +137,10 @@ STRINGS = {
     "key.not_configured": "Key not configured",
     "key.valid": "Key valid",
     "key.valid_quota": "Key valid (daily quota exhausted)",
+    "key.sig_failed": "Signature check failed (111): this key requires a "
+                      "Secret Key; fill it in above and retry",
+    "key.sn_failed": "SN check failed (211): this AK uses SN verification; "
+                     "fill in the matching SK and retry",
     "key.valid_qps": "Key valid (QPS limited)",
 
     # ---- map placeholder ----
@@ -94,6 +156,10 @@ STRINGS = {
     "engine.bg_fail": "Background data generation failed: {err}",
     "engine.passengers_expired": "{n} passenger(s) left after waiting timeout",
     "engine.order_done": "Taxi#{tid} completed an order ({dist:.0f}m)",
+    "engine.clock_off": "Taxi#{tid} shift ended, heading back to start point",
+    "engine.off_duty": "Taxi#{tid} off duty ({orders} orders, ¥{income} today)",
+    "engine.fare_info": "Fare: {base} yuan for first {base_km}km + "
+                        "{per_km} yuan/km beyond",
 
     # ---- data generator log (UI-visible) ----
     "gen.seed_progress": "Seed collection: {routes} routes cached, pool "
