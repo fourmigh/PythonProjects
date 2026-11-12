@@ -1,11 +1,11 @@
 # parking_system.py
 from typing import List, Tuple, Dict, Optional
 from collections import defaultdict
+import random
 import time
 
 from .config import AllocationWeights
 from .models import User, TimeSlotStatus
-from .allocation import AllocationManager
 from .utils import calculate_bitmap
 
 
@@ -53,16 +53,6 @@ class ParkingSystem:
         self.spot_schedule = defaultdict(dict)
         self.spot_bitmap = {}
         self.time_point = 0
-        self.allocation_manager = None
-    
-    def _init_allocation_manager(self):
-        """初始化分配管理器"""
-        if self.allocation_manager is None:
-            self.allocation_manager = AllocationManager(
-                self.total_spots, self.num_slots,
-                self.spot_schedule, self.spot_bitmap,
-                self.users, self.time_point
-            )
     
     def _update_spot_bitmap(self, spot: int):
         bitmap = 0
@@ -71,6 +61,12 @@ class ParkingSystem:
         self.spot_bitmap[spot] = bitmap
     
     def _check_slots_availability(self, slots: List[int]) -> Tuple[bool, str, Optional[List[int]]]:
+        """检查时段是否还能预订。
+
+        occupied[slot-1] 是该时段的预订总数（含已到场但未离开的用户），
+        只在 book 时 +1，到达/离开都不减少。这样“每个时段预订数 <= 总车位”
+        这条不变量始终成立，也就保证所有已预订用户到达到时一定有车位。
+        """
         past_slots = self.time_point // 2
         for slot in slots:
             if slot <= past_slots:
@@ -132,84 +128,64 @@ class ParkingSystem:
     
     @_profile
     def arrive(self, user_id: int, time_slot: int) -> Tuple[bool, str]:
-        """用户到达 - 简单分配算法"""
+        """用户到达 - 位图随机分配（不遍历任何订单）"""
         if user_id not in self.users:
             return False, "用户不存在"
-        
+
         user = self.users[user_id]
         if user.checked_in:
             return False, "用户已到达"
-        
         if user.checked_out:
             return False, "用户已离开"
-        
+
         expected_slot = user.slots[0]
         if time_slot + 1 != expected_slot:
             return False, f"用户应在时段{expected_slot}到达"
-        
-        occupied_spots = set()
-        for u in self.users.values():
-            if u.checked_in and not u.checked_out and u.spot_assigned:
-                occupied_spots.add(u.spot_assigned)
-        
-        free_spots = [s for s in range(1, self.total_spots + 1) 
-                     if s not in occupied_spots]
-        
-        if not free_spots:
-            # 详细分析无空闲车位的原因
-            overtime_users = [u for u in self.users.values() if u.checked_in and not u.checked_out and u.overtime and u.spot_assigned]
-            normal_users = [u for u in self.users.values() if u.checked_in and not u.checked_out and not u.overtime and u.spot_assigned]
-            reason = self._analyze_no_free_spots(user, occupied_spots, overtime_users, normal_users, time_slot)
-            return False, reason
-        
-        # 选择一个不影响未来用户的空闲车位
-        self._init_allocation_manager()
-        best_spot = None
-        for spot in free_spots:
-            if self.allocation_manager._can_fulfill_future_users(occupied_spots, spot, user, time_slot):
-                best_spot = spot
-                break
-        
-        if best_spot is None:
-            return False, "没有合适的车位（分配后会导致未来用户无位置）"
-        
-        user.spot_assigned = best_spot
+
+        spot = self._find_conflict_free_spot(user)
+        if spot is None:
+            occupied_spots, overtime_users, normal_users = self._collect_in_house()
+            return False, self._analyze_no_free_spots(
+                user, occupied_spots, overtime_users, normal_users, time_slot
+            )
+
+        user.spot_assigned = spot
         user.checked_in = True
         user.checkin_time = time_slot
-        
+
         for slot in user.slots:
-            self.spot_schedule[best_spot][slot-1] = user.id
-        
-        self._update_spot_bitmap(best_spot)
-        
-        # ========== 新增：到达成功后减少 occupied 计数 ==========
-        for slot in user.slots:
-            if self.occupied[slot-1] > 0:
-                self.occupied[slot-1] -= 1
-        # ====================================================
-        
-        return True, f"分配车位{best_spot}"
-    
-    @_profile
-    def arrive_smart(self, user_id: int, time_slot: int) -> Tuple[bool, str]:
-        """用户到达 - 智能分配算法"""
-        if user_id not in self.users:
-            return False, "用户不存在"
-        
-        user = self.users[user_id]
-        if user.checked_in:
-            return False, "用户已到达"
-        if user.checked_out:
-            return False, "用户已离开"
-        
-        expected_slot = user.slots[0]
-        if time_slot + 1 != expected_slot:
-            return False, f"用户应在时段{expected_slot}到达"
-        
+            self.spot_schedule[spot][slot-1] = user.id
+        self._update_spot_bitmap(spot)
+
+        return True, f"分配车位{spot}"
+
+    def _find_conflict_free_spot(self, user: User) -> Optional[int]:
+        """用车位位图找一个与用户占用时段无冲突的车位，不遍历订单。
+
+        为什么不需要回看未来订单：用户严格按 slots[0] 的先后到场，任何与
+        当前用户时段重叠的已分配用户都必然覆盖当前用户的起始时段，因此
+        “剩余可用车位数 = 总车位数 - 起始时段同时在场人数”，与历史选位
+        方式无关。只要 book() 保证每个时段的预订总数不超过总车位数，
+        任选一个无冲突车位都不会让后续已预订用户无处可停。
+        """
+        user_bitmap = calculate_bitmap(user.slots)
+        if user_bitmap == 0:
+            return None
+
+        total = self.total_spots
+        # 随机起点 + 环形扫描，避免车位号小的总被优先占用
+        start = random.randrange(total)
+        for offset in range(total):
+            spot = (start + offset) % total + 1
+            if (self.spot_bitmap.get(spot, 0) & user_bitmap) == 0:
+                return spot
+        return None
+
+    def _collect_in_house(self) -> Tuple[set, List[User], List[User]]:
+        """收集在场用户的车位及超时/正常分类（仅失败诊断使用）"""
         occupied_spots = set()
         overtime_users = []
         normal_users = []
-        
         for u in self.users.values():
             if u.checked_in and not u.checked_out and u.spot_assigned:
                 occupied_spots.add(u.spot_assigned)
@@ -217,56 +193,8 @@ class ParkingSystem:
                     overtime_users.append(u)
                 else:
                     normal_users.append(u)
-        
-        free_spots = [s for s in range(1, self.total_spots + 1) 
-                     if s not in occupied_spots]
-        
-        if not free_spots:
-            reason = self._analyze_no_free_spots(user, occupied_spots, overtime_users, normal_users, time_slot)
-            return False, reason
-        
-        # 初始化分配管理器
-        self._init_allocation_manager()
-        
-        # 修复：空闲车位少时也需要智能分配，不能直接取第一个
-        # 但可以限制候选车位数量以提升性能
-        candidate_spots = free_spots
-        if len(free_spots) > AllocationWeights.MAX_CANDIDATE_SPOTS:
-            # 如果空闲车位太多，可以只考虑前MAX_CANDIDATE_SPOTS个
-            candidate_spots = free_spots[:AllocationWeights.MAX_CANDIDATE_SPOTS]
-        
-        best_spot, err_msg = self.allocation_manager.allocate_smart(
-            user, time_slot, occupied_spots, candidate_spots
-        )
-        
-        if best_spot is None:
-            # 降级：尝试所有空闲车位
-            best_spot, err_msg = self.allocation_manager.allocate_smart(
-                user, time_slot, occupied_spots, free_spots
-            )
-            if best_spot is None:
-                return False, err_msg
-        
-        user.spot_assigned = best_spot
-        user.checked_in = True
-        user.checkin_time = time_slot
-        
-        for slot in user.slots:
-            self.spot_schedule[best_spot][slot-1] = user.id
-        
-        self._update_spot_bitmap(best_spot)
-        
-        # ========== 新增：到达成功后减少 occupied 计数 ==========
-        # 预订时增加了计数，现在实际占用了车位，需要减去预订计数
-        # 注意：不能简单减1，因为可能多个用户到达同一时段
-        # 但这里每个用户到达时，其预订的每个时段都要减1
-        for slot in user.slots:
-            if self.occupied[slot-1] > 0:
-                self.occupied[slot-1] -= 1
-        # ====================================================
-        
-        return True, f"分配车位{best_spot}"
-    
+        return occupied_spots, overtime_users, normal_users
+
     def _analyze_no_free_spots(self, user, occupied_spots, overtime_users, normal_users, time_slot):
         """分析无空闲车位的原因"""
         total_spots = self.total_spots

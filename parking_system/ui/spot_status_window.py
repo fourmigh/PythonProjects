@@ -390,7 +390,7 @@ class SpotStatusWindow:
             
             if result:
                 for user in arriving_users:
-                    success, msg2 = system_proxy.arrive_smart(user.id, time_slot)
+                    success, msg2 = system_proxy.arrive(user.id, time_slot)
                     if success:
                         print(f"用户 {user.id} 到达，{msg2}")
                     else:

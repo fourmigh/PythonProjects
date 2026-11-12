@@ -7,7 +7,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from core import (
     ParkingSystem,
-    AllocationManager,
     AllocationWeights,
     User,
     UserStatus,
@@ -30,7 +29,6 @@ __author__ = 'Parking System Team'
 __all__ = [
     # Core模块
     'ParkingSystem',
-    'AllocationManager',
     'AllocationWeights',
     'User',
     'UserStatus',

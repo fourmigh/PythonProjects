@@ -111,11 +111,11 @@ class ParkingSystemProxy:
         self._notify_refresh()
         return result
     
-    def arrive_smart(self, user_id: int, time_slot: int) -> Tuple[bool, str]:
-        """用户到达（智能分配）"""
+    def arrive(self, user_id: int, time_slot: int) -> Tuple[bool, str]:
+        """用户到达（随机分配车位）"""
         if not self._system:
             return False, "系统未初始化"
-        result = self._system.arrive_smart(user_id, time_slot)
+        result = self._system.arrive(user_id, time_slot)
         self._notify_refresh()
         return result
     
